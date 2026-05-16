@@ -1,0 +1,11 @@
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.6
+open-clip-torch>=2.24.0
+torch>=2.1.0
+numpy<2  # torch 2.2 is built against NumPy 1.x
+Pillow>=10.0.0
+chromadb>=0.4.0
+anthropic>=0.39.0
+openai>=1.0.0
+python-dotenv>=1.0.0

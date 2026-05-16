@@ -1,0 +1,31 @@
+# Scrubless local dev stack.
+# Phase 1: ChromaDB + CLIP sidecar. The Go `server` service is added in Phase 2
+# once cmd/server and the root Dockerfile exist.
+
+name: scrubless
+
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v2/heartbeat"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  clip-sidecar:
+    build: ./sidecar
+    ports:
+      - "8100:8100"
+    deploy:
+      resources:
+        limits:
+          # ViT-B-32 weights plus torch and batch buffers.
+          memory: 3G
+
+volumes:
+  chroma_data:

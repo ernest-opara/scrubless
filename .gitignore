@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Runtime data — uploaded videos, extracted frames, vector DB
+storage/
+
+# Node (legacy frontend)
+node_modules/
+dist/
+
+# macOS
+.DS_Store
