@@ -12,6 +12,7 @@ storage/
 # Node (legacy frontend)
 node_modules/
 dist/
+.vite/
 
 # macOS
 .DS_Store
