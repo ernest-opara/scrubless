@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="900" height="280">
+  <!-- Scrubby Expression Sheet — for social media content -->
+
+  <!-- 1. HAPPY (default) -->
+  <g transform="translate(90, 140) scale(0.55)">
+    <path d="M0,-88 Q-5,-115 8,-110" fill="none" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="8" cy="-112" r="6" fill="#FFD54F"/>
+    <rect x="-70" y="-55" width="140" height="120" rx="28" fill="#FBBF24"/>
+    <ellipse cx="-22" cy="-20" rx="22" ry="26" fill="white"/>
+    <ellipse cx="28" cy="-20" rx="22" ry="26" fill="white"/>
+    <circle cx="-16" cy="-22" r="14" fill="#1a1a2e"/>
+    <circle cx="34" cy="-22" r="14" fill="#1a1a2e"/>
+    <circle cx="-10" cy="-30" r="6" fill="white"/>
+    <circle cx="40" cy="-30" r="6" fill="white"/>
+    <path d="M-28,15 Q3,45 34,15" fill="#B8860B"/>
+    <path d="M-24,15 Q3,40 30,15" fill="#1a1a2e"/>
+    <ellipse cx="5" cy="28" rx="12" ry="8" fill="#FF6B8A"/>
+    <ellipse cx="-78" cy="-5" rx="18" ry="14" fill="#E5A800"/>
+    <ellipse cx="78" cy="-5" rx="18" ry="14" fill="#E5A800"/>
+    <ellipse cx="-28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+    <ellipse cx="28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+  </g>
+  <text x="90" y="265" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">happy</text>
+
+  <!-- 2. EXCITED (found it!) -->
+  <g transform="translate(270, 140) scale(0.55)">
+    <path d="M0,-88 Q-5,-120 8,-112" fill="none" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="8" cy="-114" r="7" fill="#FFD54F"/>
+    <rect x="-70" y="-55" width="140" height="120" rx="28" fill="#FBBF24"/>
+    <!-- Star eyes! -->
+    <ellipse cx="-22" cy="-20" rx="22" ry="26" fill="white"/>
+    <ellipse cx="28" cy="-20" rx="22" ry="26" fill="white"/>
+    <polygon points="-22,-32 -18,-22 -8,-22 -16,-16 -13,-6 -22,-12 -31,-6 -28,-16 -36,-22 -26,-22" fill="#FBBF24"/>
+    <polygon points="28,-32 32,-22 42,-22 34,-16 37,-6 28,-12 19,-6 22,-16 14,-22 24,-22" fill="#FBBF24"/>
+    <!-- Big open mouth -->
+    <ellipse cx="3" cy="22" rx="22" ry="18" fill="#1a1a2e"/>
+    <ellipse cx="3" cy="16" rx="14" ry="6" fill="white"/>
+    <ellipse cx="3" cy="30" rx="10" ry="6" fill="#FF6B8A"/>
+    <!-- Arms up! -->
+    <ellipse cx="-85" cy="-35" rx="18" ry="14" fill="#E5A800" transform="rotate(-30, -85, -35)"/>
+    <ellipse cx="85" cy="-35" rx="18" ry="14" fill="#E5A800" transform="rotate(30, 85, -35)"/>
+    <ellipse cx="-28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+    <ellipse cx="28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+  </g>
+  <text x="270" y="265" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">found it!</text>
+
+  <!-- 3. THINKING (searching) -->
+  <g transform="translate(450, 140) scale(0.55)">
+    <path d="M0,-88 Q-5,-115 8,-110" fill="none" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="8" cy="-112" r="6" fill="#FFD54F"/>
+    <rect x="-70" y="-55" width="140" height="120" rx="28" fill="#FBBF24"/>
+    <ellipse cx="-22" cy="-20" rx="22" ry="26" fill="white"/>
+    <ellipse cx="28" cy="-20" rx="22" ry="26" fill="white"/>
+    <!-- Eyes looking up and to the side -->
+    <circle cx="-28" cy="-28" r="14" fill="#1a1a2e"/>
+    <circle cx="22" cy="-28" r="14" fill="#1a1a2e"/>
+    <circle cx="-24" cy="-34" r="5" fill="white"/>
+    <circle cx="26" cy="-34" r="5" fill="white"/>
+    <!-- Hmm mouth -->
+    <path d="M-10,18 Q10,18 20,12" fill="none" stroke="#1a1a2e" stroke-width="4" stroke-linecap="round"/>
+    <!-- Hand on chin -->
+    <ellipse cx="-78" cy="-5" rx="18" ry="14" fill="#E5A800"/>
+    <ellipse cx="60" cy="15" rx="18" ry="14" fill="#E5A800"/>
+    <ellipse cx="-28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+    <ellipse cx="28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+    <!-- Thought dots -->
+    <circle cx="-65" cy="-55" r="4" fill="#FFD54F" opacity="0.5"/>
+    <circle cx="-78" cy="-70" r="5.5" fill="#FFD54F" opacity="0.4"/>
+    <circle cx="-93" cy="-88" r="7" fill="#FFD54F" opacity="0.3"/>
+  </g>
+  <text x="450" y="265" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">searching...</text>
+
+  <!-- 4. SHOCKED (bug found) -->
+  <g transform="translate(630, 140) scale(0.55)">
+    <path d="M0,-95 Q-5,-125 8,-118" fill="none" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="8" cy="-120" r="7" fill="#FFD54F"/>
+    <rect x="-70" y="-55" width="140" height="120" rx="28" fill="#FBBF24"/>
+    <!-- Huge shocked eyes -->
+    <ellipse cx="-22" cy="-20" rx="24" ry="28" fill="white"/>
+    <ellipse cx="28" cy="-20" rx="24" ry="28" fill="white"/>
+    <circle cx="-22" cy="-18" r="16" fill="#1a1a2e"/>
+    <circle cx="28" cy="-18" r="16" fill="#1a1a2e"/>
+    <!-- Tiny pupils (shocked!) -->
+    <circle cx="-22" cy="-18" r="6" fill="#1a1a2e"/>
+    <circle cx="28" cy="-18" r="6" fill="#1a1a2e"/>
+    <circle cx="-22" cy="-18" r="6" fill="white"/>
+    <circle cx="28" cy="-18" r="6" fill="white"/>
+    <circle cx="-22" cy="-18" r="3" fill="#1a1a2e"/>
+    <circle cx="28" cy="-18" r="3" fill="#1a1a2e"/>
+    <!-- O mouth -->
+    <ellipse cx="3" cy="22" rx="14" ry="16" fill="#1a1a2e"/>
+    <!-- Arms out wide -->
+    <ellipse cx="-90" cy="-15" rx="18" ry="14" fill="#E5A800" transform="rotate(-15, -90, -15)"/>
+    <ellipse cx="90" cy="-15" rx="18" ry="14" fill="#E5A800" transform="rotate(15, 90, -15)"/>
+    <ellipse cx="-28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+    <ellipse cx="28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+  </g>
+  <text x="630" y="265" font-family="Arial, sans-serif" font-size="13" fill="#94A3B8" text-anchor="middle">shipped a bug</text>
+
+</svg>

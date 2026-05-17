@@ -59,6 +59,7 @@ VIDEOS = {}  # video_id -> {status, progress, total_segments, error, source, tit
 
 app = FastAPI(title="Scrubless")
 app.mount("/storage", StaticFiles(directory=str(STORAGE)), name="storage")
+app.mount("/scrubby", StaticFiles(directory=str(ROOT / "scrubby")), name="scrubby")
 
 
 # --------------------------------------------------------------------------
