@@ -65,6 +65,11 @@
       }
       .btn:hover { filter: brightness(0.95); }
       .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+      .btn-ghost {
+        background: transparent; color: var(--ink); border: 1px solid var(--line);
+        border-radius: 7px; padding: 9px 18px; font-size: 13px; cursor: pointer;
+      }
+      .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
       /* progress */
       #processing { padding: 56px 24px; text-align: center; }
@@ -129,6 +134,10 @@
         </div>
         <input id="file" type="file" accept="video/*" class="hidden" />
         <p id="uperr" class="hidden" style="color:#e0623e;font-size:13px;margin-top:12px"></p>
+        <div style="text-align:center;margin-top:18px">
+          <span class="muted" style="font-size:13px">No video handy? </span>
+          <button class="btn-ghost" id="trysample">▶&nbsp; Try a sample video</button>
+        </div>
       </section>
 
       <!-- 2. Processing -->
@@ -189,6 +198,15 @@
         if (fileInput.files[0]) uploadFile(fileInput.files[0]);
       });
 
+      // --- Try the pre-indexed sample video ---
+      document.getElementById("trysample").addEventListener("click", function () {
+        videoId = "sample";
+        hide("upload");
+        show("processing");
+        pollTimer = setInterval(pollStatus, 2000);
+        pollStatus();
+      });
+
       function uploadFile(file) {
         var form = new FormData();
         form.append("file", file);
@@ -243,6 +261,13 @@
         show("workspace");
         document.getElementById("vtitle").textContent = status.title || "";
         document.getElementById("player").src = status.source_url;
+        // The sample is Big Buck Bunny — nudge the visitor toward a query
+        // that actually matches it.
+        if (videoId === "sample") {
+          document
+            .getElementById("query")
+            .setAttribute("placeholder", "try: a rabbit in a green meadow");
+        }
       }
 
       var player = document.getElementById("player");

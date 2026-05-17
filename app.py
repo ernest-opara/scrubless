@@ -8,6 +8,7 @@ Run:  uvicorn app:app --port 8080
 
 import base64
 import os
+import shutil
 import subprocess
 import threading
 import uuid
@@ -251,6 +252,44 @@ def process_video(video_id):
 
 
 # --------------------------------------------------------------------------
+# Sample video — auto-indexed at startup so a visitor can try search without
+# uploading anything. Storage is ephemeral (e.g. on Railway), so this re-runs
+# on every boot; it's cheap for a short clip.
+# --------------------------------------------------------------------------
+SAMPLE_ID = "sample"
+
+
+def ingest_sample():
+    """Copy and index the bundled sample video under the id 'sample'."""
+    src = ROOT / "assets" / "sample.mp4"
+    if not src.exists():
+        print("[scrubless] no assets/sample.mp4 — skipping sample video")
+        return
+
+    vdir = STORAGE / SAMPLE_ID
+    vdir.mkdir(parents=True, exist_ok=True)
+    dst = vdir / "source.mp4"
+    shutil.copy(src, dst)
+
+    # Drop any stale index for the sample (ChromaDB persists across restarts).
+    try:
+        segments.delete(where={"video_id": SAMPLE_ID})
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] sample: clear old index:", exc)
+
+    VIDEOS[SAMPLE_ID] = {
+        "status": "processing",
+        "progress": 0,
+        "total_segments": 0,
+        "error": "",
+        "source": str(dst),
+        "title": "Sample video — Big Buck Bunny",
+    }
+    print("[scrubless] indexing sample video…")
+    process_video(SAMPLE_ID)
+
+
+# --------------------------------------------------------------------------
 # API
 # --------------------------------------------------------------------------
 class SearchRequest(BaseModel):
@@ -342,3 +381,7 @@ def search(video_id: str, req: SearchRequest):
 @app.get("/")
 def index():
     return FileResponse(str(ROOT / "index.html"))
+
+
+# Index the bundled sample video in the background as the server starts.
+threading.Thread(target=ingest_sample, daemon=True).start()
