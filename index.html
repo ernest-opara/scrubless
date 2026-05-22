@@ -179,6 +179,30 @@
       </section>
     </div>
 
+    <!-- Upgrade / pricing modal -->
+    <div id="pricing" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px">
+      <div class="panel" style="max-width:520px;width:100%;padding:24px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="margin:0;font-size:18px">Upgrade your plan</h2>
+          <button class="btn-ghost" onclick="closePricing()">Close</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="border:1px solid var(--line);border-radius:9px;padding:16px">
+            <h3 style="margin:0 0 2px">Pro</h3>
+            <p style="margin:0;font-size:20px;font-weight:700">$10<span class="faint" style="font-size:13px;font-weight:400">/mo</span></p>
+            <p class="muted" style="font-size:12px;margin:6px 0 14px">Up to 2GB per video</p>
+            <button class="btn" style="width:100%" onclick="startCheckout('pro')">Choose Pro</button>
+          </div>
+          <div style="border:1px solid var(--line);border-radius:9px;padding:16px">
+            <h3 style="margin:0 0 2px">Studio</h3>
+            <p style="margin:0;font-size:20px;font-weight:700">$30<span class="faint" style="font-size:13px;font-weight:400">/mo</span></p>
+            <p class="muted" style="font-size:12px;margin:6px 0 14px">Up to 10GB per video</p>
+            <button class="btn" style="width:100%" onclick="startCheckout('studio')">Choose Studio</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       var videoId = null;
       var pollTimer = null;
@@ -186,6 +210,7 @@
         user: null,
         upload_limit_bytes: 500 * 1024 * 1024,
         auth_enabled: false,
+        billing_enabled: false,
       };
 
       function fmtMB(bytes) {
@@ -209,10 +234,17 @@
         var el = document.getElementById("authArea");
         if (!el) return;
         if (authState.user) {
+          var billing = "";
+          if (authState.billing_enabled) {
+            billing =
+              authState.user.tier === "free"
+                ? '<button class="btn-ghost" onclick="openPricing()">Upgrade</button>'
+                : '<button class="btn-ghost" onclick="openPortal()">Manage plan</button>';
+          }
           el.innerHTML =
             '<span class="muted">' + authState.user.email +
             ' · <strong style="color:var(--accent)">' + authState.user.tier +
-            '</strong></span>' +
+            '</strong></span>' + billing +
             '<button class="btn-ghost" onclick="location.href=\'/api/auth/logout\'">Log out</button>';
         } else if (authState.auth_enabled) {
           el.innerHTML =
@@ -220,6 +252,31 @@
         } else {
           el.innerHTML = "";
         }
+      }
+
+      function openPricing() {
+        document.getElementById("pricing").classList.remove("hidden");
+      }
+      function closePricing() {
+        document.getElementById("pricing").classList.add("hidden");
+      }
+      function startCheckout(tier) {
+        fetch("/api/billing/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tier: tier }),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d.url) location.href = d.url;
+            else alert(d.detail || "Could not start checkout.");
+          })
+          .catch(function () { alert("Could not start checkout."); });
+      }
+      function openPortal() {
+        fetch("/api/billing/portal", { method: "POST" })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { if (d.url) location.href = d.url; });
       }
 
       // Swap Scrubby's mood: idle (happy) <-> excited (file dragged over).
@@ -279,9 +336,15 @@
               "That file is over " + lim +
               '. <a href="/api/auth/login" style="color:var(--accent)">Sign in</a> to upload larger videos.';
           } else if (authState.user) {
-            msg.textContent =
-              "Your " + authState.user.tier + " plan allows up to " + lim +
-              " — upgrade for larger uploads.";
+            if (authState.billing_enabled) {
+              msg.innerHTML =
+                "Your " + authState.user.tier + " plan allows up to " + lim +
+                '. <a href="#" onclick="openPricing();return false" style="color:var(--accent)">Upgrade</a> for larger uploads.';
+            } else {
+              msg.textContent =
+                "Your " + authState.user.tier + " plan allows up to " + lim +
+                " — upgrade for larger uploads.";
+            }
           } else {
             msg.textContent = "That file is over " + lim + " — try a shorter clip.";
           }
