@@ -29,7 +29,7 @@
       .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 60px; }
 
       header {
-        display: flex; align-items: center; gap: 10px;
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
         border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 32px;
       }
       .logo { width: 40px; height: 40px; border-radius: 50%; display: block; }
@@ -119,11 +119,14 @@
   <body>
     <div class="wrap">
       <header>
-        <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="Scrubby, the Scrubless mascot" />
-        <div>
-          <h1>Scrubless</h1>
-          <p>Stop scrubbing. Start searching.</p>
+        <div style="display:flex;align-items:center;gap:10px">
+          <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="Scrubby, the Scrubless mascot" />
+          <div>
+            <h1>Scrubless</h1>
+            <p>Stop scrubbing. Start searching.</p>
+          </div>
         </div>
+        <div id="authArea" style="display:flex;align-items:center;gap:10px;font-size:13px"></div>
       </header>
 
       <!-- 1. Upload -->
@@ -132,7 +135,7 @@
         <div id="drop">
           <h2>Drop a video here</h2>
           <div class="hint">or click to choose a file — MP4, MOV, MKV, WEBM</div>
-          <div class="hint" style="margin-top:6px;color:var(--faint)">Max 500MB</div>
+          <div class="hint" id="limitHint" style="margin-top:6px;color:var(--faint)">Max 500MB</div>
         </div>
         <p style="text-align:center;font-size:12px;color:var(--muted);margin:12px 0 0">
           🔒 No account needed · auto-deletes in 24h · delete it anytime
@@ -179,7 +182,45 @@
     <script>
       var videoId = null;
       var pollTimer = null;
-      var MAX_BYTES = 500 * 1024 * 1024; // 500MB upload cap
+      var authState = {
+        user: null,
+        upload_limit_bytes: 500 * 1024 * 1024,
+        auth_enabled: false,
+      };
+
+      function fmtMB(bytes) {
+        return Math.round(bytes / (1024 * 1024)) + "MB";
+      }
+
+      // Load auth state + the caller's upload limit, then render the header.
+      function loadAuth() {
+        fetch("/api/auth/me")
+          .then(function (r) { return r.json(); })
+          .then(function (s) {
+            authState = s;
+            renderAuth();
+            var hint = document.getElementById("limitHint");
+            if (hint) hint.textContent = "Max " + fmtMB(s.upload_limit_bytes);
+          })
+          .catch(function () {});
+      }
+
+      function renderAuth() {
+        var el = document.getElementById("authArea");
+        if (!el) return;
+        if (authState.user) {
+          el.innerHTML =
+            '<span class="muted">' + authState.user.email +
+            ' · <strong style="color:var(--accent)">' + authState.user.tier +
+            '</strong></span>' +
+            '<button class="btn-ghost" onclick="location.href=\'/api/auth/logout\'">Log out</button>';
+        } else if (authState.auth_enabled) {
+          el.innerHTML =
+            '<button class="btn-ghost" onclick="location.href=\'/api/auth/login\'">Log in</button>';
+        } else {
+          el.innerHTML = "";
+        }
+      }
 
       // Swap Scrubby's mood: idle (happy) <-> excited (file dragged over).
       function setMascot(state) {
@@ -230,10 +271,21 @@
       });
 
       function uploadFile(file) {
-        if (file.size > MAX_BYTES) {
-          var tooBig = document.getElementById("uperr");
-          tooBig.textContent = "That file is over 500MB — try a shorter clip.";
-          tooBig.classList.remove("hidden");
+        if (file.size > authState.upload_limit_bytes) {
+          var msg = document.getElementById("uperr");
+          var lim = fmtMB(authState.upload_limit_bytes);
+          if (!authState.user && authState.auth_enabled) {
+            msg.innerHTML =
+              "That file is over " + lim +
+              '. <a href="/api/auth/login" style="color:var(--accent)">Sign in</a> to upload larger videos.';
+          } else if (authState.user) {
+            msg.textContent =
+              "Your " + authState.user.tier + " plan allows up to " + lim +
+              " — upgrade for larger uploads.";
+          } else {
+            msg.textContent = "That file is over " + lim + " — try a shorter clip.";
+          }
+          msg.classList.remove("hidden");
           return;
         }
         var form = new FormData();
@@ -371,6 +423,8 @@
           box.appendChild(card);
         });
       }
+
+      loadAuth(); // header state + the caller's upload limit
     </script>
   </body>
 </html>

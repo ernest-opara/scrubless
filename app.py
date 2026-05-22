@@ -18,12 +18,16 @@ from pathlib import Path
 import chromadb
 import open_clip
 import torch
+from authlib.integrations.starlette_client import OAuth
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, UploadFile
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
+from sqlalchemy import Float, String, create_engine, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
+from starlette.middleware.sessions import SessionMiddleware
 
 load_dotenv()
 
@@ -39,6 +43,22 @@ ENRICH_TOP_N = 3  # how many top results get a Claude Vision description
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
+
+# Auth (Auth0) + sessions + database
+SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-insecure-change-me")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:8080").rstrip("/")
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "").strip()
+AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "").strip()
+AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET", "").strip()
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///" + str(ROOT / "scrubless.db"))
+if DATABASE_URL.startswith("postgres://"):  # Railway sometimes uses the old scheme
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Per-tier upload caps (bytes). Anonymous == free; paid tiers raise the cap.
+MB = 1024 * 1024
+GB = 1024 * MB
+ANON_LIMIT = 500 * MB
+TIER_LIMITS = {"free": 500 * MB, "pro": 2 * GB, "studio": 10 * GB}
 
 # --------------------------------------------------------------------------
 # Models / clients — loaded once at startup
@@ -60,8 +80,68 @@ segments = chroma.get_or_create_collection(
 VIDEOS = {}  # video_id -> {status, progress, total_segments, error, source, title}
 
 app = FastAPI(title="Scrubless")
+app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 app.mount("/storage", StaticFiles(directory=str(STORAGE)), name="storage")
 app.mount("/scrubby", StaticFiles(directory=str(ROOT / "scrubby")), name="scrubby")
+
+
+# --------------------------------------------------------------------------
+# Accounts (SQLite in dev, Postgres in prod) + Auth0 login
+# --------------------------------------------------------------------------
+class Base(DeclarativeBase):
+    pass
+
+
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    auth0_sub: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), default="")
+    tier: Mapped[str] = mapped_column(String(20), default="free")
+    stripe_customer_id: Mapped[str] = mapped_column(String(255), default="")
+    stripe_subscription_id: Mapped[str] = mapped_column(String(255), default="")
+    created_at: Mapped[float] = mapped_column(Float, default=time.time)
+
+
+_engine_args = {"pool_pre_ping": True}
+if DATABASE_URL.startswith("sqlite"):
+    _engine_args["connect_args"] = {"check_same_thread": False}
+engine = create_engine(DATABASE_URL, **_engine_args)
+Base.metadata.create_all(engine)
+
+oauth = OAuth()
+AUTH0_ENABLED = bool(AUTH0_DOMAIN and AUTH0_CLIENT_ID and AUTH0_CLIENT_SECRET)
+if AUTH0_ENABLED:
+    oauth.register(
+        "auth0",
+        client_id=AUTH0_CLIENT_ID,
+        client_secret=AUTH0_CLIENT_SECRET,
+        client_kwargs={"scope": "openid profile email"},
+        server_metadata_url="https://%s/.well-known/openid-configuration" % AUTH0_DOMAIN,
+    )
+    print("[scrubless] Auth0 login enabled")
+else:
+    print("[scrubless] Auth0 not configured — anonymous uploads only (<=500MB)")
+
+
+def current_user(request):
+    """Return the logged-in User, or None."""
+    uid = request.session.get("user_id")
+    if not uid:
+        return None
+    with Session(engine) as s:
+        return s.get(User, uid)
+
+
+def upload_limit_for(user):
+    return TIER_LIMITS.get(user.tier, ANON_LIMIT) if user else ANON_LIMIT
+
+
+def over_cap_detail(user, cap):
+    mb = cap // MB
+    if user is None:
+        return "Files over %dMB need an account — sign in to upload larger videos." % mb
+    return "Your %s plan allows up to %dMB — upgrade for larger uploads." % (user.tier, mb)
 
 
 # --------------------------------------------------------------------------
@@ -312,7 +392,7 @@ def expiry_sweep():
         time.sleep(1800)
         now = time.time()
         for vid, v in list(VIDEOS.items()):
-            if vid == SAMPLE_ID:
+            if vid == SAMPLE_ID or v.get("owner"):  # keep sample + account videos
                 continue
             if now - v.get("created", now) > VIDEO_TTL_SECONDS:
                 print("[scrubless] auto-expiring %s" % vid)
@@ -326,19 +406,87 @@ class SearchRequest(BaseModel):
     query: str
 
 
+@app.get("/api/auth/login")
+async def auth_login(request: Request):
+    if not AUTH0_ENABLED:
+        raise HTTPException(status_code=503, detail="login is not configured")
+    return await oauth.auth0.authorize_redirect(request, APP_BASE_URL + "/api/auth/callback")
+
+
+@app.get("/api/auth/callback")
+async def auth_callback(request: Request):
+    if not AUTH0_ENABLED:
+        raise HTTPException(status_code=503, detail="login is not configured")
+    token = await oauth.auth0.authorize_access_token(request)
+    info = token.get("userinfo") or {}
+    sub = info.get("sub")
+    email = (info.get("email") or "").lower()
+    if not sub:
+        raise HTTPException(status_code=400, detail="no identity returned")
+    with Session(engine) as s:
+        user = s.scalar(select(User).where(User.auth0_sub == sub))
+        if user is None:
+            user = User(auth0_sub=sub, email=email, tier="free", created_at=time.time())
+            s.add(user)
+            s.commit()
+            s.refresh(user)
+        elif email and user.email != email:
+            user.email = email
+            s.commit()
+        request.session["user_id"] = user.id
+    return RedirectResponse("/")
+
+
+@app.get("/api/auth/logout")
+async def auth_logout(request: Request):
+    request.session.clear()
+    if AUTH0_ENABLED:
+        return RedirectResponse(
+            "https://%s/v2/logout?client_id=%s&returnTo=%s"
+            % (AUTH0_DOMAIN, AUTH0_CLIENT_ID, APP_BASE_URL + "/")
+        )
+    return RedirectResponse("/")
+
+
+@app.get("/api/auth/me")
+def auth_me(request: Request):
+    user = current_user(request)
+    return {
+        "user": ({"email": user.email, "tier": user.tier} if user else None),
+        "upload_limit_bytes": upload_limit_for(user),
+        "auth_enabled": AUTH0_ENABLED,
+    }
+
+
 @app.post("/api/upload")
-async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)):
+async def upload(
+    request: Request, background_tasks: BackgroundTasks, file: UploadFile = File(...)
+):
+    user = current_user(request)
+    cap = upload_limit_for(user)
+
+    # Fast reject via Content-Length before streaming the whole body.
+    clen = int(request.headers.get("content-length") or 0)
+    if clen and clen > cap:
+        raise HTTPException(status_code=413, detail=over_cap_detail(user, cap))
+
     video_id = uuid.uuid4().hex[:12]
     vdir = STORAGE / video_id
     vdir.mkdir(parents=True, exist_ok=True)
 
     ext = Path(file.filename or "").suffix.lower() or ".mp4"
     source = vdir / ("source" + ext)
+    total = 0
     with open(source, "wb") as out:
         while True:
             chunk = await file.read(1 << 20)
             if not chunk:
                 break
+            total += len(chunk)
+            if total > cap:  # backstop in case Content-Length lied / was absent
+                out.close()
+                shutil.rmtree(vdir, ignore_errors=True)
+                raise HTTPException(status_code=413, detail=over_cap_detail(user, cap))
             out.write(chunk)
 
     VIDEOS[video_id] = {
@@ -349,6 +497,7 @@ async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)
         "source": str(source),
         "title": file.filename or "Untitled",
         "created": time.time(),
+        "owner": user.id if user else None,
     }
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}

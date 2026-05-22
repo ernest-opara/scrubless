@@ -9,6 +9,9 @@ __pycache__/
 # Runtime data — uploaded videos, extracted frames, vector DB
 storage/
 
+# Local SQLite database (prod uses Postgres via DATABASE_URL)
+*.db
+
 # Node (legacy frontend)
 node_modules/
 dist/
