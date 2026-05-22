@@ -79,18 +79,20 @@
       .bar > div { height: 100%; background: var(--accent); width: 0%; transition: width .5s ease; }
 
       /* workspace */
-      #workspace { display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; }
-      @media (max-width: 800px) { #workspace { grid-template-columns: 1fr; } }
+      #workspace, #libworkspace { display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; }
+      @media (max-width: 800px) { #workspace, #libworkspace { grid-template-columns: 1fr; } }
+      .result .vid { font-size: 12.5px; font-weight: 600; color: var(--ink); margin: 0; }
       video { width: 100%; aspect-ratio: 16/9; background: var(--screen); border-radius: 10px; border: 1px solid var(--line); display: block; }
       #vtitle { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
 
       .searchrow { display: flex; gap: 8px; }
-      #query {
+      #query, #libquery {
         flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
         padding: 10px 12px; color: var(--ink); font-size: 14px;
       }
-      #query::placeholder { color: var(--faint); }
-      #query:focus { outline: none; border-color: var(--accent); }
+      #query::placeholder, #libquery::placeholder { color: var(--faint); }
+      #query:focus, #libquery:focus { outline: none; border-color: var(--accent); }
+      #libresults { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; max-height: 62vh; overflow-y: auto; }
 
       #results { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; max-height: 62vh; overflow-y: auto; }
       .result {
@@ -146,6 +148,24 @@
           <span class="muted" style="font-size:13px">No video handy? </span>
           <button class="btn-ghost" id="trysample">▶&nbsp; Try a sample video</button>
         </div>
+
+        <!-- Library Mode: scan a whole folder (local self-hosted only) -->
+        <div id="folderPanel" class="panel hidden" style="margin-top:24px;padding:18px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px">
+            <strong style="font-size:14px">Search a whole folder</strong>
+            <span class="badge">New</span>
+          </div>
+          <p class="muted" style="font-size:12.5px;margin:0 0 12px">
+            Point Scrubless at a folder of videos on this machine. It indexes them
+            in place — nothing is uploaded — then you search across all of them at once.
+          </p>
+          <div class="searchrow">
+            <input id="folderpath" type="text" placeholder="/Users/you/Videos/footage"
+                   style="flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:10px 12px;color:var(--ink);font-size:14px" />
+            <button class="btn" id="scanbtn">Scan folder</button>
+          </div>
+          <p id="scanerr" class="hidden" style="color:#e0623e;font-size:13px;margin:10px 0 0"></p>
+        </div>
       </section>
 
       <!-- 2. Processing -->
@@ -174,6 +194,27 @@
           </div>
           <div id="results">
             <div class="empty">Search your video to find matching moments.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Library workspace (search across a folder) -->
+      <section id="libworkspace" class="hidden">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <p id="libtitle" style="margin:0;font-weight:600;font-size:15px"></p>
+            <span id="libcount" class="muted" style="font-size:12.5px"></span>
+          </div>
+          <p id="nowplaying" class="faint" style="font-size:12.5px;margin:0 0 10px">Click a result to play that video.</p>
+          <video id="libplayer" controls playsinline></video>
+        </div>
+        <div>
+          <div class="searchrow">
+            <input id="libquery" type="text" placeholder="search across the whole folder…" />
+            <button class="btn" id="libsearchbtn" disabled>Search</button>
+          </div>
+          <div id="libresults">
+            <div class="empty">Search across every video in this folder.</div>
           </div>
         </div>
       </section>
@@ -486,6 +527,150 @@
           box.appendChild(card);
         });
       }
+
+      // ===================== Library Mode =====================
+      // Local directory scan only makes sense when the server can see the
+      // folder — i.e. self-hosted/local. Show it on localhost (or ?lib).
+      var LIBRARY_LOCAL =
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1" ||
+        location.search.indexOf("lib") >= 0;
+
+      var collectionId = null;
+      var libPoll = null;
+      var curLibVideo = null; // which video is loaded in the library player
+
+      function scanFolder() {
+        var input = document.getElementById("folderpath");
+        var path = input.value.trim();
+        if (!path) return;
+        var btn = document.getElementById("scanbtn");
+        var err = document.getElementById("scanerr");
+        err.classList.add("hidden");
+        btn.disabled = true;
+        btn.textContent = "Scanning…";
+        fetch("/api/library/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: path }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+          })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.d.detail || "scan failed");
+            collectionId = res.d.collection_id;
+            hide("upload");
+            show("libworkspace");
+            document.getElementById("libtitle").textContent = res.d.name;
+            libPoll = setInterval(pollLibrary, 2000);
+            pollLibrary();
+          })
+          .catch(function (e) {
+            err.textContent = e.message;
+            err.classList.remove("hidden");
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "Scan folder";
+          });
+      }
+
+      function pollLibrary() {
+        fetch("/api/library/" + collectionId)
+          .then(function (r) { return r.json(); })
+          .then(function (s) {
+            var done = s.indexed >= s.total;
+            document.getElementById("libcount").textContent = done
+              ? s.total + (s.total === 1 ? " video" : " videos")
+              : "indexing " + s.indexed + "/" + s.total + "…";
+            document.getElementById("libsearchbtn").disabled = s.indexed < 1;
+            if (done) clearInterval(libPoll);
+          })
+          .catch(function () { /* transient — keep polling */ });
+      }
+
+      function runLibSearch() {
+        var q = document.getElementById("libquery").value.trim();
+        if (!q || !collectionId) return;
+        var btn = document.getElementById("libsearchbtn");
+        btn.disabled = true;
+        btn.textContent = "Searching…";
+        fetch("/api/library/" + collectionId + "/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: q }),
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error("search failed (" + r.status + ")");
+            return r.json();
+          })
+          .then(renderLibResults)
+          .catch(function (e) {
+            document.getElementById("libresults").innerHTML =
+              '<div class="empty" style="color:#e0623e">' + e.message + "</div>";
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "Search";
+          });
+      }
+
+      function renderLibResults(results) {
+        var box = document.getElementById("libresults");
+        box.innerHTML = "";
+        if (!results.length) {
+          box.innerHTML = '<div class="empty">No matching moments found. Try other words.</div>';
+          return;
+        }
+        var libplayer = document.getElementById("libplayer");
+        results.forEach(function (r) {
+          var conf = confidence(r.score);
+          var card = document.createElement("div");
+          card.className = "result";
+          card.innerHTML =
+            '<img src="' + r.frame_url + '" alt="" />' +
+            '<div class="meta">' +
+              '<div class="top">' +
+                '<span class="time">' + fmtTime(r.timestamp) + "</span>" +
+                '<span class="badge' + (conf >= 85 ? "" : " weak") + '">' + conf + "% match</span>" +
+              "</div>" +
+              '<p class="vid clamp1">🎬 ' + r.video_title + "</p>" +
+              '<p class="desc clamp2">' + (r.description || "Matched moment") + "</p>" +
+              (r.transcript_snippet
+                ? '<p class="snip clamp1">“' + r.transcript_snippet + '”</p>'
+                : "") +
+            "</div>";
+          card.addEventListener("click", function () {
+            if (curLibVideo !== r.video_id) {
+              // Switching to a different video: load it, then seek once ready.
+              curLibVideo = r.video_id;
+              libplayer.src = r.source_url;
+              document.getElementById("nowplaying").textContent = "▶ " + r.video_title;
+              libplayer.addEventListener("loadedmetadata", function once() {
+                libplayer.removeEventListener("loadedmetadata", once);
+                libplayer.currentTime = r.timestamp;
+                libplayer.play();
+              });
+            } else {
+              libplayer.currentTime = r.timestamp;
+              libplayer.play();
+            }
+            libplayer.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+          box.appendChild(card);
+        });
+      }
+
+      document.getElementById("scanbtn").addEventListener("click", scanFolder);
+      document.getElementById("folderpath").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") scanFolder();
+      });
+      document.getElementById("libsearchbtn").addEventListener("click", runLibSearch);
+      document.getElementById("libquery").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") runLibSearch();
+      });
+      if (LIBRARY_LOCAL) document.getElementById("folderPanel").classList.remove("hidden");
 
       loadAuth(); // header state + the caller's upload limit
     </script>

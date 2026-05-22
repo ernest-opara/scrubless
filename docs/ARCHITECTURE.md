@@ -128,8 +128,11 @@ ChromaDB for the nearest frames.
 - **`segments`** (ChromaDB) — one row per frame: embedding + metadata +
   transcript snippet as the searchable document. Distance space: **cosine**.
 - **`VIDEOS`** (in-memory) — per-video `{status, progress, total_segments,
-  error, source, title, created, owner}`. Ephemeral; only the sample is rebuilt
-  on restart.
+  error, source, title, created, owner, collection_id}`. Ephemeral; only the
+  sample is rebuilt on restart.
+- **`COLLECTIONS`** (in-memory, V2) — a scanned folder: `{name, path,
+  video_ids[], created}`. Each frame is tagged with `collection_id` so one
+  query can search across every video in the folder.
 
 \newpage
 
@@ -142,6 +145,10 @@ ChromaDB for the nearest frames.
 | GET    | `/api/status/{id}`         | Poll indexing status / progress           |
 | POST   | `/api/search/{id}`         | Natural-language search of one video      |
 | DELETE | `/api/videos/{id}`         | Delete a video (sample is protected)      |
+| GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)  |
+| POST   | `/api/library/scan`        | Index every video under a folder (V2)     |
+| GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)|
+| POST   | `/api/library/{id}/search` | Search across a whole collection (V2)     |
 | GET    | `/api/auth/login`          | Redirect to Auth0 Universal Login         |
 | GET    | `/api/auth/callback`       | OIDC callback → create/find user, session |
 | GET    | `/api/auth/logout`         | Clear session + Auth0 logout              |
@@ -256,11 +263,18 @@ source file + timestamp.
   into each result. The expensive part (per-video indexing) already exists.
 - **Collections.** A `collection_id` grouping scopes a query to "this folder."
 - **Two ingestion modes — both committed, local first:**
-  - *Local directory scan* (self-hosted): point at a path, index in place —
-    nothing uploaded. Private, fast, handles large folders.
-  - *Hosted folder upload*: drag a folder into the site; reuses the same engine.
+  - *Local directory scan* (self-hosted) — **implemented** (`v2-library-mode`
+    branch): `POST /api/library/scan` walks a folder, indexes each video in
+    place (nothing uploaded); the UI shows live per-video progress and searches
+    across all of them. Frontend folder panel appears only on localhost.
+  - *Hosted folder upload* — pending (phase 2): drag a folder into the site;
+    reuses the same cross-video engine.
 - **Constraint.** Indexing is CPU-bound (CLIP on CPU); first index of a large
   folder takes time — durable state + a progress UI make that acceptable.
+
+**Status:** local directory scan + cross-video search are built and verified
+locally (scan → in-place indexing → results spanning all files → range-seekable
+playback), with V1 single-video search untouched. Not yet merged to `main`.
 
 **Deferred:** clip export + share links, YouTube ingest (legal), search-quality
 (hybrid ranking), React rewrite, face recognition (legal review), native mobile,
@@ -302,3 +316,4 @@ update.
 | 2026-05-22 | "use scrubless on a directory full of videos" | Set V2 marquee to **Library Mode** (cross-video search + batch ingestion). |
 | 2026-05-22 | "do both, local first; commit v1 totally"     | Locked both ingestion modes (local first); committed `docs/`, tagged `v1.0`. |
 | 2026-05-22 | "fix structure; make it diagrammatic; push on update" | Restructured the document; added six Graphviz vector diagrams; switched cadence to "on meaningful change" + auto-push; documented the `.md`/`.pdf` split. |
+| 2026-05-22 | "proceed" (build V2)                           | Implemented Library Mode — local directory scan + cross-video search (backend + UI) on `v2-library-mode`. Added the new endpoints to the API table, `collection_id`/`COLLECTIONS` to the data model + diagram, and marked local scan **implemented** in the roadmap. |

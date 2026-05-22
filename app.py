@@ -98,6 +98,11 @@ segments = chroma.get_or_create_collection(
 # In-memory video state. Lost on restart — fine for V1 (run locally, demo).
 VIDEOS = {}  # video_id -> {status, progress, total_segments, error, source, title}
 
+# Library Mode (V2): a collection groups many videos (e.g. a scanned folder),
+# so one query can search across all of them.
+COLLECTIONS = {}  # collection_id -> {name, path, video_ids, created}
+VIDEO_EXTS = {".mp4", ".mov", ".mkv", ".avi", ".webm", ".m4v", ".mpg", ".mpeg", ".wmv"}
+
 app = FastAPI(title="Scrubless")
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 app.mount("/storage", StaticFiles(directory=str(STORAGE)), name="storage")
@@ -351,6 +356,7 @@ def process_video(video_id):
         except Exception as exc:  # noqa: BLE001
             print("[scrubless] %s: skipping transcript (%s)" % (video_id, exc))
 
+        cid = video.get("collection_id") or ""  # "" for standalone uploads
         ids, embeddings, metadatas, documents = [], [], [], []
         for i, frame in enumerate(frames):
             start = i * FRAME_INTERVAL
@@ -362,6 +368,7 @@ def process_video(video_id):
             metadatas.append(
                 {
                     "video_id": video_id,
+                    "collection_id": cid,
                     "timestamp": start,
                     "frame_path": "/storage/%s/frames/%s" % (video_id, frame.name),
                     "transcript_segment": snippet,
@@ -686,6 +693,159 @@ def delete_endpoint(video_id: str):
         raise HTTPException(status_code=404, detail="video not found")
     delete_video(video_id)
     return {"deleted": video_id}
+
+
+@app.get("/api/videos/{video_id}/source")
+def video_source(video_id: str):
+    """Stream a video's source file (works for in-place library videos too).
+
+    FileResponse honours Range requests, so the <video> element can seek.
+    """
+    video = VIDEOS.get(video_id)
+    if not video:
+        raise HTTPException(status_code=404, detail="video not found")
+    src = Path(video["source"])
+    if not src.exists():
+        raise HTTPException(status_code=404, detail="source file missing")
+    return FileResponse(str(src), filename=src.name)
+
+
+# --------------------------------------------------------------------------
+# Library Mode (V2): scan a folder, search across every video in it
+# --------------------------------------------------------------------------
+class ScanRequest(BaseModel):
+    path: str
+
+
+def _index_collection(video_ids):
+    """Index a collection's videos one at a time (CLIP is CPU-bound)."""
+    for vid in video_ids:
+        if vid in VIDEOS:
+            process_video(vid)
+
+
+@app.post("/api/library/scan")
+def library_scan(body: ScanRequest):
+    """Index every video under a local directory, in place (no upload)."""
+    root = Path(body.path).expanduser()
+    if not root.is_dir():
+        raise HTTPException(status_code=400, detail="not a directory: %s" % root)
+
+    files = sorted(
+        p for p in root.rglob("*") if p.is_file() and p.suffix.lower() in VIDEO_EXTS
+    )
+    if not files:
+        raise HTTPException(status_code=400, detail="no video files found under %s" % root)
+
+    collection_id = uuid.uuid4().hex[:12]
+    video_ids = []
+    for f in files:
+        vid = uuid.uuid4().hex[:12]
+        VIDEOS[vid] = {
+            "status": "processing",
+            "progress": 0,
+            "total_segments": 0,
+            "error": "",
+            "source": str(f),  # indexed in place — original file, not copied
+            "title": f.name,
+            "created": time.time(),
+            "owner": None,
+            "collection_id": collection_id,
+        }
+        video_ids.append(vid)
+
+    COLLECTIONS[collection_id] = {
+        "name": root.name or str(root),
+        "path": str(root),
+        "video_ids": video_ids,
+        "created": time.time(),
+    }
+    threading.Thread(target=_index_collection, args=(video_ids,), daemon=True).start()
+    print("[scrubless] library scan %s: %d videos" % (root, len(video_ids)))
+    return {
+        "collection_id": collection_id,
+        "name": COLLECTIONS[collection_id]["name"],
+        "videos": len(video_ids),
+    }
+
+
+@app.get("/api/library/{collection_id}")
+def library_status(collection_id: str):
+    coll = COLLECTIONS.get(collection_id)
+    if not coll:
+        raise HTTPException(status_code=404, detail="collection not found")
+    videos, indexed = [], 0
+    for vid in coll["video_ids"]:
+        v = VIDEOS.get(vid)
+        if not v:
+            continue
+        if v["status"] == "indexed":
+            indexed += 1
+        videos.append(
+            {
+                "id": vid,
+                "title": v["title"],
+                "status": v["status"],
+                "progress": v["progress"],
+            }
+        )
+    return {
+        "collection_id": collection_id,
+        "name": coll["name"],
+        "path": coll["path"],
+        "total": len(coll["video_ids"]),
+        "indexed": indexed,
+        "videos": videos,
+    }
+
+
+@app.post("/api/library/{collection_id}/search")
+def library_search(collection_id: str, req: SearchRequest):
+    """Search across every indexed video in a collection."""
+    coll = COLLECTIONS.get(collection_id)
+    if not coll:
+        raise HTTPException(status_code=404, detail="collection not found")
+    query = req.query.strip()
+    if not query:
+        raise HTTPException(status_code=400, detail="query is required")
+
+    result = segments.query(
+        query_embeddings=[embed_text(query)],
+        n_results=40,
+        where={"collection_id": collection_id},
+    )
+    metas = result["metadatas"][0]
+    dists = result["distances"][0]
+
+    # Results come back best-first; cap to 3 moments per video so one busy
+    # video can't crowd out the rest of the folder.
+    results, per_video = [], {}
+    for meta, dist in zip(metas, dists):
+        vid = meta["video_id"]
+        per_video[vid] = per_video.get(vid, 0) + 1
+        if per_video[vid] > 3:
+            continue
+        v = VIDEOS.get(vid, {})
+        results.append(
+            {
+                "video_id": vid,
+                "video_title": v.get("title", vid),
+                "source_url": "/api/videos/%s/source" % vid,
+                "timestamp": meta["timestamp"],
+                "frame_url": meta["frame_path"],
+                "score": round(1.0 - dist, 4),
+                "description": "",
+                "transcript_snippet": meta.get("transcript_segment", ""),
+            }
+        )
+        if len(results) >= 12:
+            break
+
+    for item in results[:ENRICH_TOP_N]:
+        local_path = ROOT / item["frame_url"].lstrip("/")
+        item["description"] = describe_frame(local_path)
+
+    return results
 
 
 @app.get("/")

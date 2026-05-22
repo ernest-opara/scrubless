@@ -5,10 +5,12 @@ digraph data {
 
   users [label="{users  (relational · SQLAlchemy)|id  PK\lauth0_sub  (unique, indexed)\lemail\ltier  (free / pro / studio)\lstripe_customer_id\lstripe_subscription_id\lcreated_at\l}",
          fillcolor="#fef3c7", color="#a16207"];
-  segs  [label="{segments  (ChromaDB · vector)|id = video_id-i\lembedding  (CLIP vector)\lvideo_id\ltimestamp\lframe_path\ltranscript_segment\l}",
+  segs  [label="{segments  (ChromaDB · vector)|id = video_id-i\lembedding  (CLIP vector)\lvideo_id\lcollection_id  (V2)\ltimestamp\lframe_path\ltranscript_segment\l}",
          fillcolor="#dcfce7", color="#4a7a22"];
-  vids  [label="{VIDEOS  (in-memory dict)|status · progress\ltotal_segments · error\lsource · title\lcreated · owner\l}",
+  vids  [label="{VIDEOS  (in-memory dict)|status · progress\ltotal_segments · error\lsource · title\lcreated · owner\lcollection_id  (V2)\l}",
+         fillcolor="#e2e8f0", color="#64748b"];
+  colls [label="{COLLECTIONS  (in-memory · V2)|collection_id\lname · path\lvideo_ids[]\lcreated\l}",
          fillcolor="#e2e8f0", color="#64748b"];
 
-  users -> segs -> vids;
+  users -> segs -> vids -> colls;
 }
