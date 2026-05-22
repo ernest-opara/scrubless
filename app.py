@@ -52,7 +52,13 @@ SESSION_SECRET = (
     or "dev-insecure-change-me"
 )
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:8080").rstrip("/")
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "").strip()
+AUTH0_DOMAIN = (
+    os.getenv("AUTH0_DOMAIN", "")
+    .strip()
+    .removeprefix("https://")
+    .removeprefix("http://")
+    .rstrip("/")
+)  # tolerate a pasted scheme/trailing slash
 AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "").strip()
 AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET", "").strip()
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///" + str(ROOT / "scrubless.db"))
