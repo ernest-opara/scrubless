@@ -17,5 +17,8 @@ node_modules/
 dist/
 .vite/
 
+# Generated diagram intermediates (rebuilt by docs/render.sh; final PDF is tracked)
+docs/diagrams/*.pdf
+
 # macOS
 .DS_Store

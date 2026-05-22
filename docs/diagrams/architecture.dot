@@ -1,0 +1,39 @@
+digraph arch {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.45, ranksep=1.0, pad=0.3];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled",
+         color="#cbd5e1", fillcolor="#f1f5f9", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", penwidth=1.1, arrowsize=0.8];
+
+  browser [label="Browser\n(index.html — vanilla JS)\nupload · search · player", fillcolor="#e2e8f0"];
+
+  subgraph cluster_app {
+    label="FastAPI process (app.py)";
+    fontname="Helvetica"; fontsize=12; fontcolor="#1f2933";
+    style="rounded,filled"; color="#94a3b8"; fillcolor="#f8fafc"; penwidth=1.6;
+
+    api    [label="HTTP API\n/upload /search /status\n/auth/* /billing/*", fillcolor="#dcfce7", color="#4a7a22"];
+    clip   [label="OpenCLIP ViT-B/32\n(in-process)", fillcolor="#dcfce7", color="#4a7a22"];
+    chroma [label="ChromaDB\n(in-process · cosine)", fillcolor="#dcfce7", color="#4a7a22"];
+    state  [label="VIDEOS dict\n(in-memory state)", fillcolor="#dcfce7", color="#4a7a22"];
+
+    api -> clip;
+    api -> state;
+    clip -> chroma [style=dashed, label="embeddings"];
+    api -> chroma;
+  }
+
+  ffmpeg  [label="ffmpeg\nframes + audio", fillcolor="#fef9c3", color="#a16207"];
+  whisper [label="Whisper API\ntranscribe (optional)", fillcolor="#fff7ed", color="#c2410c"];
+  claude  [label="Claude Vision\nenrich top 3", fillcolor="#fff7ed", color="#c2410c"];
+  auth0   [label="Auth0\nOIDC login", fillcolor="#eef2ff", color="#4338ca"];
+  stripe  [label="Stripe\nbilling", fillcolor="#eef2ff", color="#4338ca"];
+  db      [label="Postgres / SQLite\nusers · tiers", shape=cylinder, fillcolor="#fde68a", color="#a16207"];
+
+  browser -> api [dir=both, label="HTTPS"];
+  api -> ffmpeg;
+  api -> whisper;
+  api -> claude;
+  api -> auth0  [dir=both];
+  api -> stripe [dir=both];
+  api -> db     [dir=both];
+}

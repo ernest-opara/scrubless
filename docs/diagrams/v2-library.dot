@@ -1,0 +1,17 @@
+digraph v2 {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.45, ranksep=0.9, pad=0.3];
+  node  [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled",
+         color="#4a7a22", fillcolor="#dcfce7", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", penwidth=1.1, arrowsize=0.8];
+
+  local  [label="Local directory scan\n~/Videos/footage\nindex in place (no upload)", fillcolor="#e2e8f0", color="#64748b"];
+  upload [label="Hosted folder upload\ndrag a folder", fillcolor="#f1f5f9", color="#94a3b8"];
+  batch  [label="Batch indexer\n(reuses per-video pipeline)"];
+  coll   [label="Collection\ncollection_id groups videos", shape=cylinder, fillcolor="#fde68a", color="#a16207"];
+  xsearch[label="Cross-video search\n(relax video_id filter)"];
+  out    [label="Matches across files\n{video, ts, thumb, score}", fillcolor="#bbf7d0", color="#15803d"];
+
+  local  -> batch [label="phase 1"];
+  upload -> batch [label="phase 2", style=dashed];
+  batch -> coll -> xsearch -> out;
+}

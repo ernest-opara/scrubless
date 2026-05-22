@@ -1,0 +1,15 @@
+digraph search {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.35, ranksep=0.7, pad=0.3];
+  node  [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled",
+         color="#4a7a22", fillcolor="#dcfce7", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", penwidth=1.1, arrowsize=0.8];
+
+  q      [label="Query text", fillcolor="#e2e8f0", color="#64748b"];
+  qe     [label="CLIP text embed"];
+  vq     [label="ChromaDB query\ntop 10 (cosine)", shape=cylinder, fillcolor="#fde68a", color="#a16207"];
+  enrich [label="Claude Vision\ndescribe top 3", fillcolor="#fff7ed", color="#c2410c"];
+  res    [label="Results\n{ts, thumb, score, desc}", fillcolor="#bbf7d0", color="#15803d"];
+  seek   [label="Click → player.seek(ts)", fillcolor="#e2e8f0", color="#64748b"];
+
+  q -> qe -> vq -> enrich -> res -> seek;
+}

@@ -1,0 +1,19 @@
+digraph deploy {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.45, ranksep=0.9, pad=0.3];
+  node  [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled",
+         color="#cbd5e1", fillcolor="#f1f5f9", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", penwidth=1.1, arrowsize=0.8];
+
+  dev  [label="Local dev\n.venv · uvicorn", fillcolor="#e2e8f0"];
+  gh   [label="GitHub\nernest-opara/scrubless", fillcolor="#e2e8f0"];
+  rw   [label="Railway\nDocker (py3.11 + ffmpeg)\nCLIP weights pre-baked", fillcolor="#dcfce7", color="#4a7a22"];
+  pg   [label="Railway Postgres", shape=cylinder, fillcolor="#fde68a", color="#a16207"];
+  dns  [label="GoDaddy DNS\nwww CNAME · apex 301", fillcolor="#eef2ff", color="#4338ca"];
+  site [label="getscrubless.com\n(TLS)", fillcolor="#bbf7d0", color="#15803d"];
+
+  dev  -> gh   [label="git push"];
+  gh   -> rw   [label="deploy on push"];
+  rw   -> pg   [label="DATABASE_URL (private)"];
+  dns  -> site;
+  site -> rw   [label="HTTPS", dir=both];
+}

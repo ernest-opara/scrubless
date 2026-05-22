@@ -1,0 +1,18 @@
+digraph indexing {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.35, ranksep=0.7, pad=0.3];
+  node  [fontname="Helvetica", fontsize=10, shape=box, style="rounded,filled",
+         color="#4a7a22", fillcolor="#dcfce7", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", penwidth=1.1, arrowsize=0.8];
+
+  up     [label="Upload\nsource.mp4", fillcolor="#e2e8f0", color="#64748b"];
+  frames [label="ffmpeg\n1 frame / 5s", fillcolor="#fef9c3", color="#a16207"];
+  audio  [label="ffmpeg\naudio.mp3 (16k mono)", fillcolor="#fef9c3", color="#a16207"];
+  trans  [label="Whisper\ntranscript segments", fillcolor="#fff7ed", color="#c2410c"];
+  embed  [label="CLIP encode\n+ L2 normalize"];
+  store  [label="ChromaDB add\nvector + metadata", shape=cylinder, fillcolor="#fde68a", color="#a16207"];
+  done   [label="status: indexed", fillcolor="#bbf7d0", color="#15803d"];
+
+  up -> frames -> embed;
+  up -> audio -> trans -> embed [label=" snippet / 5s window"];
+  embed -> store -> done;
+}
