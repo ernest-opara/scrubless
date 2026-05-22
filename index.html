@@ -127,10 +127,11 @@
 
       <!-- 1. Upload -->
       <section id="upload">
-        <img class="hero-mascot" src="/scrubby/scrubby.svg" alt="Scrubby" />
+        <img class="hero-mascot" id="landingMascot" src="/scrubby/scrubby.svg" alt="Scrubby" />
         <div id="drop">
           <h2>Drop a video here</h2>
           <div class="hint">or click to choose a file — MP4, MOV, MKV, WEBM</div>
+          <div class="hint" style="margin-top:6px;color:var(--faint)">Max 500MB</div>
         </div>
         <input id="file" type="file" accept="video/*" class="hidden" />
         <p id="uperr" class="hidden" style="color:#e0623e;font-size:13px;margin-top:12px"></p>
@@ -142,6 +143,8 @@
 
       <!-- 2. Processing -->
       <section id="processing" class="panel hidden">
+        <img src="/scrubby/scrubby-searching.svg" alt="Scrubby is scanning your video"
+             style="width:88px;height:auto;display:block;margin:0 auto 12px;animation:bob 2s ease-in-out infinite" />
         <h2>Indexing your video</h2>
         <p class="muted" id="pstage" style="margin:0;font-size:13px">Extracting frames…</p>
         <div class="bar"><div id="pfill"></div></div>
@@ -169,6 +172,18 @@
     <script>
       var videoId = null;
       var pollTimer = null;
+      var MAX_BYTES = 500 * 1024 * 1024; // 500MB upload cap
+
+      // Swap Scrubby's mood: idle (happy) <-> excited (file dragged over).
+      function setMascot(state) {
+        var m = document.getElementById("landingMascot");
+        if (m) {
+          m.src =
+            state === "excited"
+              ? "/scrubby/scrubby-excited.svg"
+              : "/scrubby/scrubby.svg";
+        }
+      }
 
       function fmtTime(s) {
         s = Math.max(0, Math.floor(s));
@@ -188,10 +203,10 @@
       var drop = document.getElementById("drop");
       var fileInput = document.getElementById("file");
       drop.addEventListener("click", function () { fileInput.click(); });
-      drop.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("over"); });
-      drop.addEventListener("dragleave", function () { drop.classList.remove("over"); });
+      drop.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("over"); setMascot("excited"); });
+      drop.addEventListener("dragleave", function () { drop.classList.remove("over"); setMascot("idle"); });
       drop.addEventListener("drop", function (e) {
-        e.preventDefault(); drop.classList.remove("over");
+        e.preventDefault(); drop.classList.remove("over"); setMascot("idle");
         if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
       });
       fileInput.addEventListener("change", function () {
@@ -208,6 +223,12 @@
       });
 
       function uploadFile(file) {
+        if (file.size > MAX_BYTES) {
+          var tooBig = document.getElementById("uperr");
+          tooBig.textContent = "That file is over 500MB — try a shorter clip.";
+          tooBig.classList.remove("hidden");
+          return;
+        }
         var form = new FormData();
         form.append("file", file);
         document.getElementById("uperr").classList.add("hidden");

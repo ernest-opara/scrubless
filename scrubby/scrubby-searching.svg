@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-120 -135 240 240" width="240" height="240">
+  <!-- Scrubby — searching / thinking (eyes up, hand on chin, thought dots) -->
+  <path d="M0,-88 Q-5,-115 8,-110" fill="none" stroke="#FBBF24" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="8" cy="-112" r="6" fill="#FFD54F"/>
+  <rect x="-70" y="-55" width="140" height="120" rx="28" fill="#FBBF24"/>
+  <ellipse cx="-22" cy="-20" rx="22" ry="26" fill="white"/>
+  <ellipse cx="28" cy="-20" rx="22" ry="26" fill="white"/>
+  <circle cx="-28" cy="-28" r="14" fill="#1a1a2e"/>
+  <circle cx="22" cy="-28" r="14" fill="#1a1a2e"/>
+  <circle cx="-24" cy="-34" r="5" fill="white"/>
+  <circle cx="26" cy="-34" r="5" fill="white"/>
+  <path d="M-10,18 Q10,18 20,12" fill="none" stroke="#1a1a2e" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="-78" cy="-5" rx="18" ry="14" fill="#E5A800"/>
+  <ellipse cx="60" cy="15" rx="18" ry="14" fill="#E5A800"/>
+  <ellipse cx="-28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+  <ellipse cx="28" cy="78" rx="20" ry="16" fill="#E5A800"/>
+  <circle cx="-65" cy="-55" r="4" fill="#FFD54F" opacity="0.5"/>
+  <circle cx="-78" cy="-70" r="5.5" fill="#FFD54F" opacity="0.4"/>
+  <circle cx="-93" cy="-88" r="7" fill="#FFD54F" opacity="0.3"/>
+</svg>
