@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scrubless — stop scrubbing, start searching</title>
+    <link rel="icon" type="image/svg+xml" href="/scrubby/scrubby-avatar.svg" />
     <style>
       :root {
         --canvas: #16171a;
@@ -133,6 +134,9 @@
           <div class="hint">or click to choose a file — MP4, MOV, MKV, WEBM</div>
           <div class="hint" style="margin-top:6px;color:var(--faint)">Max 500MB</div>
         </div>
+        <p style="text-align:center;font-size:12px;color:var(--muted);margin:12px 0 0">
+          🔒 No account needed · auto-deletes in 24h · delete it anytime
+        </p>
         <input id="file" type="file" accept="video/*" class="hidden" />
         <p id="uperr" class="hidden" style="color:#e0623e;font-size:13px;margin-top:12px"></p>
         <div style="text-align:center;margin-top:18px">
@@ -154,7 +158,10 @@
       <!-- 3. Workspace -->
       <section id="workspace" class="hidden">
         <div>
-          <p id="vtitle"></p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
+            <p id="vtitle" style="margin:0"></p>
+            <button class="btn-ghost" id="deletebtn" style="display:none">Delete</button>
+          </div>
           <video id="player" controls playsinline></video>
         </div>
         <div>
@@ -289,7 +296,16 @@
             .getElementById("query")
             .setAttribute("placeholder", "try: a rabbit in a green meadow");
         }
+        document.getElementById("deletebtn").style.display =
+          videoId === "sample" ? "none" : "inline-block";
       }
+
+      document.getElementById("deletebtn").addEventListener("click", function () {
+        if (!confirm("Delete this video and its index?")) return;
+        fetch("/api/videos/" + videoId, { method: "DELETE" }).then(function () {
+          location.reload();
+        });
+      });
 
       var player = document.getElementById("player");
       var queryInput = document.getElementById("query");

@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import threading
+import time
 import uuid
 from pathlib import Path
 
@@ -290,6 +291,35 @@ def ingest_sample():
 
 
 # --------------------------------------------------------------------------
+# Deletion + auto-expiry (free tier: no account, videos don't linger)
+# --------------------------------------------------------------------------
+VIDEO_TTL_SECONDS = 24 * 3600  # free uploads auto-expire after 24h
+
+
+def delete_video(video_id):
+    """Remove a video's record, stored files, and index entries."""
+    VIDEOS.pop(video_id, None)
+    try:
+        segments.delete(where={"video_id": video_id})
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] delete index %s: %s" % (video_id, exc))
+    shutil.rmtree(STORAGE / video_id, ignore_errors=True)
+
+
+def expiry_sweep():
+    """Periodically delete uploads older than the TTL (never the sample)."""
+    while True:
+        time.sleep(1800)
+        now = time.time()
+        for vid, v in list(VIDEOS.items()):
+            if vid == SAMPLE_ID:
+                continue
+            if now - v.get("created", now) > VIDEO_TTL_SECONDS:
+                print("[scrubless] auto-expiring %s" % vid)
+                delete_video(vid)
+
+
+# --------------------------------------------------------------------------
 # API
 # --------------------------------------------------------------------------
 class SearchRequest(BaseModel):
@@ -318,6 +348,7 @@ async def upload(background_tasks: BackgroundTasks, file: UploadFile = File(...)
         "error": "",
         "source": str(source),
         "title": file.filename or "Untitled",
+        "created": time.time(),
     }
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}
@@ -378,10 +409,21 @@ def search(video_id: str, req: SearchRequest):
     return results
 
 
+@app.delete("/api/videos/{video_id}")
+def delete_endpoint(video_id: str):
+    if video_id == SAMPLE_ID:
+        raise HTTPException(status_code=400, detail="the sample video can't be deleted")
+    if video_id not in VIDEOS:
+        raise HTTPException(status_code=404, detail="video not found")
+    delete_video(video_id)
+    return {"deleted": video_id}
+
+
 @app.get("/")
 def index():
     return FileResponse(str(ROOT / "index.html"))
 
 
-# Index the bundled sample video in the background as the server starts.
+# Background workers: index the sample at startup, and expire old uploads.
 threading.Thread(target=ingest_sample, daemon=True).start()
+threading.Thread(target=expiry_sweep, daemon=True).start()
