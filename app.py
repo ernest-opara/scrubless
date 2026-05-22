@@ -45,7 +45,11 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 
 # Auth (Auth0) + sessions + database
-SESSION_SECRET = os.getenv("SESSION_SECRET", "dev-insecure-change-me")
+SESSION_SECRET = (
+    os.getenv("SESSION_SECRET")
+    or os.getenv("AUTH0_SECRET")  # the name Auth0's quickstart generates
+    or "dev-insecure-change-me"
+)
 APP_BASE_URL = os.getenv("APP_BASE_URL", "http://localhost:8080").rstrip("/")
 AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "").strip()
 AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "").strip()
