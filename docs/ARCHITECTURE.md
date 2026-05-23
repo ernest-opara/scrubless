@@ -255,10 +255,11 @@ it durable and sticky.
 
 **Foundation:**
 
-1. **Durable storage + state — implemented.** `videos`/`collections` metadata is
-   persisted to the DB and rebuilt on boot (`restore_state`), and files +
-   embeddings sit on a persistent volume (`/app/storage`), so indexed videos and
-   folders survive a redeploy. Verified by restart (`restored N videos`).
+1. **Durable storage + state — implemented & verified in production.**
+   `videos`/`collections` metadata is persisted to Postgres and rebuilt on boot
+   (`restore_state`), and files + embeddings sit on a persistent volume
+   (`/app/storage`). Verified on getscrubless.com across a real redeploy:
+   metadata, embeddings, frames, and source files all survived with no re-upload.
 2. **Per-user library — pending.** The data is now durable; the UI for a
    logged-in user to browse/re-search their own videos is the next step.
    Anonymous uploads still auto-expire (24 h).
@@ -333,3 +334,4 @@ update.
 | 2026-05-22 | "isn't it better to select the folder in Finder?" | Added a native folder picker (`POST /api/library/pick` via `osascript`) + a Browse button, since browsers can't expose a folder's absolute path to JS. Text-path input kept as a fallback. |
 | 2026-05-22 | "1 then 2" (merge+deploy, then phase 2)        | Merged Library Mode to `main` (deployed). Built **phase 2 — hosted folder upload** (`/api/library/create` + `/api/library/{id}/upload`, `webkitdirectory` UI); both ingestion modes now implemented. Updated the V2 diagram + roadmap. |
 | 2026-05-22 | "yes tackle it now" (durable storage)         | **Durable storage foundation**: persisted `videos`/`collections` to the DB + `restore_state()` on boot (resumes interrupted indexing; idempotent re-index). Library now survives restart — verified locally. Requires a Railway volume at `/app/storage` + `DATABASE_URL`. Rewrote the data-model diagram; updated deployment + limitations + roadmap. |
+| 2026-05-22 | "verify persistence"                          | Verified durable storage **on production** across a real redeploy: collection metadata (Postgres), embeddings + frames + source files (volume) all survived with no re-upload; delete path confirmed on prod. Volume + `DATABASE_URL` are correctly configured. |
