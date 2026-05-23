@@ -7,6 +7,7 @@ Run:  uvicorn app:app --port 8080
 """
 
 import base64
+import json
 import os
 import shutil
 import subprocess
@@ -27,7 +28,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
-from sqlalchemy import Float, String, create_engine, select
+from sqlalchemy import Float, String, create_engine, inspect, select, text
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -141,6 +142,8 @@ class Video(Base):
     total_segments: Mapped[int] = mapped_column(default=0)
     owner: Mapped[Optional[int]] = mapped_column(nullable=True, default=None)
     created: Mapped[float] = mapped_column(Float, default=time.time)
+    summary: Mapped[str] = mapped_column(String(2000), default="")
+    chapters: Mapped[str] = mapped_column(String(4000), default="")  # JSON list
 
 
 class Collection(Base):
@@ -158,6 +161,32 @@ if DATABASE_URL.startswith("sqlite"):
     _engine_args["connect_args"] = {"check_same_thread": False}
 engine = create_engine(DATABASE_URL, **_engine_args)
 Base.metadata.create_all(engine)
+
+
+def ensure_columns():
+    """Add columns introduced after a table was first created (create_all won't
+    alter an existing table). Cross-DB, idempotent, best-effort."""
+    wanted = {"videos": {"summary": "VARCHAR(2000)", "chapters": "VARCHAR(4000)"}}
+    insp = inspect(engine)
+    for table, cols in wanted.items():
+        try:
+            existing = {c["name"] for c in insp.get_columns(table)}
+        except Exception:
+            continue  # table doesn't exist yet — create_all already made it
+        for name, coltype in cols.items():
+            if name in existing:
+                continue
+            try:
+                with engine.begin() as conn:
+                    conn.execute(
+                        text("ALTER TABLE %s ADD COLUMN %s %s DEFAULT ''" % (table, name, coltype))
+                    )
+                print("[scrubless] migrated: added %s.%s" % (table, name))
+            except Exception as exc:  # noqa: BLE001
+                print("[scrubless] add column %s.%s: %s" % (table, name, exc))
+
+
+ensure_columns()
 
 oauth = OAuth()
 AUTH0_ENABLED = bool(AUTH0_DOMAIN and AUTH0_CLIENT_ID and AUTH0_CLIENT_SECRET)
@@ -251,6 +280,8 @@ def persist_video(video_id):
                     total_segments=v.get("total_segments") or 0,
                     owner=v.get("owner"),
                     created=v.get("created") or time.time(),
+                    summary=v.get("summary") or "",
+                    chapters=json.dumps(v.get("chapters") or []),
                 )
             )
             s.commit()
@@ -418,6 +449,55 @@ def describe_frame(frame_path):
         return ""
 
 
+def summarize_video(transcript):
+    """Return {"summary", "chapters"} from a transcript via Claude, or {}.
+
+    Best-effort: needs an Anthropic key and a transcript (so visual-only videos
+    just get no chapters).
+    """
+    if not ANTHROPIC_API_KEY or not transcript:
+        return {}
+    lines = []
+    for t in transcript:
+        txt = (t.get("text") or "").strip()
+        if txt:
+            lines.append("[%ds] %s" % (int(t["start"]), txt))
+    if not lines:
+        return {}
+    body = "\n".join(lines)[:12000]  # cap input tokens
+    try:
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=ANTHROPIC_API_KEY)
+        prompt = (
+            "Below is a timestamped transcript of a video.\n\n"
+            + body
+            + '\n\nReturn ONLY a JSON object: {"summary": "<2-3 sentence overview>", '
+            '"chapters": [{"start": <seconds int>, "title": "<short title>"}]} '
+            "with 4-8 chapters in chronological order. No markdown, just JSON."
+        )
+        msg = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        out = "".join(b.text for b in msg.content if b.type == "text")
+        i, j = out.find("{"), out.rfind("}")
+        if i < 0 or j <= i:
+            return {}
+        data = json.loads(out[i : j + 1])
+        chapters = []
+        for c in data.get("chapters", []):
+            try:
+                chapters.append({"start": int(c["start"]), "title": str(c["title"])[:120]})
+            except Exception:  # noqa: BLE001 — skip a malformed chapter
+                continue
+        return {"summary": str(data.get("summary", ""))[:1500], "chapters": chapters}
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] summarize failed:", exc)
+        return {}
+
+
 # --------------------------------------------------------------------------
 # Indexing pipeline (runs in a background thread)
 # --------------------------------------------------------------------------
@@ -479,6 +559,16 @@ def process_video(video_id):
         video["total_segments"] = len(frames)
         video["status"] = "indexed"
         print("[scrubless] %s indexed (%d segments)" % (video_id, len(frames)))
+
+        # Auto-chapters + summary (best-effort; needs transcript + Claude key).
+        try:
+            meta = summarize_video(transcript)
+            if meta:
+                video["summary"] = meta.get("summary", "")
+                video["chapters"] = meta.get("chapters", [])
+                print("[scrubless] %s: %d chapters" % (video_id, len(video["chapters"])))
+        except Exception as exc:  # noqa: BLE001
+            print("[scrubless] %s: chapters skipped (%s)" % (video_id, exc))
     except Exception as exc:  # noqa: BLE001
         video["status"] = "error"
         video["error"] = str(exc)
@@ -572,6 +662,10 @@ def restore_state():
                     "created": c.created,
                 }
             for v in s.scalars(select(Video)).all():
+                try:
+                    chapters = json.loads(v.chapters or "[]")
+                except Exception:  # noqa: BLE001
+                    chapters = []
                 VIDEOS[v.id] = {
                     "status": v.status,
                     "progress": 100 if v.status == "indexed" else 0,
@@ -582,6 +676,8 @@ def restore_state():
                     "created": v.created,
                     "owner": v.owner,
                     "collection_id": v.collection_id or None,
+                    "summary": v.summary or "",
+                    "chapters": chapters,
                 }
                 if v.collection_id and v.collection_id in COLLECTIONS:
                     COLLECTIONS[v.collection_id]["video_ids"].append(v.id)
@@ -832,6 +928,8 @@ def status(video_id: str):
         "error": video["error"],
         "title": video["title"],
         "source_url": "/storage/%s/%s" % (video_id, Path(video["source"]).name),
+        "summary": video.get("summary", ""),
+        "chapters": video.get("chapters", []),
     }
 
 

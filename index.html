@@ -123,6 +123,14 @@
       }
       .libitem:hover { border-color: var(--accent); }
       .libitem .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .chapter {
+        display: flex; gap: 9px; align-items: baseline; padding: 7px 10px;
+        border: 1px solid var(--line); border-radius: 7px; margin-bottom: 6px;
+        cursor: pointer; font-size: 13px; transition: border-color .12s;
+      }
+      .chapter:hover { border-color: var(--accent); }
+      .chapter .ctime { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 600; flex-shrink: 0; }
+      #vchapters .lbl { font-size: 11px; letter-spacing: .08em; color: var(--faint); margin-bottom: 7px; }
     </style>
   </head>
   <body>
@@ -207,6 +215,8 @@
             <button class="btn-ghost" id="deletebtn" style="display:none">Delete</button>
           </div>
           <video id="player" controls playsinline></video>
+          <div id="vsummary" class="muted hidden" style="font-size:13px;line-height:1.55;margin-top:12px"></div>
+          <div id="vchapters" class="hidden" style="margin-top:14px"></div>
         </div>
         <div>
           <div class="searchrow">
@@ -476,6 +486,41 @@
         }
         document.getElementById("deletebtn").style.display =
           videoId === "sample" ? "none" : "inline-block";
+        renderChapters(status);
+      }
+
+      // Auto-chapters + summary panel under the player.
+      function renderChapters(status) {
+        var sum = document.getElementById("vsummary");
+        if (status.summary) {
+          sum.textContent = status.summary;
+          sum.classList.remove("hidden");
+        } else {
+          sum.textContent = "";
+          sum.classList.add("hidden");
+        }
+        var box = document.getElementById("vchapters");
+        var chs = status.chapters || [];
+        if (!chs.length) {
+          box.classList.add("hidden");
+          box.innerHTML = "";
+          return;
+        }
+        box.innerHTML =
+          '<div class="lbl">CHAPTERS</div>' +
+          chs.map(function (c) {
+            return '<div class="chapter" data-t="' + c.start + '">' +
+              '<span class="ctime">' + fmtTime(c.start) + "</span>" +
+              "<span>" + escapeHtml(c.title) + "</span></div>";
+          }).join("");
+        box.classList.remove("hidden");
+        box.querySelectorAll(".chapter").forEach(function (el) {
+          el.addEventListener("click", function () {
+            player.currentTime = parseFloat(el.getAttribute("data-t"));
+            player.play();
+            player.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        });
       }
 
       document.getElementById("deletebtn").addEventListener("click", function () {

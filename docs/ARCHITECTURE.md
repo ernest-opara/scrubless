@@ -98,6 +98,9 @@ When a video is uploaded, `process_video()` runs in a background thread.
 5. **Store** — one `segments.add()` call: `id = "{video_id}-{i}"`, the vector,
    metadata `{video_id, timestamp, frame_path, transcript_segment}`.
 6. **Status** — `progress` updates per frame; `status` → `indexed` (or `error`).
+7. **Chapters (V3)** — if a transcript exists, one Claude call
+   (`summarize_video`) produces a 2–3 sentence summary + 4–8 timestamped
+   chapters, stored on the `videos` row (best-effort).
 
 ## Search pipeline
 
@@ -124,9 +127,11 @@ ChromaDB for the nearest frames.
 
 - **`users` / `videos` / `collections`** (SQLAlchemy) — the relational store.
   `users` holds accounts/tiers/Stripe IDs; `videos` and `collections` (V2) hold
-  the **durable** metadata (title, source, status, owner, membership) so the
-  library survives a restart. `DATABASE_URL` picks the backend: SQLite in dev,
-  Postgres in prod (`postgres://` normalized to `postgresql://`).
+  the **durable** metadata (title, source, status, owner, membership, plus the
+  V3 `summary` + `chapters`) so the library survives a restart. `DATABASE_URL`
+  picks the backend: SQLite in dev, Postgres in prod (`postgres://` normalized to
+  `postgresql://`). New columns are added by an idempotent `ensure_columns()`
+  migration at startup.
 - **`segments`** (ChromaDB, on the storage volume) — one row per frame:
   embedding + metadata (`video_id`, `collection_id`, `timestamp`, `frame_path`,
   `transcript_segment`). Distance space: **cosine**.
@@ -300,6 +305,29 @@ GPU inference.
 
 \newpage
 
+# Roadmap — V3
+
+**V2 is shipped** (Library Mode — both ingestion modes, durable storage,
+per-user library). V3 moves up the value chain — from *finding* moments to
+*answering* and *sharing*. Chosen arc, in order:
+
+1. **Auto-chapters + summary — in progress.** On index, a Claude call over the
+   transcript (`summarize_video`) produces a 2–3 sentence summary and 4–8
+   timestamped chapters, stored on the `videos` row and shown under the player
+   (click a chapter to seek). Best-effort: needs a transcript + Claude key.
+2. **Clip export + highlight reels — next.** Trim a matched moment to MP4/GIF
+   (ffmpeg) and auto-assemble a reel from a search; shareable links — a growth
+   loop where every shared clip markets the product.
+3. **Conversational video Q&A — after.** Ask a question, get an answer grounded
+   in the footage with timestamped citations; chat over one video or the whole
+   library. The core differentiator.
+
+**Considered, lower priority:** search-by-image, YouTube + cloud connectors,
+public API + browser extension, team workspaces, infra scale (queue / GPU / S3),
+face/object recognition (legal risk).
+
+\newpage
+
 # Known limitations (V1)
 
 - **5-second frame granularity.** Moments shorter than the interval can be missed.
@@ -338,3 +366,4 @@ update.
 | 2026-05-22 | "yes tackle it now" (durable storage)         | **Durable storage foundation**: persisted `videos`/`collections` to the DB + `restore_state()` on boot (resumes interrupted indexing; idempotent re-index). Library now survives restart — verified locally. Requires a Railway volume at `/app/storage` + `DATABASE_URL`. Rewrote the data-model diagram; updated deployment + limitations + roadmap. |
 | 2026-05-22 | "verify persistence"                          | Verified durable storage **on production** across a real redeploy: collection metadata (Postgres), embeddings + frames + source files (volume) all survived with no re-upload; delete path confirmed on prod. Volume + `DATABASE_URL` are correctly configured. |
 | 2026-05-22 | "do the ui" (per-user library)                | Added `GET /api/me/library` (owner-filtered videos + grouped collections) and a "Your library" panel so signed-in users reopen/re-search past videos and folders; header logo links home. Completes the V2 per-user library item. |
+| 2026-05-22 | "10 ideas, ranked" → "yes do that" (V3 start) | Locked V3 arc (auto-chapters → clip export → Q&A). Built **#1 auto-chapters + summary**: `summarize_video()` (Claude over transcript) at index time, persisted via new `videos.summary`/`chapters` columns + `ensure_columns()` migration, exposed on `/api/status`, rendered as a clickable chapter list + summary under the player. Added the V3 roadmap section + data-model updates. |

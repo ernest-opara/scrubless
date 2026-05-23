@@ -8,7 +8,7 @@ digraph data {
     fontname="Helvetica"; fontsize=11; fontcolor="#a16207";
     color="#d6a730"; style="rounded"; bgcolor="#fffbeb";
     users  [label="{users|id PK\lauth0_sub (unique)\lemail · tier\lstripe_customer_id\lstripe_subscription_id\l}", fillcolor="#fef3c7", color="#a16207"];
-    videos [label="{videos  (durable)|id PK\lcollection_id\ltitle · source\lstatus · total_segments\lowner · created\l}", fillcolor="#fef3c7", color="#a16207"];
+    videos [label="{videos  (durable)|id PK\lcollection_id\ltitle · source\lstatus · total_segments\lowner · created\lsummary · chapters  (V3)\l}", fillcolor="#fef3c7", color="#a16207"];
     colls  [label="{collections  (durable)|id PK\lname · path\lcreated\l}", fillcolor="#fef3c7", color="#a16207"];
   }
 
