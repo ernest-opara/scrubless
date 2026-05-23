@@ -1022,7 +1022,8 @@ def video_qa(video_id: str, body: QARequest):
     prompt = (
         "You are answering a question about a single video using ONLY the "
         "timestamped transcript below. Cite the moments you rely on inline as "
-        "[Ns] in seconds, e.g. 'They discuss pricing [124s].' Keep it concise. "
+        "a single [Ns] in seconds (one integer, not a range), e.g. 'They discuss "
+        "pricing [124s].' Keep it concise. "
         "If the transcript does not contain the answer, say so briefly.\n\n"
         "TRANSCRIPT:\n" + context + "\n\nQUESTION: " + question
     )

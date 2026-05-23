@@ -1081,7 +1081,10 @@
         ans.className = "";
         ans.innerHTML = escapeHtml(text || "")
           .replace(/\n/g, "<br>")
-          .replace(/\[(\d+)s\]/g, '<span class="cite" data-t="$1">[$1s]</span>');
+          // Match [Ns] and ranges like [35s–40s]; seek to the first number.
+          .replace(/\[(\d+)s[^\]]*\]/g, function (m, n) {
+            return '<span class="cite" data-t="' + n + '">' + m + "</span>";
+          });
         ans.querySelectorAll(".cite").forEach(function (el) {
           el.addEventListener("click", function () {
             player.currentTime = parseFloat(el.getAttribute("data-t"));
