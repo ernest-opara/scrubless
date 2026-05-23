@@ -156,6 +156,7 @@ ChromaDB for the nearest frames.
 | GET    | `/api/auth/callback`       | OIDC callback → create/find user, session |
 | GET    | `/api/auth/logout`         | Clear session + Auth0 logout              |
 | GET    | `/api/auth/me`             | Current user, upload cap, feature flags   |
+| GET    | `/api/me/library`          | Signed-in user's own videos + folders (V2)|
 | POST   | `/api/billing/checkout`    | Create a Stripe Checkout session          |
 | POST   | `/api/billing/portal`      | Open the Stripe Customer Portal           |
 | POST   | `/api/billing/webhook`     | Stripe webhook → update tier              |
@@ -260,9 +261,10 @@ it durable and sticky.
    (`restore_state`), and files + embeddings sit on a persistent volume
    (`/app/storage`). Verified on getscrubless.com across a real redeploy:
    metadata, embeddings, frames, and source files all survived with no re-upload.
-2. **Per-user library — pending.** The data is now durable; the UI for a
-   logged-in user to browse/re-search their own videos is the next step.
-   Anonymous uploads still auto-expire (24 h).
+2. **Per-user library — implemented.** Signed-in users get a "Your library"
+   panel listing their own videos and collections (`GET /api/me/library`,
+   owner-filtered); click to reopen and re-search. Anonymous uploads still
+   auto-expire (24 h).
 
 **Marquee: Library Mode — search across a whole folder.** Turn Scrubless from a
 single-clip tool into a search engine for a video *library*: one query returns
@@ -335,3 +337,4 @@ update.
 | 2026-05-22 | "1 then 2" (merge+deploy, then phase 2)        | Merged Library Mode to `main` (deployed). Built **phase 2 — hosted folder upload** (`/api/library/create` + `/api/library/{id}/upload`, `webkitdirectory` UI); both ingestion modes now implemented. Updated the V2 diagram + roadmap. |
 | 2026-05-22 | "yes tackle it now" (durable storage)         | **Durable storage foundation**: persisted `videos`/`collections` to the DB + `restore_state()` on boot (resumes interrupted indexing; idempotent re-index). Library now survives restart — verified locally. Requires a Railway volume at `/app/storage` + `DATABASE_URL`. Rewrote the data-model diagram; updated deployment + limitations + roadmap. |
 | 2026-05-22 | "verify persistence"                          | Verified durable storage **on production** across a real redeploy: collection metadata (Postgres), embeddings + frames + source files (volume) all survived with no re-upload; delete path confirmed on prod. Volume + `DATABASE_URL` are correctly configured. |
+| 2026-05-22 | "do the ui" (per-user library)                | Added `GET /api/me/library` (owner-filtered videos + grouped collections) and a "Your library" panel so signed-in users reopen/re-search past videos and folders; header logo links home. Completes the V2 per-user library item. |

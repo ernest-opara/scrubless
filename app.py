@@ -666,6 +666,48 @@ def auth_me(request: Request):
     }
 
 
+@app.get("/api/me/library")
+def my_library(request: Request):
+    """List the signed-in user's own videos and collections."""
+    user = current_user(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="sign in first")
+
+    coll_map = {}
+    videos = []
+    for vid, v in VIDEOS.items():
+        if v.get("owner") != user.id:
+            continue
+        cid = v.get("collection_id")
+        if cid and cid in COLLECTIONS:
+            c = coll_map.get(cid)
+            if not c:
+                c = {
+                    "id": cid,
+                    "name": COLLECTIONS[cid]["name"],
+                    "total": 0,
+                    "indexed": 0,
+                    "created": COLLECTIONS[cid].get("created", 0),
+                }
+                coll_map[cid] = c
+            c["total"] += 1
+            if v["status"] == "indexed":
+                c["indexed"] += 1
+        else:
+            videos.append(
+                {
+                    "id": vid,
+                    "title": v.get("title", vid),
+                    "status": v["status"],
+                    "created": v.get("created", 0),
+                }
+            )
+
+    videos.sort(key=lambda x: x["created"], reverse=True)
+    collections = sorted(coll_map.values(), key=lambda c: c["created"], reverse=True)
+    return {"collections": collections, "videos": videos}
+
+
 # ---- Billing (Stripe) ----
 class CheckoutRequest(BaseModel):
     tier: str

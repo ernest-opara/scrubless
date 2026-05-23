@@ -116,12 +116,19 @@
         border: 1px dashed var(--line); border-radius: 9px; }
       .clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
       .clamp1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .libitem {
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        padding: 10px 12px; background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 8px; cursor: pointer; font-size: 13.5px; transition: border-color .12s;
+      }
+      .libitem:hover { border-color: var(--accent); }
+      .libitem .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
   </head>
   <body>
     <div class="wrap">
       <header>
-        <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="location.href='/'" title="Home">
           <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="Scrubby, the Scrubless mascot" />
           <div>
             <h1>Scrubless</h1>
@@ -147,6 +154,13 @@
         <div style="text-align:center;margin-top:18px">
           <span class="muted" style="font-size:13px">No video handy? </span>
           <button class="btn-ghost" id="trysample">▶&nbsp; Try a sample video</button>
+        </div>
+
+        <!-- Your library (logged-in users) -->
+        <div id="myLibrary" class="panel hidden" style="margin-top:24px;padding:18px">
+          <strong style="font-size:14px">Your library</strong>
+          <p class="faint" style="font-size:12px;margin:4px 0 0">Your indexed videos and folders — pick up where you left off.</p>
+          <div id="myLibraryList" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
         </div>
 
         <!-- Library Mode: search a whole folder -->
@@ -274,6 +288,7 @@
             renderAuth();
             var hint = document.getElementById("limitHint");
             if (hint) hint.textContent = "Max " + fmtMB(s.upload_limit_bytes);
+            if (s.user) loadMyLibrary();
           })
           .catch(function () {});
       }
@@ -768,6 +783,81 @@
             err.textContent = "Couldn't start the upload.";
             err.classList.remove("hidden");
           });
+      }
+
+      // ---- Your library: a signed-in user's own videos + collections ----
+      function escapeHtml(t) {
+        var d = document.createElement("div");
+        d.textContent = t == null ? "" : String(t);
+        return d.innerHTML;
+      }
+
+      function loadMyLibrary() {
+        fetch("/api/me/library")
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) { if (d) renderMyLibrary(d); })
+          .catch(function () {});
+      }
+
+      function renderMyLibrary(data) {
+        var panel = document.getElementById("myLibrary");
+        var list = document.getElementById("myLibraryList");
+        var colls = data.collections || [];
+        var vids = data.videos || [];
+        if (!colls.length && !vids.length) {
+          panel.classList.add("hidden");
+          return;
+        }
+        list.innerHTML = "";
+        colls.forEach(function (c) {
+          var row = document.createElement("div");
+          row.className = "libitem";
+          row.innerHTML =
+            '<span class="name">📁 ' + escapeHtml(c.name) + "</span>" +
+            '<span class="muted" style="font-size:12px;flex-shrink:0">' +
+            c.indexed + "/" + c.total + " videos</span>";
+          row.addEventListener("click", function () { openCollection(c.id, c.name); });
+          list.appendChild(row);
+        });
+        vids.forEach(function (v) {
+          var ready = v.status === "indexed";
+          var row = document.createElement("div");
+          row.className = "libitem";
+          row.style.opacity = ready ? "1" : "0.6";
+          row.innerHTML =
+            '<span class="name">🎬 ' + escapeHtml(v.title) + "</span>" +
+            '<span class="muted" style="font-size:12px;flex-shrink:0">' +
+            (ready ? "ready" : v.status) + "</span>";
+          if (ready) row.addEventListener("click", function () { openVideo(v.id); });
+          list.appendChild(row);
+        });
+        panel.classList.remove("hidden");
+      }
+
+      function openCollection(cid, name) {
+        collectionId = cid;
+        curLibVideo = null;
+        hide("upload");
+        show("libworkspace");
+        document.getElementById("libtitle").textContent = name;
+        document.getElementById("libquery").value = "";
+        document.getElementById("libresults").innerHTML =
+          '<div class="empty">Search across every video in this folder.</div>';
+        document.getElementById("libplayer").removeAttribute("src");
+        document.getElementById("nowplaying").textContent = "Click a result to play that video.";
+        libPoll = setInterval(pollLibrary, 2000);
+        pollLibrary();
+      }
+
+      function openVideo(vid) {
+        videoId = vid;
+        fetch("/api/status/" + vid)
+          .then(function (r) { return r.json(); })
+          .then(function (s) {
+            hide("upload");
+            startWorkspace(s);
+          })
+          .catch(function () { alert("Couldn't open that video."); });
       }
 
       document.getElementById("folderUploadBtn").addEventListener("click", function () {
