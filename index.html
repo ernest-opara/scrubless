@@ -26,7 +26,9 @@
         font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
         -webkit-font-smoothing: antialiased;
       }
-      .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 60px; }
+      .wrap { max-width: 1400px; margin: 0 auto; padding: 28px 24px 60px; }
+      /* keep the landing focused/centered even though the workspace is wide */
+      #upload { max-width: 760px; margin: 0 auto; }
 
       header {
         display: flex; align-items: center; justify-content: space-between; gap: 10px;
@@ -80,13 +82,18 @@
 
       /* workspace */
       #workspace, #libworkspace {
-        display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-        gap: 22px; align-items: start;
+        display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+        gap: 26px; align-items: start;
       }
       /* let both columns shrink so the results column can't blow out the grid
          and squeeze the player */
       #workspace > div, #libworkspace > div { min-width: 0; }
-      @media (max-width: 800px) { #workspace, #libworkspace { grid-template-columns: 1fr; } }
+      /* pin the player while results scroll down the page */
+      .col-player { position: sticky; top: 24px; align-self: start; }
+      @media (max-width: 800px) {
+        #workspace, #libworkspace { grid-template-columns: 1fr; }
+        .col-player { position: static; }
+      }
       .result .vid { font-size: 12.5px; font-weight: 600; color: var(--ink); margin: 0; }
       video { width: 100%; aspect-ratio: 16/9; background: var(--screen); border-radius: 10px; border: 1px solid var(--line); display: block; }
       #vtitle { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
@@ -98,9 +105,9 @@
       }
       #query::placeholder, #libquery::placeholder { color: var(--faint); }
       #query:focus, #libquery:focus { outline: none; border-color: var(--accent); }
-      #libresults { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; max-height: 62vh; overflow-y: auto; }
+      #libresults { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; }
 
-      #results { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; max-height: 62vh; overflow-y: auto; }
+      #results { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; }
       .result {
         display: flex; gap: 11px; padding: 10px; background: var(--panel);
         border: 1px solid var(--line); border-radius: 9px; cursor: pointer; text-align: left;
@@ -224,7 +231,7 @@
 
       <!-- 3. Workspace -->
       <section id="workspace" class="hidden">
-        <div>
+        <div class="col-player">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
             <p id="vtitle" style="margin:0"></p>
             <button class="btn-ghost" id="deletebtn" style="display:none">Delete</button>
@@ -267,7 +274,7 @@
           </div>
           <div class="bar"><div id="libProgressFill"></div></div>
         </div>
-        <div>
+        <div class="col-player">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
             <p id="libtitle" style="margin:0;font-weight:600;font-size:15px"></p>
             <span id="libcount" class="muted" style="font-size:12.5px"></span>
