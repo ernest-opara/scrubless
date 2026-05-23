@@ -724,6 +724,38 @@ def _index_collection(video_ids):
             process_video(vid)
 
 
+@app.post("/api/library/pick")
+def library_pick():
+    """Open a native folder chooser on the server (local self-host only).
+
+    Browsers never expose a folder's absolute path to JS, so for in-place
+    scanning we ask the OS for it directly. macOS via `osascript`; the dialog
+    appears on the machine running the server.
+    """
+    try:
+        out = subprocess.run(
+            [
+                "osascript",
+                "-e",
+                'POSIX path of (choose folder with prompt "Choose a folder of videos to index")',
+            ],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+    except FileNotFoundError:
+        raise HTTPException(status_code=501, detail="native folder picker is macOS-only")
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=501, detail="folder picker unavailable: %s" % exc)
+
+    if out.returncode != 0:
+        err = (out.stderr or "").strip()
+        if "cancel" in err.lower():  # "User canceled. (-128)"
+            return {"path": None, "cancelled": True}
+        raise HTTPException(status_code=501, detail=err or "folder picker failed")
+    return {"path": out.stdout.strip(), "cancelled": False}
+
+
 @app.post("/api/library/scan")
 def library_scan(body: ScanRequest):
     """Index every video under a local directory, in place (no upload)."""

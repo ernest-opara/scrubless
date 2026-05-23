@@ -160,9 +160,10 @@
             in place — nothing is uploaded — then you search across all of them at once.
           </p>
           <div class="searchrow">
-            <input id="folderpath" type="text" placeholder="/Users/you/Videos/footage"
+            <button class="btn-ghost" id="browsebtn">📁&nbsp; Browse…</button>
+            <input id="folderpath" type="text" placeholder="…or paste a folder path"
                    style="flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:10px 12px;color:var(--ink);font-size:14px" />
-            <button class="btn" id="scanbtn">Scan folder</button>
+            <button class="btn" id="scanbtn">Scan</button>
           </div>
           <p id="scanerr" class="hidden" style="color:#e0623e;font-size:13px;margin:10px 0 0"></p>
         </div>
@@ -540,6 +541,35 @@
       var libPoll = null;
       var curLibVideo = null; // which video is loaded in the library player
 
+      // Native Finder folder chooser (local self-host): the server pops the
+      // dialog and returns the chosen absolute path, then we scan it.
+      function pickFolder() {
+        var btn = document.getElementById("browsebtn");
+        var err = document.getElementById("scanerr");
+        err.classList.add("hidden");
+        btn.disabled = true;
+        btn.textContent = "Opening…";
+        fetch("/api/library/pick", { method: "POST" })
+          .then(function (r) {
+            return r.json().then(function (d) { return { ok: r.ok, d: d }; });
+          })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.d.detail || "picker unavailable");
+            if (res.d.cancelled || !res.d.path) return; // user closed the dialog
+            document.getElementById("folderpath").value = res.d.path;
+            scanFolder();
+          })
+          .catch(function (e) {
+            err.textContent =
+              "Couldn't open the folder picker — paste a path instead. (" + e.message + ")";
+            err.classList.remove("hidden");
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "📁  Browse…";
+          });
+      }
+
       function scanFolder() {
         var input = document.getElementById("folderpath");
         var path = input.value.trim();
@@ -662,6 +692,7 @@
         });
       }
 
+      document.getElementById("browsebtn").addEventListener("click", pickFolder);
       document.getElementById("scanbtn").addEventListener("click", scanFolder);
       document.getElementById("folderpath").addEventListener("keydown", function (e) {
         if (e.key === "Enter") scanFolder();

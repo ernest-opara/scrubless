@@ -146,6 +146,7 @@ ChromaDB for the nearest frames.
 | POST   | `/api/search/{id}`         | Natural-language search of one video      |
 | DELETE | `/api/videos/{id}`         | Delete a video (sample is protected)      |
 | GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)  |
+| POST   | `/api/library/pick`        | Native folder chooser (local macOS) (V2)  |
 | POST   | `/api/library/scan`        | Index every video under a folder (V2)     |
 | GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)|
 | POST   | `/api/library/{id}/search` | Search across a whole collection (V2)     |
@@ -317,3 +318,4 @@ update.
 | 2026-05-22 | "do both, local first; commit v1 totally"     | Locked both ingestion modes (local first); committed `docs/`, tagged `v1.0`. |
 | 2026-05-22 | "fix structure; make it diagrammatic; push on update" | Restructured the document; added six Graphviz vector diagrams; switched cadence to "on meaningful change" + auto-push; documented the `.md`/`.pdf` split. |
 | 2026-05-22 | "proceed" (build V2)                           | Implemented Library Mode — local directory scan + cross-video search (backend + UI) on `v2-library-mode`. Added the new endpoints to the API table, `collection_id`/`COLLECTIONS` to the data model + diagram, and marked local scan **implemented** in the roadmap. |
+| 2026-05-22 | "isn't it better to select the folder in Finder?" | Added a native folder picker (`POST /api/library/pick` via `osascript`) + a Browse button, since browsers can't expose a folder's absolute path to JS. Text-path input kept as a fallback. |
