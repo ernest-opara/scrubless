@@ -801,6 +801,75 @@ def library_scan(body: ScanRequest):
     }
 
 
+class CreateCollectionRequest(BaseModel):
+    name: str = "Uploaded folder"
+
+
+@app.post("/api/library/create")
+def library_create(body: CreateCollectionRequest):
+    """Create an empty collection (for hosted folder upload)."""
+    collection_id = uuid.uuid4().hex[:12]
+    COLLECTIONS[collection_id] = {
+        "name": body.name or "Uploaded folder",
+        "path": "",  # uploaded, not a server-side path
+        "video_ids": [],
+        "created": time.time(),
+    }
+    return {"collection_id": collection_id, "name": COLLECTIONS[collection_id]["name"]}
+
+
+@app.post("/api/library/{collection_id}/upload")
+async def library_upload(
+    collection_id: str,
+    request: Request,
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+):
+    """Upload one video into a collection, then index it (hosted folder mode)."""
+    coll = COLLECTIONS.get(collection_id)
+    if not coll:
+        raise HTTPException(status_code=404, detail="collection not found")
+
+    user = current_user(request)
+    cap = upload_limit_for(user)
+    clen = int(request.headers.get("content-length") or 0)
+    if clen and clen > cap:
+        raise HTTPException(status_code=413, detail=over_cap_detail(user, cap))
+
+    video_id = uuid.uuid4().hex[:12]
+    vdir = STORAGE / video_id
+    vdir.mkdir(parents=True, exist_ok=True)
+    ext = Path(file.filename or "").suffix.lower() or ".mp4"
+    source = vdir / ("source" + ext)
+    total = 0
+    with open(source, "wb") as out:
+        while True:
+            chunk = await file.read(1 << 20)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > cap:  # backstop if Content-Length lied / was absent
+                out.close()
+                shutil.rmtree(vdir, ignore_errors=True)
+                raise HTTPException(status_code=413, detail=over_cap_detail(user, cap))
+            out.write(chunk)
+
+    VIDEOS[video_id] = {
+        "status": "processing",
+        "progress": 0,
+        "total_segments": 0,
+        "error": "",
+        "source": str(source),
+        "title": file.filename or "Untitled",
+        "created": time.time(),
+        "owner": user.id if user else None,
+        "collection_id": collection_id,
+    }
+    coll["video_ids"].append(video_id)
+    background_tasks.add_task(process_video, video_id)
+    return {"id": video_id, "status": "processing"}
+
+
 @app.get("/api/library/{collection_id}")
 def library_status(collection_id: str):
     coll = COLLECTIONS.get(collection_id)

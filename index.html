@@ -149,21 +149,27 @@
           <button class="btn-ghost" id="trysample">▶&nbsp; Try a sample video</button>
         </div>
 
-        <!-- Library Mode: scan a whole folder (local self-hosted only) -->
+        <!-- Library Mode: search a whole folder -->
         <div id="folderPanel" class="panel hidden" style="margin-top:24px;padding:18px">
           <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px">
             <strong style="font-size:14px">Search a whole folder</strong>
             <span class="badge">New</span>
           </div>
-          <p class="muted" style="font-size:12.5px;margin:0 0 12px">
-            Point Scrubless at a folder of videos on this machine. It indexes them
-            in place — nothing is uploaded — then you search across all of them at once.
+          <p class="muted" style="font-size:12.5px;margin:0 0 14px">
+            Index a folder of videos and search across all of them at once.
           </p>
-          <div class="searchrow">
-            <button class="btn-ghost" id="browsebtn">📁&nbsp; Browse…</button>
-            <input id="folderpath" type="text" placeholder="…or paste a folder path"
-                   style="flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:10px 12px;color:var(--ink);font-size:14px" />
-            <button class="btn" id="scanbtn">Scan</button>
+          <button class="btn" id="folderUploadBtn" style="width:100%">📁&nbsp; Select a folder to upload</button>
+          <input id="folderUpload" type="file" webkitdirectory multiple class="hidden" />
+
+          <!-- in-place scan: only useful when the server can see your disk -->
+          <div id="localScanRow" class="hidden" style="margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
+            <p class="faint" style="font-size:12px;margin:0 0 8px">On this machine? Index in place, without uploading:</p>
+            <div class="searchrow">
+              <button class="btn-ghost" id="browsebtn">📁&nbsp; Browse…</button>
+              <input id="folderpath" type="text" placeholder="…or paste a folder path"
+                     style="flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:10px 12px;color:var(--ink);font-size:14px" />
+              <button class="btn" id="scanbtn">Scan</button>
+            </div>
           </div>
           <p id="scanerr" class="hidden" style="color:#e0623e;font-size:13px;margin:10px 0 0"></p>
         </div>
@@ -692,6 +698,84 @@
         });
       }
 
+      // Hosted folder upload: pick a folder in the browser, upload each video
+      // into a new collection, then search across them — works anywhere.
+      function isVideoName(name) {
+        return /\.(mp4|mov|mkv|avi|webm|m4v|mpg|mpeg|wmv)$/i.test(name);
+      }
+
+      function uploadFolder(allFiles) {
+        var err = document.getElementById("scanerr");
+        err.classList.add("hidden");
+        var files = allFiles.filter(function (f) { return isVideoName(f.name); });
+        if (!files.length) {
+          err.textContent = "No video files found in that folder.";
+          err.classList.remove("hidden");
+          return;
+        }
+        var cap = authState.upload_limit_bytes;
+        var skipped = files.filter(function (f) { return f.size > cap; }).length;
+        files = files.filter(function (f) { return f.size <= cap; });
+        if (!files.length) {
+          err.textContent = "Every video is over your " + fmtMB(cap) + " limit.";
+          err.classList.remove("hidden");
+          return;
+        }
+        var rel = files[0].webkitRelativePath || files[0].name;
+        var folderName = rel.indexOf("/") >= 0 ? rel.split("/")[0] : "Uploaded folder";
+
+        fetch("/api/library/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: folderName }),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            collectionId = d.collection_id;
+            hide("upload");
+            show("libworkspace");
+            document.getElementById("libtitle").textContent = folderName;
+            var count = document.getElementById("libcount");
+            var i = 0;
+            function next() {
+              if (i >= files.length) {
+                if (skipped) {
+                  err.textContent = skipped + " file(s) skipped (over your " + fmtMB(cap) + " limit).";
+                  err.classList.remove("hidden");
+                }
+                libPoll = setInterval(pollLibrary, 2000);
+                pollLibrary();
+                return;
+              }
+              count.textContent = "uploading " + (i + 1) + "/" + files.length + "…";
+              var fd = new FormData();
+              fd.append("file", files[i]);
+              fetch("/api/library/" + collectionId + "/upload", { method: "POST", body: fd })
+                .then(function (r) {
+                  if (!r.ok) return r.json().then(function (e) { throw new Error(e.detail || "upload failed"); });
+                  return r.json();
+                })
+                .then(function () { i++; next(); })
+                .catch(function (e) {
+                  err.textContent = "Upload error on " + files[i].name + ": " + e.message;
+                  err.classList.remove("hidden");
+                  i++; next(); // keep going with the rest
+                });
+            }
+            next();
+          })
+          .catch(function () {
+            err.textContent = "Couldn't start the upload.";
+            err.classList.remove("hidden");
+          });
+      }
+
+      document.getElementById("folderUploadBtn").addEventListener("click", function () {
+        document.getElementById("folderUpload").click();
+      });
+      document.getElementById("folderUpload").addEventListener("change", function () {
+        uploadFolder(Array.prototype.slice.call(this.files));
+      });
       document.getElementById("browsebtn").addEventListener("click", pickFolder);
       document.getElementById("scanbtn").addEventListener("click", scanFolder);
       document.getElementById("folderpath").addEventListener("keydown", function (e) {
@@ -701,7 +785,10 @@
       document.getElementById("libquery").addEventListener("keydown", function (e) {
         if (e.key === "Enter") runLibSearch();
       });
-      if (LIBRARY_LOCAL) document.getElementById("folderPanel").classList.remove("hidden");
+      // The folder panel (upload) shows everywhere; the in-place scan row only
+      // where the server can see your disk (localhost / self-host).
+      document.getElementById("folderPanel").classList.remove("hidden");
+      if (LIBRARY_LOCAL) document.getElementById("localScanRow").classList.remove("hidden");
 
       loadAuth(); // header state + the caller's upload limit
     </script>

@@ -148,6 +148,8 @@ ChromaDB for the nearest frames.
 | GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)  |
 | POST   | `/api/library/pick`        | Native folder chooser (local macOS) (V2)  |
 | POST   | `/api/library/scan`        | Index every video under a folder (V2)     |
+| POST   | `/api/library/create`      | Create an empty collection (upload) (V2)  |
+| POST   | `/api/library/{id}/upload` | Upload a video into a collection (V2)     |
 | GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)|
 | POST   | `/api/library/{id}/search` | Search across a whole collection (V2)     |
 | GET    | `/api/auth/login`          | Redirect to Auth0 Universal Login         |
@@ -268,14 +270,17 @@ source file + timestamp.
     branch): `POST /api/library/scan` walks a folder, indexes each video in
     place (nothing uploaded); the UI shows live per-video progress and searches
     across all of them. Frontend folder panel appears only on localhost.
-  - *Hosted folder upload* — pending (phase 2): drag a folder into the site;
-    reuses the same cross-video engine.
+  - *Hosted folder upload* — **implemented**: select a folder in the browser
+    (`webkitdirectory`); the client uploads each video into a new collection
+    (`POST /api/library/create` then `/api/library/{id}/upload`) and searches
+    across them. Reuses the same cross-video engine. Per-file tier caps apply.
 - **Constraint.** Indexing is CPU-bound (CLIP on CPU); first index of a large
   folder takes time — durable state + a progress UI make that acceptable.
 
-**Status:** local directory scan + cross-video search are built and verified
-locally (scan → in-place indexing → results spanning all files → range-seekable
-playback), with V1 single-video search untouched. Not yet merged to `main`.
+**Status:** both ingestion modes are built and verified, and merged to `main` /
+deployed. Local scan = in-place (no upload, localhost only); hosted upload works
+anywhere. Caveat: uploaded collections live on Railway's ephemeral disk, so they
+don't survive a redeploy yet — the durable-storage foundation closes that gap.
 
 **Deferred:** clip export + share links, YouTube ingest (legal), search-quality
 (hybrid ranking), React rewrite, face recognition (legal review), native mobile,
@@ -319,3 +324,4 @@ update.
 | 2026-05-22 | "fix structure; make it diagrammatic; push on update" | Restructured the document; added six Graphviz vector diagrams; switched cadence to "on meaningful change" + auto-push; documented the `.md`/`.pdf` split. |
 | 2026-05-22 | "proceed" (build V2)                           | Implemented Library Mode — local directory scan + cross-video search (backend + UI) on `v2-library-mode`. Added the new endpoints to the API table, `collection_id`/`COLLECTIONS` to the data model + diagram, and marked local scan **implemented** in the roadmap. |
 | 2026-05-22 | "isn't it better to select the folder in Finder?" | Added a native folder picker (`POST /api/library/pick` via `osascript`) + a Browse button, since browsers can't expose a folder's absolute path to JS. Text-path input kept as a fallback. |
+| 2026-05-22 | "1 then 2" (merge+deploy, then phase 2)        | Merged Library Mode to `main` (deployed). Built **phase 2 — hosted folder upload** (`/api/library/create` + `/api/library/{id}/upload`, `webkitdirectory` UI); both ingestion modes now implemented. Updated the V2 diagram + roadmap. |
