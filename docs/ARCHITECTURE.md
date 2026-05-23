@@ -149,6 +149,7 @@ ChromaDB for the nearest frames.
 | POST   | `/api/upload`              | Upload a video, start indexing (cap-gated)|
 | GET    | `/api/status/{id}`         | Poll indexing status / progress           |
 | POST   | `/api/search/{id}`         | Natural-language search of one video      |
+| POST   | `/api/qa/{id}`             | Ask a question about a video, cited (V3)   |
 | DELETE | `/api/videos/{id}`         | Delete a video (sample is protected)      |
 | GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)  |
 | POST   | `/api/library/pick`        | Native folder chooser (local macOS) (V2)  |
@@ -322,9 +323,13 @@ per-user library). V3 moves up the value chain — from *finding* moments to
    into one 720p MP4 via ffmpeg — async build (`POST /api/reel` →
    `GET /api/reel/{id}` poll) with download + a shareable link. A one-moment reel
    is effectively a clip export. Video-only for now; audio is a future add.
-3. **Conversational video Q&A — after.** Ask a question, get an answer grounded
-   in the footage with timestamped citations; chat over one video or the whole
-   library. The core differentiator.
+3. **Conversational video Q&A — implemented (single video).** A Search/Ask tab
+   in the workspace: ask a question and get a concise answer grounded in the
+   transcript with inline **[Ns] citations** you click to seek the player
+   (`POST /api/qa/{id}` rebuilds a timestamped transcript from the segments and
+   asks Claude). Library-wide Q&A is a natural future extension.
+
+**V3 arc complete** — chapters, reels, and Q&A all shipped.
 
 **Considered, lower priority:** search-by-image, YouTube + cloud connectors,
 public API + browser extension, team workspaces, infra scale (queue / GPU / S3),
@@ -372,3 +377,4 @@ update.
 | 2026-05-22 | "do the ui" (per-user library)                | Added `GET /api/me/library` (owner-filtered videos + grouped collections) and a "Your library" panel so signed-in users reopen/re-search past videos and folders; header logo links home. Completes the V2 per-user library item. |
 | 2026-05-22 | "10 ideas, ranked" → "yes do that" (V3 start) | Locked V3 arc (auto-chapters → clip export → Q&A). Built **#1 auto-chapters + summary**: `summarize_video()` (Claude over transcript) at index time, persisted via new `videos.summary`/`chapters` columns + `ensure_columns()` migration, exposed on `/api/status`, rendered as a clickable chapter list + summary under the player. Added the V3 roadmap section + data-model updates. |
 | 2026-05-22 | "highlight reels" (V3 #2)                      | Built **highlight reels**: `POST /api/reel` (async ffmpeg concat of trimmed, uniformly-scaled 720p moments) + `GET /api/reel/{id}` poll; "Make highlight reel" button in both workspaces → modal with player, download, and shareable link. Verified locally (3×4s → 12.0s 1280×720 MP4). Video-only for v1. |
+| 2026-05-22 | "proceed" (V3 #3 Q&A)                          | Built **conversational video Q&A**: `POST /api/qa/{id}` rebuilds a timestamped transcript from the segments and asks Claude for a concise, citation-grounded answer; the workspace gains a Search/Ask tab that renders clickable **[Ns]** citations seeking the player. Single-video, transcript-grounded. **Completes the V3 arc** (chapters + reels + Q&A). |

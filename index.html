@@ -131,6 +131,15 @@
       .chapter:hover { border-color: var(--accent); }
       .chapter .ctime { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 600; flex-shrink: 0; }
       #vchapters .lbl { font-size: 11px; letter-spacing: .08em; color: var(--faint); margin-bottom: 7px; }
+      .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+      .tab {
+        background: transparent; border: 1px solid var(--line); color: var(--muted);
+        border-radius: 7px; padding: 7px 14px; font-size: 13px; cursor: pointer;
+      }
+      .tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+      #answer { font-size: 13.5px; line-height: 1.6; }
+      .cite { color: var(--accent); cursor: pointer; font-weight: 600; }
+      .cite:hover { text-decoration: underline; }
     </style>
   </head>
   <body>
@@ -219,13 +228,26 @@
           <div id="vchapters" class="hidden" style="margin-top:14px"></div>
         </div>
         <div>
-          <div class="searchrow">
-            <input id="query" type="text" placeholder="find the part where someone is laughing" />
-            <button class="btn" id="searchbtn">Search</button>
+          <div class="tabs">
+            <button id="tabSearch" class="tab active">Search</button>
+            <button id="tabAsk" class="tab">Ask</button>
           </div>
-          <button id="reelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
-          <div id="results">
-            <div class="empty">Search your video to find matching moments.</div>
+          <div id="searchPane">
+            <div class="searchrow">
+              <input id="query" type="text" placeholder="find the part where someone is laughing" />
+              <button class="btn" id="searchbtn">Search</button>
+            </div>
+            <button id="reelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
+            <div id="results">
+              <div class="empty">Search your video to find matching moments.</div>
+            </div>
+          </div>
+          <div id="askPane" class="hidden">
+            <div class="searchrow">
+              <input id="question" type="text" placeholder="Ask anything about this video…" />
+              <button class="btn" id="askbtn">Ask</button>
+            </div>
+            <div id="answer" class="empty" style="margin-top:14px">Ask a question — the answer cites moments you can click.</div>
           </div>
         </div>
       </section>
@@ -1014,6 +1036,66 @@
           btn.textContent = "Copied!";
           setTimeout(function () { btn.textContent = "Copy share link"; }, 1500);
         }).catch(function () {});
+      });
+
+      // ---- Q&A: ask questions, get answers with clickable citations ----
+      function showTab(which) {
+        var s = which === "search";
+        document.getElementById("searchPane").classList.toggle("hidden", !s);
+        document.getElementById("askPane").classList.toggle("hidden", s);
+        document.getElementById("tabSearch").classList.toggle("active", s);
+        document.getElementById("tabAsk").classList.toggle("active", !s);
+      }
+
+      function runAsk() {
+        var q = document.getElementById("question").value.trim();
+        if (!q) return;
+        var btn = document.getElementById("askbtn");
+        btn.disabled = true;
+        btn.textContent = "Thinking…";
+        var ans = document.getElementById("answer");
+        ans.className = "";
+        ans.innerHTML = '<span class="muted">Thinking…</span>';
+        fetch("/api/qa/" + videoId, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q }),
+        })
+          .then(function (r) {
+            if (!r.ok) return r.json().then(function (e) { throw new Error(e.detail || "failed"); });
+            return r.json();
+          })
+          .then(function (d) { renderAnswer(d.answer); })
+          .catch(function (e) {
+            ans.className = "";
+            ans.innerHTML = '<span style="color:#e0623e">' + escapeHtml(e.message) + "</span>";
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "Ask";
+          });
+      }
+
+      function renderAnswer(text) {
+        var ans = document.getElementById("answer");
+        ans.className = "";
+        ans.innerHTML = escapeHtml(text || "")
+          .replace(/\n/g, "<br>")
+          .replace(/\[(\d+)s\]/g, '<span class="cite" data-t="$1">[$1s]</span>');
+        ans.querySelectorAll(".cite").forEach(function (el) {
+          el.addEventListener("click", function () {
+            player.currentTime = parseFloat(el.getAttribute("data-t"));
+            player.play();
+            player.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        });
+      }
+
+      document.getElementById("tabSearch").addEventListener("click", function () { showTab("search"); });
+      document.getElementById("tabAsk").addEventListener("click", function () { showTab("ask"); });
+      document.getElementById("askbtn").addEventListener("click", runAsk);
+      document.getElementById("question").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") runAsk();
       });
 
       loadAuth(); // header state + the caller's upload limit

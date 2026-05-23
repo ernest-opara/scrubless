@@ -973,6 +973,71 @@ def search(video_id: str, req: SearchRequest):
     return results
 
 
+class QARequest(BaseModel):
+    question: str
+
+
+def transcript_context(video_id, limit=14000):
+    """Rebuild a timestamped transcript for a video from its ChromaDB segments."""
+    try:
+        got = segments.get(where={"video_id": video_id})
+    except Exception:  # noqa: BLE001
+        return ""
+    metas = got.get("metadatas") or []
+    rows = sorted(metas, key=lambda m: m.get("timestamp", 0))
+    lines, prev = [], None
+    for m in rows:
+        txt = (m.get("transcript_segment") or "").strip()
+        if not txt or txt == prev:  # skip blanks + overlapping repeats
+            continue
+        lines.append("[%ds] %s" % (int(m.get("timestamp", 0)), txt))
+        prev = txt
+    return "\n".join(lines)[:limit]
+
+
+@app.post("/api/qa/{video_id}")
+def video_qa(video_id: str, body: QARequest):
+    """Answer a question about one video, grounded in its transcript."""
+    video = VIDEOS.get(video_id)
+    if not video:
+        raise HTTPException(status_code=404, detail="video not found")
+    if video["status"] != "indexed":
+        raise HTTPException(status_code=409, detail="video is not indexed yet")
+    question = body.question.strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="question is required")
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="Q&A is not configured")
+
+    context = transcript_context(video_id)
+    if not context:
+        return {
+            "answer": "This video has no transcribed speech, so I can't answer questions about what was said.",
+            "has_context": False,
+        }
+
+    from anthropic import Anthropic
+
+    client = Anthropic(api_key=ANTHROPIC_API_KEY)
+    prompt = (
+        "You are answering a question about a single video using ONLY the "
+        "timestamped transcript below. Cite the moments you rely on inline as "
+        "[Ns] in seconds, e.g. 'They discuss pricing [124s].' Keep it concise. "
+        "If the transcript does not contain the answer, say so briefly.\n\n"
+        "TRANSCRIPT:\n" + context + "\n\nQUESTION: " + question
+    )
+    try:
+        msg = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=600,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        answer = "".join(b.text for b in msg.content if b.type == "text").strip()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=502, detail="Q&A failed: %s" % exc)
+    return {"answer": answer, "has_context": True}
+
+
 @app.delete("/api/videos/{video_id}")
 def delete_endpoint(video_id: str):
     if video_id == SAMPLE_ID:
