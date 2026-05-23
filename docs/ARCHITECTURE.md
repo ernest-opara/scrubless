@@ -120,19 +120,19 @@ ChromaDB for the nearest frames.
 
 # Data model
 
-![Three stores: a relational `users` table, the ChromaDB `segments` collection, and the in-memory `VIDEOS` dict.](diagrams/datamodel.pdf){width=100%}
+![The relational DB holds durable `videos` + `collections` alongside `users`; ChromaDB holds the embeddings on the storage volume; the in-memory dicts are caches rebuilt on boot.](diagrams/datamodel.pdf){width=100%}
 
-- **`users`** (SQLAlchemy) — accounts, tiers, Stripe IDs. `DATABASE_URL` picks
-  the backend: SQLite file in dev, Postgres in prod (`postgres://` is normalized
-  to `postgresql://`).
-- **`segments`** (ChromaDB) — one row per frame: embedding + metadata +
-  transcript snippet as the searchable document. Distance space: **cosine**.
-- **`VIDEOS`** (in-memory) — per-video `{status, progress, total_segments,
-  error, source, title, created, owner, collection_id}`. Ephemeral; only the
-  sample is rebuilt on restart.
-- **`COLLECTIONS`** (in-memory, V2) — a scanned folder: `{name, path,
-  video_ids[], created}`. Each frame is tagged with `collection_id` so one
-  query can search across every video in the folder.
+- **`users` / `videos` / `collections`** (SQLAlchemy) — the relational store.
+  `users` holds accounts/tiers/Stripe IDs; `videos` and `collections` (V2) hold
+  the **durable** metadata (title, source, status, owner, membership) so the
+  library survives a restart. `DATABASE_URL` picks the backend: SQLite in dev,
+  Postgres in prod (`postgres://` normalized to `postgresql://`).
+- **`segments`** (ChromaDB, on the storage volume) — one row per frame:
+  embedding + metadata (`video_id`, `collection_id`, `timestamp`, `frame_path`,
+  `transcript_segment`). Distance space: **cosine**.
+- **`VIDEOS` / `COLLECTIONS`** (in-memory) — fast caches of per-video status and
+  folder membership, rebuilt from the DB on boot by `restore_state()` (any video
+  left mid-index is resumed). No longer the source of truth.
 
 \newpage
 
@@ -216,9 +216,16 @@ feature, never crash the app.
   `storage/`, `.env`, `.venv/`, `legacy/` out of the image.
 - **Domain** — `getscrubless.com` via GoDaddy: `www` CNAME → Railway, apex
   301-forwarded, `_railway-verify.www` TXT. TLS issued by Railway.
-- **Persistence caveat** — Railway's filesystem is ephemeral, so the sample is
-  re-indexed each boot (`ingest_sample`) and Postgres
-  (`DATABASE_URL = ${{Postgres.DATABASE_URL}}`) is required for durable accounts.
+- **Durable storage (V2)** — Railway's container filesystem is ephemeral, so the
+  library survives redeploys only with **both**:
+  1. a **persistent volume mounted at `/app/storage`** — holds uploaded videos,
+     extracted frames, and the ChromaDB embeddings; and
+  2. **Postgres** via `DATABASE_URL = ${{Postgres.DATABASE_URL}}` — holds the
+     `users` / `videos` / `collections` tables.
+
+  Without both, uploads vanish on the next deploy. The sample is re-indexed each
+  boot regardless (`ingest_sample`). On startup `restore_state()` rebuilds the
+  in-memory caches from the DB and resumes any interrupted indexing.
 
 ## Project layout
 
@@ -246,13 +253,15 @@ clipfind/
 **Theme: from demo → product.** V1 is shipped, deployed, and monetized; V2 makes
 it durable and sticky.
 
-**Foundation (committed):**
+**Foundation:**
 
-1. **Durable storage + state.** Move uploads/frames/Chroma onto a Railway
-   persistent volume and persist per-video state to Postgres, so indexed videos
-   survive restarts (today only the sample is rebuilt; `VIDEOS` is in-memory).
-2. **Per-user library.** Logged-in users see and re-search their own indexed
-   videos. Anonymous uploads stay ephemeral (24 h).
+1. **Durable storage + state — implemented.** `videos`/`collections` metadata is
+   persisted to the DB and rebuilt on boot (`restore_state`), and files +
+   embeddings sit on a persistent volume (`/app/storage`), so indexed videos and
+   folders survive a redeploy. Verified by restart (`restored N videos`).
+2. **Per-user library — pending.** The data is now durable; the UI for a
+   logged-in user to browse/re-search their own videos is the next step.
+   Anonymous uploads still auto-expire (24 h).
 
 **Marquee: Library Mode — search across a whole folder.** Turn Scrubless from a
 single-clip tool into a search engine for a video *library*: one query returns
@@ -290,12 +299,10 @@ GPU inference.
 
 # Known limitations (V1)
 
-- **Restart loses upload state.** `VIDEOS` is in-memory; only the sample is
-  rebuilt. Embeddings persist in ChromaDB, but the per-video status map does not.
-  (V2 foundation fixes this.)
 - **5-second frame granularity.** Moments shorter than the interval can be missed.
 - **Single-process / single-node.** No horizontal scaling; CLIP runs on CPU.
-- **Local file storage.** Not backed by object storage — ephemeral on Railway.
+- **Storage is one local volume.** Durable across restarts (DB + persistent
+  volume), but not object storage / multi-node — fine for a single Railway service.
 - **No clip export, no YouTube ingest, no face recognition** (deferred by spec).
 
 \newpage
@@ -325,3 +332,4 @@ update.
 | 2026-05-22 | "proceed" (build V2)                           | Implemented Library Mode — local directory scan + cross-video search (backend + UI) on `v2-library-mode`. Added the new endpoints to the API table, `collection_id`/`COLLECTIONS` to the data model + diagram, and marked local scan **implemented** in the roadmap. |
 | 2026-05-22 | "isn't it better to select the folder in Finder?" | Added a native folder picker (`POST /api/library/pick` via `osascript`) + a Browse button, since browsers can't expose a folder's absolute path to JS. Text-path input kept as a fallback. |
 | 2026-05-22 | "1 then 2" (merge+deploy, then phase 2)        | Merged Library Mode to `main` (deployed). Built **phase 2 — hosted folder upload** (`/api/library/create` + `/api/library/{id}/upload`, `webkitdirectory` UI); both ingestion modes now implemented. Updated the V2 diagram + roadmap. |
+| 2026-05-22 | "yes tackle it now" (durable storage)         | **Durable storage foundation**: persisted `videos`/`collections` to the DB + `restore_state()` on boot (resumes interrupted indexing; idempotent re-index). Library now survives restart — verified locally. Requires a Railway volume at `/app/storage` + `DATABASE_URL`. Rewrote the data-model diagram; updated deployment + limitations + roadmap. |

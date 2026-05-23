@@ -14,6 +14,7 @@ import threading
 import time
 import uuid
 from pathlib import Path
+from typing import Optional
 
 import chromadb
 import open_clip
@@ -127,6 +128,31 @@ class User(Base):
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
 
 
+class Video(Base):
+    """Durable metadata for an indexed video — lets VIDEOS rebuild on restart.
+    The frames + embeddings themselves live on the storage volume."""
+
+    __tablename__ = "videos"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    collection_id: Mapped[str] = mapped_column(String(32), default="", index=True)
+    title: Mapped[str] = mapped_column(String(512), default="")
+    source: Mapped[str] = mapped_column(String(1024), default="")
+    status: Mapped[str] = mapped_column(String(20), default="processing")
+    total_segments: Mapped[int] = mapped_column(default=0)
+    owner: Mapped[Optional[int]] = mapped_column(nullable=True, default=None)
+    created: Mapped[float] = mapped_column(Float, default=time.time)
+
+
+class Collection(Base):
+    """Durable metadata for a scanned/uploaded folder."""
+
+    __tablename__ = "collections"
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(512), default="")
+    path: Mapped[str] = mapped_column(String(1024), default="")
+    created: Mapped[float] = mapped_column(Float, default=time.time)
+
+
 _engine_args = {"pool_pre_ping": True}
 if DATABASE_URL.startswith("sqlite"):
     _engine_args["connect_args"] = {"check_same_thread": False}
@@ -200,6 +226,66 @@ def set_tier_by_customer(customer_id, tier, sub_id=""):
             u.stripe_subscription_id = sub_id or ""
             s.commit()
             print("[scrubless] billing: %s -> %s" % (u.email, tier))
+
+
+# --------------------------------------------------------------------------
+# Durable state — mirror the VIDEOS/COLLECTIONS dicts into the DB so a restart
+# (e.g. a Railway redeploy) doesn't lose the library. Files + embeddings live on
+# the storage volume; these tables hold the metadata needed to rebuild the dicts.
+# --------------------------------------------------------------------------
+def persist_video(video_id):
+    if video_id == SAMPLE_ID:
+        return  # the sample is re-indexed on every boot
+    v = VIDEOS.get(video_id)
+    if not v:
+        return
+    try:
+        with Session(engine) as s:
+            s.merge(
+                Video(
+                    id=video_id,
+                    collection_id=v.get("collection_id") or "",
+                    title=v.get("title") or "",
+                    source=v.get("source") or "",
+                    status=v.get("status") or "processing",
+                    total_segments=v.get("total_segments") or 0,
+                    owner=v.get("owner"),
+                    created=v.get("created") or time.time(),
+                )
+            )
+            s.commit()
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] persist_video %s: %s" % (video_id, exc))
+
+
+def persist_collection(collection_id):
+    c = COLLECTIONS.get(collection_id)
+    if not c:
+        return
+    try:
+        with Session(engine) as s:
+            s.merge(
+                Collection(
+                    id=collection_id,
+                    name=c.get("name") or "",
+                    path=c.get("path") or "",
+                    created=c.get("created") or time.time(),
+                )
+            )
+            s.commit()
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] persist_collection %s: %s" % (collection_id, exc))
+
+
+def forget_video(video_id):
+    try:
+        with Session(engine) as s:
+            row = s.get(Video, video_id)
+            if row:
+                s.delete(row)
+                s.commit()
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] forget_video %s: %s" % (video_id, exc))
 
 
 # --------------------------------------------------------------------------
@@ -342,6 +428,13 @@ def process_video(video_id):
         vdir = STORAGE / video_id
         source = Path(video["source"])
 
+        # Clear any stale segments so re-indexing (e.g. resuming after a
+        # restart) is idempotent instead of producing duplicates.
+        try:
+            segments.delete(where={"video_id": video_id})
+        except Exception:  # noqa: BLE001
+            pass
+
         frames = extract_frames(source, vdir / "frames")
         if not frames:
             raise RuntimeError("no frames extracted from video")
@@ -390,6 +483,7 @@ def process_video(video_id):
         video["status"] = "error"
         video["error"] = str(exc)
         print("[scrubless] %s failed: %s" % (video_id, exc))
+    persist_video(video_id)  # save the final status (no-op for the sample)
 
 
 # --------------------------------------------------------------------------
@@ -438,7 +532,12 @@ VIDEO_TTL_SECONDS = 24 * 3600  # free uploads auto-expire after 24h
 
 def delete_video(video_id):
     """Remove a video's record, stored files, and index entries."""
-    VIDEOS.pop(video_id, None)
+    v = VIDEOS.pop(video_id, None)
+    if v and v.get("collection_id"):  # drop it from its collection too
+        coll = COLLECTIONS.get(v["collection_id"])
+        if coll and video_id in coll["video_ids"]:
+            coll["video_ids"].remove(video_id)
+    forget_video(video_id)
     try:
         segments.delete(where={"video_id": video_id})
     except Exception as exc:  # noqa: BLE001
@@ -457,6 +556,54 @@ def expiry_sweep():
             if now - v.get("created", now) > VIDEO_TTL_SECONDS:
                 print("[scrubless] auto-expiring %s" % vid)
                 delete_video(vid)
+
+
+def restore_state():
+    """Rebuild VIDEOS/COLLECTIONS from the DB after a restart, and resume any
+    indexing that didn't finish. Needs the storage volume to be persistent for
+    the referenced files + embeddings to still exist."""
+    try:
+        with Session(engine) as s:
+            for c in s.scalars(select(Collection)).all():
+                COLLECTIONS[c.id] = {
+                    "name": c.name,
+                    "path": c.path,
+                    "video_ids": [],
+                    "created": c.created,
+                }
+            for v in s.scalars(select(Video)).all():
+                VIDEOS[v.id] = {
+                    "status": v.status,
+                    "progress": 100 if v.status == "indexed" else 0,
+                    "total_segments": v.total_segments,
+                    "error": "",
+                    "source": v.source,
+                    "title": v.title,
+                    "created": v.created,
+                    "owner": v.owner,
+                    "collection_id": v.collection_id or None,
+                }
+                if v.collection_id and v.collection_id in COLLECTIONS:
+                    COLLECTIONS[v.collection_id]["video_ids"].append(v.id)
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] restore_state failed: %s" % exc)
+        return
+
+    if VIDEOS:
+        print(
+            "[scrubless] restored %d videos, %d collections"
+            % (len(VIDEOS), len(COLLECTIONS))
+        )
+    # Resume anything that didn't finish indexing before the restart.
+    for vid, v in list(VIDEOS.items()):
+        if v["status"] != "indexed":
+            if Path(v["source"]).exists():
+                print("[scrubless] resuming index for %s" % vid)
+                threading.Thread(target=process_video, args=(vid,), daemon=True).start()
+            else:
+                v["status"] = "error"
+                v["error"] = "source missing after restart"
+                persist_video(vid)
 
 
 # --------------------------------------------------------------------------
@@ -626,6 +773,7 @@ async def upload(
         "created": time.time(),
         "owner": user.id if user else None,
     }
+    persist_video(video_id)
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}
 
@@ -792,6 +940,9 @@ def library_scan(body: ScanRequest):
         "video_ids": video_ids,
         "created": time.time(),
     }
+    persist_collection(collection_id)
+    for vid in video_ids:
+        persist_video(vid)
     threading.Thread(target=_index_collection, args=(video_ids,), daemon=True).start()
     print("[scrubless] library scan %s: %d videos" % (root, len(video_ids)))
     return {
@@ -815,6 +966,7 @@ def library_create(body: CreateCollectionRequest):
         "video_ids": [],
         "created": time.time(),
     }
+    persist_collection(collection_id)
     return {"collection_id": collection_id, "name": COLLECTIONS[collection_id]["name"]}
 
 
@@ -866,6 +1018,7 @@ async def library_upload(
         "collection_id": collection_id,
     }
     coll["video_ids"].append(video_id)
+    persist_video(video_id)
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}
 
@@ -954,6 +1107,7 @@ def index():
     return FileResponse(str(ROOT / "index.html"))
 
 
-# Background workers: index the sample at startup, and expire old uploads.
+# Background workers: restore prior state, index the sample, expire old uploads.
+restore_state()
 threading.Thread(target=ingest_sample, daemon=True).start()
 threading.Thread(target=expiry_sweep, daemon=True).start()

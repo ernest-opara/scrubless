@@ -1,16 +1,22 @@
 digraph data {
-  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.6, ranksep=0.6, pad=0.3];
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.5, ranksep=0.9, pad=0.3];
   node  [fontname="Helvetica", fontsize=10, shape=record, style="filled", penwidth=1.3];
-  edge  [style=invis];
+  edge  [fontname="Helvetica", fontsize=9, color="#64748b", arrowsize=0.8];
 
-  users [label="{users  (relational · SQLAlchemy)|id  PK\lauth0_sub  (unique, indexed)\lemail\ltier  (free / pro / studio)\lstripe_customer_id\lstripe_subscription_id\lcreated_at\l}",
-         fillcolor="#fef3c7", color="#a16207"];
-  segs  [label="{segments  (ChromaDB · vector)|id = video_id-i\lembedding  (CLIP vector)\lvideo_id\lcollection_id  (V2)\ltimestamp\lframe_path\ltranscript_segment\l}",
-         fillcolor="#dcfce7", color="#4a7a22"];
-  vids  [label="{VIDEOS  (in-memory dict)|status · progress\ltotal_segments · error\lsource · title\lcreated · owner\lcollection_id  (V2)\l}",
-         fillcolor="#e2e8f0", color="#64748b"];
-  colls [label="{COLLECTIONS  (in-memory · V2)|collection_id\lname · path\lvideo_ids[]\lcreated\l}",
-         fillcolor="#e2e8f0", color="#64748b"];
+  subgraph cluster_db {
+    label="Relational DB (SQLAlchemy · SQLite dev / Postgres prod)";
+    fontname="Helvetica"; fontsize=11; fontcolor="#a16207";
+    color="#d6a730"; style="rounded"; bgcolor="#fffbeb";
+    users  [label="{users|id PK\lauth0_sub (unique)\lemail · tier\lstripe_customer_id\lstripe_subscription_id\l}", fillcolor="#fef3c7", color="#a16207"];
+    videos [label="{videos  (durable)|id PK\lcollection_id\ltitle · source\lstatus · total_segments\lowner · created\l}", fillcolor="#fef3c7", color="#a16207"];
+    colls  [label="{collections  (durable)|id PK\lname · path\lcreated\l}", fillcolor="#fef3c7", color="#a16207"];
+  }
 
-  users -> segs -> vids -> colls;
+  segs [label="{segments  (ChromaDB · on storage volume)|id = video_id-i\lembedding  (CLIP vector)\lvideo_id · collection_id\ltimestamp · frame_path\ltranscript_segment\l}", fillcolor="#dcfce7", color="#4a7a22"];
+
+  mem  [label="{In-memory caches|VIDEOS + COLLECTIONS dicts\lrebuilt from the DB on boot\lvia restore_state()\l}", fillcolor="#e2e8f0", color="#64748b"];
+
+  videos -> mem [label="restore on restart", style=dashed];
+  colls  -> mem [style=dashed];
+  segs   -> mem [label="embeddings persist", style=dashed];
 }
