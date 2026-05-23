@@ -143,7 +143,7 @@
       }
       .chapter:hover { border-color: var(--accent); }
       .chapter .ctime { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 600; flex-shrink: 0; }
-      #vchapters .lbl { font-size: 11px; letter-spacing: .08em; color: var(--faint); margin-bottom: 7px; }
+      .lbl { font-size: 11px; letter-spacing: .08em; color: var(--faint); margin-bottom: 8px; }
       .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
       .tab {
         background: transparent; border: 1px solid var(--line); color: var(--muted);
@@ -281,6 +281,8 @@
           </div>
           <p id="nowplaying" class="faint" style="font-size:12.5px;margin:0 0 10px">Click a result to play that video.</p>
           <video id="libplayer" controls playsinline></video>
+          <div id="libNow" style="margin-top:14px"></div>
+          <div id="libVideoList" style="margin-top:18px;display:flex;flex-direction:column;gap:8px"></div>
         </div>
         <div>
           <div class="searchrow">
@@ -748,6 +750,7 @@
               ? s.total + (s.total === 1 ? " video" : " videos")
               : "indexing " + s.indexed + "/" + s.total + "…";
             document.getElementById("libsearchbtn").disabled = s.indexed < 1;
+            renderLibVideoList(s.videos);
 
             var prog = document.getElementById("libProgress");
             if (!prog.classList.contains("hidden")) {
@@ -794,6 +797,76 @@
           });
       }
 
+      // Load a video into the library player, seek, and show its details.
+      function playLibVideo(vid, title, timestamp) {
+        var libplayer = document.getElementById("libplayer");
+        if (curLibVideo !== vid) {
+          curLibVideo = vid;
+          libplayer.src = "/api/videos/" + vid + "/source";
+          document.getElementById("nowplaying").textContent = "▶ " + title;
+          loadLibChapters(vid);
+          libplayer.addEventListener("loadedmetadata", function once() {
+            libplayer.removeEventListener("loadedmetadata", once);
+            libplayer.currentTime = timestamp || 0;
+            libplayer.play();
+          });
+        } else {
+          libplayer.currentTime = timestamp || 0;
+          libplayer.play();
+        }
+        libplayer.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      // Show the now-playing video's summary + chapters under the player.
+      function loadLibChapters(vid) {
+        var box = document.getElementById("libNow");
+        box.innerHTML = '<span class="muted" style="font-size:12px">Loading details…</span>';
+        fetch("/api/status/" + vid)
+          .then(function (r) { return r.json(); })
+          .then(function (s) {
+            var html = "";
+            if (s.summary)
+              html += '<div class="muted" style="font-size:12.5px;line-height:1.55;margin-bottom:12px">' + escapeHtml(s.summary) + "</div>";
+            if (s.chapters && s.chapters.length) {
+              html += '<div class="lbl">CHAPTERS</div>' + s.chapters.map(function (c) {
+                return '<div class="chapter" data-t="' + c.start + '"><span class="ctime">' +
+                  fmtTime(c.start) + "</span><span>" + escapeHtml(c.title) + "</span></div>";
+              }).join("");
+            }
+            box.innerHTML = html;
+            box.querySelectorAll(".chapter").forEach(function (el) {
+              el.addEventListener("click", function () {
+                var p = document.getElementById("libplayer");
+                p.currentTime = parseFloat(el.getAttribute("data-t"));
+                p.play();
+              });
+            });
+          })
+          .catch(function () { box.innerHTML = ""; });
+      }
+
+      // List every video in the folder so you can jump to one without searching.
+      function renderLibVideoList(videos) {
+        var box = document.getElementById("libVideoList");
+        if (!box) return;
+        if (!videos || !videos.length) { box.innerHTML = ""; return; }
+        box.innerHTML = "";
+        var lbl = document.createElement("div");
+        lbl.className = "lbl";
+        lbl.textContent = "VIDEOS IN THIS FOLDER (" + videos.length + ")";
+        box.appendChild(lbl);
+        videos.forEach(function (v) {
+          var ready = v.status === "indexed";
+          var row = document.createElement("div");
+          row.className = "libitem";
+          if (!ready) row.style.opacity = "0.6";
+          row.innerHTML = '<span class="name">🎬 ' + escapeHtml(v.title) + "</span>" +
+            '<span class="muted" style="font-size:12px;flex-shrink:0">' + (ready ? "play" : v.status) + "</span>";
+          if (ready) row.addEventListener("click", function () { playLibVideo(v.id, v.title, 0); });
+          box.appendChild(row);
+        });
+      }
+
       function renderLibResults(results) {
         var box = document.getElementById("libresults");
         box.innerHTML = "";
@@ -825,21 +898,7 @@
                 : "") +
             "</div>";
           card.addEventListener("click", function () {
-            if (curLibVideo !== r.video_id) {
-              // Switching to a different video: load it, then seek once ready.
-              curLibVideo = r.video_id;
-              libplayer.src = r.source_url;
-              document.getElementById("nowplaying").textContent = "▶ " + r.video_title;
-              libplayer.addEventListener("loadedmetadata", function once() {
-                libplayer.removeEventListener("loadedmetadata", once);
-                libplayer.currentTime = r.timestamp;
-                libplayer.play();
-              });
-            } else {
-              libplayer.currentTime = r.timestamp;
-              libplayer.play();
-            }
-            libplayer.scrollIntoView({ behavior: "smooth", block: "center" });
+            playLibVideo(r.video_id, r.video_title, r.timestamp);
           });
           box.appendChild(card);
         });
@@ -879,9 +938,13 @@
           .then(function (r) { return r.json(); })
           .then(function (d) {
             collectionId = d.collection_id;
+            curLibVideo = null;
             hide("upload");
             show("libworkspace");
             document.getElementById("libtitle").textContent = folderName;
+            document.getElementById("libNow").innerHTML = "";
+            document.getElementById("libplayer").removeAttribute("src");
+            document.getElementById("nowplaying").textContent = "Click a result or a video below to play it.";
             var count = document.getElementById("libcount");
             var prog = document.getElementById("libProgress");
             prog.classList.remove("hidden");
@@ -984,7 +1047,8 @@
         document.getElementById("libresults").innerHTML =
           '<div class="empty">Search across every video in this folder.</div>';
         document.getElementById("libplayer").removeAttribute("src");
-        document.getElementById("nowplaying").textContent = "Click a result to play that video.";
+        document.getElementById("libNow").innerHTML = "";
+        document.getElementById("nowplaying").textContent = "Click a result or a video below to play it.";
         libPoll = setInterval(pollLibrary, 2000);
         pollLibrary();
       }
