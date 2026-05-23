@@ -223,6 +223,7 @@
             <input id="query" type="text" placeholder="find the part where someone is laughing" />
             <button class="btn" id="searchbtn">Search</button>
           </div>
+          <button id="reelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
           <div id="results">
             <div class="empty">Search your video to find matching moments.</div>
           </div>
@@ -244,6 +245,7 @@
             <input id="libquery" type="text" placeholder="search across the whole folder…" />
             <button class="btn" id="libsearchbtn" disabled>Search</button>
           </div>
+          <button id="libReelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
           <div id="libresults">
             <div class="empty">Search across every video in this folder.</div>
           </div>
@@ -271,6 +273,22 @@
             <p class="muted" style="font-size:12px;margin:6px 0 14px">Up to 10GB per video</p>
             <button class="btn" style="width:100%" onclick="startCheckout('studio')">Choose Studio</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Highlight reel modal -->
+    <div id="reelModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px">
+      <div class="panel" style="max-width:780px;width:100%;padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h2 style="margin:0;font-size:17px">🎬 Highlight reel</h2>
+          <button class="btn-ghost" onclick="closeReelModal()">Close</button>
+        </div>
+        <div id="reelStatus" class="muted" style="font-size:13px">Building your reel…</div>
+        <video id="reelPlayer" class="hidden" controls playsinline style="margin-top:12px"></video>
+        <div id="reelActions" class="hidden" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <a id="reelDownload" class="btn" download href="#">Download MP4</a>
+          <button class="btn-ghost" id="reelCopy">Copy share link</button>
         </div>
       </div>
     </div>
@@ -568,8 +586,13 @@
         box.innerHTML = "";
         if (!results.length) {
           box.innerHTML = '<div class="empty">No matching moments found. Try other words.</div>';
+          document.getElementById("reelBtn").classList.add("hidden");
           return;
         }
+        lastReelMoments = results.map(function (r) {
+          return { video_id: videoId, timestamp: r.timestamp };
+        });
+        document.getElementById("reelBtn").classList.remove("hidden");
         results.forEach(function (r) {
           var conf = confidence(r.score);
           var card = document.createElement("div");
@@ -717,8 +740,13 @@
         box.innerHTML = "";
         if (!results.length) {
           box.innerHTML = '<div class="empty">No matching moments found. Try other words.</div>';
+          document.getElementById("libReelBtn").classList.add("hidden");
           return;
         }
+        lastReelMoments = results.map(function (r) {
+          return { video_id: r.video_id, timestamp: r.timestamp };
+        });
+        document.getElementById("libReelBtn").classList.remove("hidden");
         var libplayer = document.getElementById("libplayer");
         results.forEach(function (r) {
           var conf = confidence(r.score);
@@ -924,6 +952,69 @@
       // where the server can see your disk (localhost / self-host).
       document.getElementById("folderPanel").classList.remove("hidden");
       if (LIBRARY_LOCAL) document.getElementById("localScanRow").classList.remove("hidden");
+
+      // ---- Highlight reels ----
+      var lastReelMoments = [];
+
+      function makeReel() {
+        if (!lastReelMoments.length) return;
+        openReelModal();
+        setReelStatus("Building your reel… this can take ~30s.");
+        fetch("/api/reel", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ moments: lastReelMoments.slice(0, 12) }),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (!d.reel_id) throw new Error(d.detail || "could not start");
+            pollReel(d.reel_id);
+          })
+          .catch(function (e) { setReelStatus("Couldn't build reel: " + e.message); });
+      }
+
+      function pollReel(id) {
+        fetch("/api/reel/" + id)
+          .then(function (r) { return r.json(); })
+          .then(function (r) {
+            if (r.status === "ready") showReel(r.url);
+            else if (r.status === "error") setReelStatus("Reel failed: " + (r.error || ""));
+            else setTimeout(function () { pollReel(id); }, 2000);
+          })
+          .catch(function () { setTimeout(function () { pollReel(id); }, 2000); });
+      }
+
+      function openReelModal() {
+        document.getElementById("reelPlayer").classList.add("hidden");
+        document.getElementById("reelActions").classList.add("hidden");
+        document.getElementById("reelModal").classList.remove("hidden");
+      }
+      function closeReelModal() {
+        document.getElementById("reelPlayer").pause();
+        document.getElementById("reelModal").classList.add("hidden");
+      }
+      function setReelStatus(t) {
+        document.getElementById("reelStatus").textContent = t;
+      }
+      function showReel(url) {
+        setReelStatus("Your reel is ready.");
+        var p = document.getElementById("reelPlayer");
+        p.src = url;
+        p.classList.remove("hidden");
+        document.getElementById("reelDownload").href = url;
+        document.getElementById("reelActions").classList.remove("hidden");
+      }
+
+      document.getElementById("reelBtn").addEventListener("click", makeReel);
+      document.getElementById("libReelBtn").addEventListener("click", makeReel);
+      document.getElementById("reelCopy").addEventListener("click", function () {
+        var btn = this;
+        var url = document.getElementById("reelDownload").href;
+        navigator.clipboard.writeText(url).then(function () {
+          btn.textContent = "Copied!";
+          setTimeout(function () { btn.textContent = "Copy share link"; }, 1500);
+        }).catch(function () {});
+      });
 
       loadAuth(); // header state + the caller's upload limit
     </script>
