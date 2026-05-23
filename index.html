@@ -79,7 +79,13 @@
       .bar > div { height: 100%; background: var(--accent); width: 0%; transition: width .5s ease; }
 
       /* workspace */
-      #workspace, #libworkspace { display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; }
+      #workspace, #libworkspace {
+        display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        gap: 22px; align-items: start;
+      }
+      /* let both columns shrink so the results column can't blow out the grid
+         and squeeze the player */
+      #workspace > div, #libworkspace > div { min-width: 0; }
       @media (max-width: 800px) { #workspace, #libworkspace { grid-template-columns: 1fr; } }
       .result .vid { font-size: 12.5px; font-weight: 600; color: var(--ink); margin: 0; }
       video { width: 100%; aspect-ratio: 16/9; background: var(--screen); border-radius: 10px; border: 1px solid var(--line); display: block; }
@@ -254,6 +260,13 @@
 
       <!-- 4. Library workspace (search across a folder) -->
       <section id="libworkspace" class="hidden">
+        <div id="libProgress" class="hidden" style="grid-column:1 / -1">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+            <span id="libProgressText">Uploading…</span>
+            <span id="libProgressCount" class="muted"></span>
+          </div>
+          <div class="bar"><div id="libProgressFill"></div></div>
+        </div>
         <div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
             <p id="libtitle" style="margin:0;font-weight:600;font-size:15px"></p>
@@ -357,7 +370,9 @@
           el.innerHTML =
             '<span class="muted">' + authState.user.email +
             ' · <strong style="color:var(--accent)">' + authState.user.tier +
-            '</strong></span>' + billing +
+            '</strong></span>' +
+            '<button class="btn-ghost" onclick="location.href=\'/\'">My library</button>' +
+            billing +
             '<button class="btn-ghost" onclick="location.href=\'/api/auth/logout\'">Log out</button>';
         } else if (authState.auth_enabled) {
           el.innerHTML =
@@ -726,6 +741,21 @@
               ? s.total + (s.total === 1 ? " video" : " videos")
               : "indexing " + s.indexed + "/" + s.total + "…";
             document.getElementById("libsearchbtn").disabled = s.indexed < 1;
+
+            var prog = document.getElementById("libProgress");
+            if (!prog.classList.contains("hidden")) {
+              var pct = s.total ? Math.round((s.indexed / s.total) * 100) : 0;
+              document.getElementById("libProgressFill").style.width = pct + "%";
+              if (done) {
+                document.getElementById("libProgressText").textContent =
+                  "✓ All " + s.total + " video" + (s.total === 1 ? "" : "s") + " indexed — search away!";
+                document.getElementById("libProgressCount").textContent = "";
+                setTimeout(function () { prog.classList.add("hidden"); }, 6000);
+              } else {
+                document.getElementById("libProgressText").textContent = "⚙️ Indexing…";
+                document.getElementById("libProgressCount").textContent = s.indexed + " / " + s.total;
+              }
+            }
             if (done) clearInterval(libPoll);
           })
           .catch(function () { /* transient — keep polling */ });
@@ -846,6 +876,10 @@
             show("libworkspace");
             document.getElementById("libtitle").textContent = folderName;
             var count = document.getElementById("libcount");
+            var prog = document.getElementById("libProgress");
+            prog.classList.remove("hidden");
+            document.getElementById("libProgressText").textContent = "📤 Uploading videos…";
+            document.getElementById("libProgressFill").style.width = "0%";
             var i = 0;
             function next() {
               if (i >= files.length) {
@@ -853,10 +887,13 @@
                   err.textContent = skipped + " file(s) skipped (over your " + fmtMB(cap) + " limit).";
                   err.classList.remove("hidden");
                 }
+                document.getElementById("libProgressText").textContent = "⚙️ Indexing…";
                 libPoll = setInterval(pollLibrary, 2000);
                 pollLibrary();
                 return;
               }
+              document.getElementById("libProgressCount").textContent = (i + 1) + " / " + files.length;
+              document.getElementById("libProgressFill").style.width = Math.round((i / files.length) * 100) + "%";
               count.textContent = "uploading " + (i + 1) + "/" + files.length + "…";
               var fd = new FormData();
               fd.append("file", files[i]);
@@ -934,6 +971,7 @@
         curLibVideo = null;
         hide("upload");
         show("libworkspace");
+        document.getElementById("libProgress").classList.add("hidden");
         document.getElementById("libtitle").textContent = name;
         document.getElementById("libquery").value = "";
         document.getElementById("libresults").innerHTML =
