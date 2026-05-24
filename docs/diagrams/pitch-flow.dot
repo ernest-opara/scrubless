@@ -1,0 +1,20 @@
+digraph pitch {
+  graph [bgcolor="white", fontname="Helvetica", rankdir=LR, nodesep=0.45, ranksep=0.75, pad=0.3];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="rounded,filled",
+         color="#e0623e", fillcolor="#fdece7", penwidth=1.4, fontcolor="#1f2125"];
+  edge  [fontname="Helvetica", fontsize=9, color="#9a9aa1", penwidth=1.2, arrowsize=0.8];
+
+  up   [label="Upload\nvideo or whole folder", fillcolor="#e9e9ec", color="#646469"];
+  vis  [label="Frames → CLIP\n(what it looks like)"];
+  aud  [label="Audio → Whisper\n(what's said)"];
+  idx  [label="Vector index\nChromaDB", shape=cylinder, fillcolor="#fff7ed", color="#c2410c"];
+  ask  [label="Search  ·  Ask\nplain English"];
+  ans  [label="Claude\ncited answers", fillcolor="#fff7ed", color="#c2410c"];
+  jump [label="Jump to the\nexact moment", fillcolor="#e0623e", color="#b8431f", fontcolor="white"];
+
+  up -> vis;
+  up -> aud;
+  vis -> idx;
+  aud -> idx;
+  idx -> ask -> ans -> jump;
+}
