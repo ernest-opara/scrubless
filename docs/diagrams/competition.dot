@@ -1,0 +1,28 @@
+digraph competition {
+  layout=neato;
+  bgcolor="transparent";
+  splines=line;
+
+  // Axes (drawn as double-headed arrows through the origin).
+  node [shape=point, width=0.02, color="#c9c9cf"];
+  edge [color="#c9c9cf", penwidth=1.3, dir=both, arrowsize=0.7, arrowhead=vee, arrowtail=vee];
+  xl [pos="-2.3,0!"];  xr [pos="2.3,0!"];
+  yb [pos="0,-2.0!"];  yt [pos="0,2.0!"];
+  xl -> xr;
+  yb -> yt;
+
+  // Axis captions.
+  node [shape=plaintext, fontname="Helvetica", fontsize=10, fontcolor="#646469"];
+  cr [pos="1.75,0.26!",  label="Visual + spoken"];
+  cl [pos="-1.7,0.26!",  label="Words only"];
+  ct [pos="0,2.26!",     label="Simple · your own files"];
+  cb [pos="0,-2.28!",    label="Complex · locked-in"];
+
+  // Players.
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11,
+        penwidth=1.3, fontcolor="#1f2125", margin="0.12,0.06"];
+  us [pos="1.45,1.30!",  label="Scrubless", fillcolor="#e0623e", color="#b8431f", fontcolor="white"];
+  tr [pos="-1.45,1.05!", label="Transcript\nsearch", fillcolor="#eef0f2", color="#9a9aa1"];
+  pf [pos="-1.45,-1.2!", label="Platform\nsearch", fillcolor="#eef0f2", color="#9a9aa1"];
+  dm [pos="1.2,-1.25!",  label="DAM / MAM", fillcolor="#eef0f2", color="#9a9aa1"];
+}

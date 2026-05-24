@@ -1,0 +1,19 @@
+graph market {
+  layout=neato;
+  bgcolor="transparent";
+  node [fixedsize=true, shape=circle, style="filled", penwidth=1.5, label=""];
+
+  // Concentric circles, nested toward the bottom (largest first so smaller
+  // ones draw on top), shaded from light coral (outer) to solid (inner).
+  c1 [pos="0,0!",     width=4.7, fillcolor="#fdece7", color="#e0623e"];
+  c2 [pos="0,-0.60!", width=3.35, fillcolor="#f7c9b6", color="#e0623e"];
+  c3 [pos="0,-1.10!", width=2.10, fillcolor="#ef9b78", color="#c2410c"];
+  c4 [pos="0,-1.52!", width=1.05, fillcolor="#e0623e", color="#b8431f"];
+
+  // Labels pinned in the visible top band of each ring.
+  node [shape=plaintext, style="", fixedsize=false, fontname="Helvetica"];
+  l1 [pos="0,1.75!",  fontsize=12, label=<<b>TAM</b> &#183; 50M+ video libraries<br/><font color="#646469">$30B / year</font>>];
+  l2 [pos="0,0.58!",  fontsize=12, label=<<b>SAM</b> &#183; 2&#8211;5M reachable<br/><font color="#646469">$7B / year</font>>];
+  l3 [pos="0,-0.48!", fontsize=11, label=<<b>SOM</b> &#183; 200K power users<br/><font color="#646469">~$48M ARR</font>>];
+  l4 [pos="0,-1.52!", fontsize=10, fontcolor="white", label=<<b>Beachhead</b><br/>20K creators<br/>~$4.8M ARR>];
+}

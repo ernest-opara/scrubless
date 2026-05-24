@@ -42,10 +42,13 @@ header-includes: |
 - 500+ hours are uploaded to YouTube *every minute* — and that's one platform.
 - Inside any single video, finding a moment means \alert{scrubbing}: linear,
   manual, slow.
-- `Ctrl+F` solved this for text 40 years ago.
-- There is still no `Ctrl+F` for video.
+- `Ctrl+F` solved this for text 40 years ago. There's still none for video.
 
-> The world's fastest-growing data type is also its least searchable.
+\vspace{0.5em}
+\begin{center}
+\alert{\large\textbf{Editors lose up to a third of post-production}}\\[2pt]
+just \emph{finding} the right footage — before a single cut.
+\end{center}
 
 ## The solution
 
@@ -55,6 +58,17 @@ header-includes: |
 - Search in plain English: *"the part where someone is laughing."*
 - Click a result and the player jumps to that \alert{exact second}.
 - It searches what's **shown** and what's **said** — not just captions.
+
+## Live today — and it works
+
+\vspace{-0.2em}
+
+![](assets/scrubless-search.png){width=84%}
+
+\vspace{-0.3em}
+\footnotesize Real search on **getscrubless.com**: *"the big rabbit"* → ranked
+moments with match scores; click one, the player jumps to that second. **Shipped
+to production — not a prototype.**
 
 ## How it works
 
@@ -87,25 +101,26 @@ The pieces only just became cheap enough to put in one small app.
 - **LLMs** (Claude) can now reason over retrieved moments and cite them.
 - **Video volume** is compounding while tooling stays stuck on scrubbing.
 
-\alert{The capability exists. The product doesn't — yet.}
+\alert{The tech is finally ready — and we've already shipped on it.}
 
 ## Market
 
-**TAM ≈ \$30B / year** — the global spend on making video findable.
+:::: columns
+::: {.column width="50%"}
+![](diagrams/market.pdf){width=100%}
+:::
+::: {.column width="48%"}
+\vspace{1.2em}
 
-Bottom-up:
+**TAM ≈ \$30B / year** — the spend on making video findable.
 
-- **50M** pro / prosumer video creators × \$240/yr (Pro) = **\$12B**
-- **30M** businesses with video archives × \$600/yr (Team) = **\$18B**
+\small
 
-\vspace{0.3em}
-
-- **SAM ≈ \$7B** — English-first, self-serve + mid-market reachable today.
-- **SOM ≈ \$50-150M** — realistic capture in 3-5 years.
-
-\footnotesize Top-down cross-check: digital asset management (≈\$5B), enterprise
-search (≈\$6B), and video intelligence (≈\$11B) target the same need and
-triangulate to the same order of magnitude.
+- **Bottom-up:** 50M creators × \$240/yr **+** 30M businesses × \$600/yr.
+- **Beachhead:** 20K heavy-library creators → **≈\$4.8M ARR** reachable now; SOM 200K → **≈\$48M**.
+- **Cross-check:** DAM ≈\$5B · search ≈\$6B · video intelligence ≈\$11B — same order of magnitude.
+:::
+::::
 
 ## Traction
 
@@ -136,15 +151,33 @@ single small instance — gross margin is on our side.
 
 ## Competition
 
-| Approach | What they do | The gap |
-|---|---|---|
-| Transcript search | Find spoken **words** | Blind to visuals |
-| DAM / MAM incumbents | Manual tags, enterprise-heavy | Not semantic, slow to adopt |
-| Big-platform search | Search **their** content | Locked in; not your files |
+:::: columns
+::: {.column width="58%"}
+![](diagrams/competition.pdf){width=100%}
+:::
+::: {.column width="40%"}
+\vspace{1.4em}
 
-\vspace{0.5em}
-**Our wedge:** visual **+** spoken semantic search, dead-simple, running on *your
-own* videos.
+Everyone else finds **words** or needs **manual tags**.
+
+\small Scrubless searches what's **shown** *and* **said** — semantic, instant,
+on *your own* files. Top-right, and alone there.
+:::
+::::
+
+## Why we win
+
+- **Multimodal, not transcript-only** — we search the pixels *and* the audio;
+  competitors are blind to anything unspoken.
+- **Live and billed today** — a shipped product, while most "AI video search" is
+  still a waitlist.
+- **Built on real embedding infra** — the founder ships ML/embedding systems in
+  production; the hard part is home turf.
+- **Index once, do everything** — search, ask, chapters, reels off one index →
+  widening surface area and switching cost.
+
+\vspace{0.2em}
+\alert{The capability is commoditizing — the product, polish, and data flywheel are not.}
 
 ## Team
 
