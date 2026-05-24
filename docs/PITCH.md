@@ -154,7 +154,7 @@ archive — instantly searchable, anywhere it lives.
 
 - **Raising** *⟨amount⟩* to *⟨growth · key hires · enterprise⟩*.
 - Try it now: [getscrubless.com](https://getscrubless.com)
-- [ernest.ebuka@gmail.com](mailto:ernest.ebuka@gmail.com)
+- [e@getscrubless.com](mailto:e@getscrubless.com)
 
 \begin{center}
 \alert{\Large Stop scrubbing. Start searching.}
