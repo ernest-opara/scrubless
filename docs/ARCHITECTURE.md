@@ -158,6 +158,7 @@ ChromaDB for the nearest frames.
 | POST   | `/api/library/{id}/upload` | Upload a video into a collection (V2)     |
 | GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)|
 | POST   | `/api/library/{id}/search` | Search across a whole collection (V2)     |
+| POST   | `/api/library/{id}/qa`     | Ask across a collection, cited (V3)        |
 | POST   | `/api/reel`                | Build a highlight reel from moments (V3)   |
 | GET    | `/api/reel/{id}`           | Reel build status + URL (V3)               |
 | GET    | `/api/auth/login`          | Redirect to Auth0 Universal Login         |
@@ -381,3 +382,4 @@ update.
 | 2026-05-22 | UI feedback from prod screenshots              | Fixed three UX issues: (1) workspace grid `min-width:0` + `minmax(0,…)` so search results can't squeeze the player; (2) folder upload/index now shows a **progress bar + completion banner**; (3) added a **"My library"** header button (signed-in) to reach the per-user library from any view. |
 | 2026-05-22 | "so much space… utilise it better"            | Widened the workspace (1040→1400px) while keeping the landing focused (760px), and made the player **sticky** with results flowing down the page — uses the horizontal + vertical space and keeps the video visible while scrolling results. |
 | 2026-05-22 | "lots of space under the player — what to add?" | Filled the library player's left column: **now-playing summary + clickable chapters** under the player + a **"Videos in this folder"** list (jump to any video without searching). Reuses `/api/status` + `/api/library/{id}`; no backend change. |
+| 2026-05-23 | "Add the Search/Ask tab to the library"       | Added **cross-folder Q&A**: `POST /api/library/{id}/qa` retrieves the top moments across the collection and asks Claude for a cited answer; the library workspace gains Search/Ask tabs, and answer citations are clickable chips ("[file @ 0:15]") that load that video and seek to the moment. |

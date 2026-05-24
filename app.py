@@ -1308,6 +1308,62 @@ def library_search(collection_id: str, req: SearchRequest):
     return results
 
 
+@app.post("/api/library/{collection_id}/qa")
+def library_qa(collection_id: str, body: QARequest):
+    """Answer a question across a whole collection, with cited sources that
+    map back to a specific video + timestamp."""
+    coll = COLLECTIONS.get(collection_id)
+    if not coll:
+        raise HTTPException(status_code=404, detail="collection not found")
+    question = body.question.strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="question is required")
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(status_code=503, detail="Q&A is not configured")
+
+    # Retrieve the most relevant moments across the whole folder.
+    result = segments.query(
+        query_embeddings=[embed_text(question)],
+        n_results=24,
+        where={"collection_id": collection_id},
+    )
+    metas = (result.get("metadatas") or [[]])[0]
+    if not metas:
+        return {"answer": "There's nothing indexed in this folder yet.", "sources": []}
+
+    sources, lines = [], []
+    for meta in metas:
+        vid = meta["video_id"]
+        ts = int(meta.get("timestamp", 0))
+        title = VIDEOS.get(vid, {}).get("title", vid)
+        text = (meta.get("transcript_segment") or "").strip()
+        n = len(sources) + 1
+        sources.append({"n": n, "video_id": vid, "timestamp": ts, "video_title": title})
+        lines.append("[%d] (%s @ %ds) %s" % (n, title, ts, text or "[visual moment, no speech]"))
+    context = "\n".join(lines)[:16000]
+
+    from anthropic import Anthropic
+
+    client = Anthropic(api_key=ANTHROPIC_API_KEY)
+    prompt = (
+        "You are answering a question about a library of videos using ONLY the "
+        "numbered excerpts below (each tagged with its source video and time in "
+        "seconds). Cite the excerpts you rely on inline as [n], matching the "
+        "numbers. Keep it concise. If the excerpts don't contain the answer, "
+        "say so briefly.\n\nEXCERPTS:\n" + context + "\n\nQUESTION: " + question
+    )
+    try:
+        msg = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=700,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        answer = "".join(b.text for b in msg.content if b.type == "text").strip()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=502, detail="Q&A failed: %s" % exc)
+    return {"answer": answer, "sources": sources}
+
+
 # --------------------------------------------------------------------------
 # Highlight reels (V3): stitch search-result moments into one clip
 # --------------------------------------------------------------------------

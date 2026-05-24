@@ -99,12 +99,12 @@
       #vtitle { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
 
       .searchrow { display: flex; gap: 8px; }
-      #query, #libquery {
+      #query, #libquery, #libquestion {
         flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
         padding: 10px 12px; color: var(--ink); font-size: 14px;
       }
-      #query::placeholder, #libquery::placeholder { color: var(--faint); }
-      #query:focus, #libquery:focus { outline: none; border-color: var(--accent); }
+      #query::placeholder, #libquery::placeholder, #libquestion::placeholder { color: var(--faint); }
+      #query:focus, #libquery:focus, #libquestion:focus { outline: none; border-color: var(--accent); }
       #libresults { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; }
 
       #results { margin-top: 14px; display: flex; flex-direction: column; gap: 9px; }
@@ -150,7 +150,7 @@
         border-radius: 7px; padding: 7px 14px; font-size: 13px; cursor: pointer;
       }
       .tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
-      #answer { font-size: 13.5px; line-height: 1.6; }
+      #answer, #libAnswer { font-size: 13.5px; line-height: 1.6; }
       .cite { color: var(--accent); cursor: pointer; font-weight: 600; }
       .cite:hover { text-decoration: underline; }
     </style>
@@ -285,13 +285,26 @@
           <div id="libVideoList" style="margin-top:18px;display:flex;flex-direction:column;gap:8px"></div>
         </div>
         <div>
-          <div class="searchrow">
-            <input id="libquery" type="text" placeholder="search across the whole folder…" />
-            <button class="btn" id="libsearchbtn" disabled>Search</button>
+          <div class="tabs">
+            <button id="libTabSearch" class="tab active">Search</button>
+            <button id="libTabAsk" class="tab">Ask</button>
           </div>
-          <button id="libReelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
-          <div id="libresults">
-            <div class="empty">Search across every video in this folder.</div>
+          <div id="libSearchPane">
+            <div class="searchrow">
+              <input id="libquery" type="text" placeholder="search across the whole folder…" />
+              <button class="btn" id="libsearchbtn" disabled>Search</button>
+            </div>
+            <button id="libReelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
+            <div id="libresults">
+              <div class="empty">Search across every video in this folder.</div>
+            </div>
+          </div>
+          <div id="libAskPane" class="hidden">
+            <div class="searchrow">
+              <input id="libquestion" type="text" placeholder="Ask across this whole folder…" />
+              <button class="btn" id="libaskbtn" disabled>Ask</button>
+            </div>
+            <div id="libAnswer" class="empty" style="margin-top:14px">Ask a question across every video — the answer cites the exact clip, click to jump there.</div>
           </div>
         </div>
       </section>
@@ -750,6 +763,7 @@
               ? s.total + (s.total === 1 ? " video" : " videos")
               : "indexing " + s.indexed + "/" + s.total + "…";
             document.getElementById("libsearchbtn").disabled = s.indexed < 1;
+            document.getElementById("libaskbtn").disabled = s.indexed < 1;
             renderLibVideoList(s.videos);
 
             var prog = document.getElementById("libProgress");
@@ -1049,6 +1063,11 @@
         document.getElementById("libplayer").removeAttribute("src");
         document.getElementById("libNow").innerHTML = "";
         document.getElementById("nowplaying").textContent = "Click a result or a video below to play it.";
+        document.getElementById("libquestion").value = "";
+        var la = document.getElementById("libAnswer");
+        la.className = "empty";
+        la.textContent = "Ask a question across every video — the answer cites the exact clip, click to jump there.";
+        showLibTab("search");
         libPoll = setInterval(pollLibrary, 2000);
         pollLibrary();
       }
@@ -1208,6 +1227,79 @@
       document.getElementById("askbtn").addEventListener("click", runAsk);
       document.getElementById("question").addEventListener("keydown", function (e) {
         if (e.key === "Enter") runAsk();
+      });
+
+      // ---- Library Q&A: ask across the whole folder ----
+      var lastLibSources = {};
+
+      function shortName(t) {
+        t = String(t || "");
+        return t.indexOf("/") >= 0 ? t.split("/").pop() : t;
+      }
+
+      function showLibTab(which) {
+        var s = which === "search";
+        document.getElementById("libSearchPane").classList.toggle("hidden", !s);
+        document.getElementById("libAskPane").classList.toggle("hidden", s);
+        document.getElementById("libTabSearch").classList.toggle("active", s);
+        document.getElementById("libTabAsk").classList.toggle("active", !s);
+      }
+
+      function runLibAsk() {
+        var q = document.getElementById("libquestion").value.trim();
+        if (!q || !collectionId) return;
+        var btn = document.getElementById("libaskbtn");
+        btn.disabled = true;
+        btn.textContent = "Thinking…";
+        var box = document.getElementById("libAnswer");
+        box.className = "";
+        box.innerHTML = '<span class="muted">Thinking across the folder…</span>';
+        fetch("/api/library/" + collectionId + "/qa", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q }),
+        })
+          .then(function (r) {
+            if (!r.ok) return r.json().then(function (e) { throw new Error(e.detail || "failed"); });
+            return r.json();
+          })
+          .then(function (d) { renderLibAnswer(d.answer, d.sources); })
+          .catch(function (e) {
+            box.className = "";
+            box.innerHTML = '<span style="color:#e0623e">' + escapeHtml(e.message) + "</span>";
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "Ask";
+          });
+      }
+
+      function renderLibAnswer(answer, sources) {
+        lastLibSources = {};
+        (sources || []).forEach(function (s) { lastLibSources[s.n] = s; });
+        var box = document.getElementById("libAnswer");
+        box.className = "";
+        box.innerHTML = escapeHtml(answer || "")
+          .replace(/\n/g, "<br>")
+          .replace(/\[(\d+)\]/g, function (m, n) {
+            var s = lastLibSources[n];
+            if (!s) return m;
+            return '<span class="cite" data-n="' + n + '">[' +
+              escapeHtml(shortName(s.video_title)) + " @ " + fmtTime(s.timestamp) + "]</span>";
+          });
+        box.querySelectorAll(".cite").forEach(function (el) {
+          el.addEventListener("click", function () {
+            var s = lastLibSources[el.getAttribute("data-n")];
+            if (s) playLibVideo(s.video_id, s.video_title, s.timestamp);
+          });
+        });
+      }
+
+      document.getElementById("libTabSearch").addEventListener("click", function () { showLibTab("search"); });
+      document.getElementById("libTabAsk").addEventListener("click", function () { showLibTab("ask"); });
+      document.getElementById("libaskbtn").addEventListener("click", runLibAsk);
+      document.getElementById("libquestion").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") runLibAsk();
       });
 
       loadAuth(); // header state + the caller's upload limit
