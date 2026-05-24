@@ -148,18 +148,21 @@ own* videos.
 
 ## Team
 
-**Chukwuebuka Ernest-Opara** — founder & sole engineer.
+**Chukwuebuka Ernest-Opara** — founder & sole engineer · Oakland.
 
-- Designed, built, and shipped the **entire product solo** — V1 through V3, auth,
-  and Stripe billing — to production.
-- *⟨prior background: engineering roles / education / domain — fill in.⟩*
+- **ML & Platform Engineer at GEICO** — ships ML deployment pipelines and
+  **embedding infrastructure** in production (Go · Python · Azure ML ·
+  Kubernetes · Terraform).
+- **MS & BS in Computer Science** (Houston-Victoria; Babcock).
+- Built **all of Scrubless solo** — V1–V3, auth, and Stripe billing — to
+  production.
 
-\vspace{0.4em}
+\vspace{0.3em}
 **In talks with two co-founders** with media experience to lead content and
 go-to-market.
 
-\footnotesize One technical founder who ships fast — a media-savvy founding team
-forming around a product that already works.
+\footnotesize Embedding infrastructure is the day job — exactly the engine under
+Scrubless.
 
 ## Vision
 
