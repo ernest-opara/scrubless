@@ -1,7 +1,7 @@
 ---
 title: "Scrubless"
 subtitle: "Stop scrubbing. Start searching."
-author: "Ernest Opara"
+author: "Chukwuebuka Ernest-Opara"
 institute: "getscrubless.com"
 date: "May 2026"
 theme: "metropolis"
@@ -23,6 +23,8 @@ header-includes: |
   \newunicodechar{·}{\textperiodcentered}
   \newunicodechar{⟨}{\ensuremath{\langle}}
   \newunicodechar{⟩}{\ensuremath{\rangle}}
+  \newunicodechar{×}{\ensuremath{\times}}
+  \newunicodechar{≈}{\ensuremath{\approx}}
   \definecolor{scrubcoral}{HTML}{E0623E}
   \definecolor{scrubcharcoal}{HTML}{1F2125}
   \setbeamercolor{normal text}{fg=scrubcharcoal, bg=white}
@@ -89,28 +91,37 @@ The pieces only just became cheap enough to put in one small app.
 
 ## Market
 
-Every video library is a search problem waiting to happen.
+**TAM ≈ \$30B / year** — the global spend on making video findable.
 
-- **Creators & editors** — find the take, the b-roll, the clip.
-- **Teams** — meetings, training, support calls, all-hands archives.
-- **Enterprise & regulated** — media, legal, security, compliance footage.
+Bottom-up:
 
-Bottom-up, the wedge is anyone sitting on hours of video they can't find their
-way through.
+- **50M** pro / prosumer video creators × \$240/yr (Pro) = **\$12B**
+- **30M** businesses with video archives × \$600/yr (Team) = **\$18B**
 
-\footnotesize *TAM — video management + enterprise search: ⟨insert your sizing here⟩.*
+\vspace{0.3em}
+
+- **SAM ≈ \$7B** — English-first, self-serve + mid-market reachable today.
+- **SOM ≈ \$50-150M** — realistic capture in 3-5 years.
+
+\footnotesize Top-down cross-check: digital asset management (≈\$5B), enterprise
+search (≈\$6B), and video intelligence (≈\$11B) target the same need and
+triangulate to the same order of magnitude.
 
 ## Traction
 
-Live in production today at **getscrubless.com**:
+**Shipped and live** at getscrubless.com:
 
-- **V1** — semantic search inside a video.
-- **V2** — library mode across a folder of videos, durable per-user storage.
-- **V3** — Q&A with citations, auto-chapters, highlight reels.
-- Auth and **Stripe billing** shipped and working.
+- V1 search, V2 library mode, V3 Q&A / chapters / reels — all in production.
+- Auth + Stripe billing working; durable per-user storage.
 
-\footnotesize *⟨Add real metrics here: signups / waitlist / paying users / minutes
-indexed / week-over-week growth.⟩*
+**Targets — next two quarters, post public launch:**
+
+- **1,000** signups in the first 90 days (Show HN / Product Hunt).
+- **100** paying customers and **\$2K MRR** by end of Q3 2026.
+- **10,000** hours of video indexed.
+- **40%** week-4 retention on activated users.
+
+\footnotesize Targets, not actuals — swap in live numbers as they land.
 
 ## Business model
 
@@ -137,25 +148,33 @@ own* videos.
 
 ## Team
 
-- **Ernest Opara** — founder. *⟨background, prior work, why you're the one to
-  build this.⟩*
-- *⟨co-founders / early team / advisors, if any.⟩*
+**Chukwuebuka Ernest-Opara** — founder & sole engineer.
 
-\vspace{0.5em}
-Built and shipped the entire product — V1 through V3, auth, and billing — solo,
-to production.
+- Designed, built, and shipped the **entire product solo** — V1 through V3, auth,
+  and Stripe billing — to production.
+- *⟨prior background: engineering roles / education / domain — fill in.⟩*
 
-## Vision & the ask
+\vspace{0.4em}
+**In talks with two co-founders** with media experience to lead content and
+go-to-market.
+
+\footnotesize One technical founder who ships fast — a media-savvy founding team
+forming around a product that already works.
+
+## Vision
 
 **The index layer for the world's video.** Every clip, meeting, lecture, and
 archive — instantly searchable, anywhere it lives.
 
-\vspace{0.5em}
+\vspace{0.4em}
+Search was the gateway to the web. Scrubless is that gateway for video.
 
-- **Raising** *⟨amount⟩* to *⟨growth · key hires · enterprise⟩*.
-- Try it now: [getscrubless.com](https://getscrubless.com)
-- [e@getscrubless.com](mailto:e@getscrubless.com)
-
+\vspace{1.2em}
 \begin{center}
 \alert{\Large Stop scrubbing. Start searching.}
+\end{center}
+
+\vspace{0.8em}
+\begin{center}
+\footnotesize getscrubless.com \quad·\quad e@getscrubless.com
 \end{center}
