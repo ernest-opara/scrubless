@@ -136,8 +136,6 @@ The pieces only just became cheap enough to put in one small app.
 - **10,000** hours of video indexed.
 - **40%** week-4 retention on activated users.
 
-\footnotesize Targets, not actuals — swap in live numbers as they land.
-
 ## Business model
 
 Freemium SaaS, priced on what costs us money: **indexed hours**.
