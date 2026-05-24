@@ -19,6 +19,10 @@ dist/
 
 # Generated diagram intermediates (rebuilt by docs/render.sh; final PDF is tracked)
 docs/diagrams/*.pdf
+# Raster diagram copies for the pptx build (rebuilt by docs/render.sh)
+docs/assets/pitch-flow.png
+docs/assets/market.png
+docs/assets/competition.png
 
 # macOS
 .DS_Store
