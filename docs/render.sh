@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Build the architecture doc and the pitch deck. Run after editing
-# ARCHITECTURE.md, PITCH.md, or diagrams/.
+# Build the architecture doc and the pitch deck (PDF + PowerPoint). Run after
+# editing ARCHITECTURE.md, PITCH.md, or diagrams/.
 #   ./docs/render.sh
+# Deps: pandoc, xelatex (TeX Live), graphviz (dot), poppler (pdftoppm),
+#       and python-pptx in ../.venv (pip install python-pptx).
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -28,7 +30,17 @@ pandoc PITCH.md -t beamer -o PITCH.pdf \
   --pdf-engine=xelatex
 echo "wrote $(pwd)/PITCH.pdf"
 
-# 4. Pitch deck as an editable PowerPoint (beamer-only LaTeX rewritten to
-#    plain Markdown; figures pointed at the PNG copies from step 1b).
-python3 md2pptx.py PITCH.md | pandoc -f markdown -t pptx -o PITCH.pptx
+# 4. Pitch deck as PowerPoint.
+#    (a) PITCH.pptx — pixel-perfect, brand-matching: each PITCH.pdf page becomes
+#        a full-bleed 16:9 slide image, so it looks identical to the PDF and is
+#        immune to font substitution on whoever opens it. This is the one to send.
+PPTX_PY="../.venv/bin/python"; [ -x "$PPTX_PY" ] || PPTX_PY="python3"
+pgdir="$(mktemp -d)"
+pdftoppm -png -r 300 PITCH.pdf "$pgdir/slide"
+"$PPTX_PY" pdf2pptx.py "$pgdir" PITCH.pptx
+rm -rf "$pgdir"
 echo "wrote $(pwd)/PITCH.pptx"
+#    (b) PITCH-editable.pptx — unbranded but text-editable, for quick tweaks
+#        (beamer-only LaTeX rewritten to plain Markdown; figures = PNGs from 1b).
+python3 md2pptx.py PITCH.md | pandoc -f markdown -t pptx -o PITCH-editable.pptx
+echo "wrote $(pwd)/PITCH-editable.pptx"
