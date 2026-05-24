@@ -150,19 +150,19 @@ own* videos.
 
 **Chukwuebuka Ernest-Opara** — founder & sole engineer · Oakland.
 
-- **ML & Platform Engineer at GEICO** — ships ML deployment pipelines and
-  **embedding infrastructure** in production (Go · Python · Azure ML ·
-  Kubernetes · Terraform).
+- **ML & Platform Engineer at GEICO** — ships **embedding infrastructure** and ML
+  deployment pipelines in production (Go · Python · Azure ML · Kubernetes).
+- **Videographer for several years** before tech — has lived the scrubbing
+  problem first-hand.
 - **MS & BS in Computer Science** (Houston-Victoria; Babcock).
-- Built **all of Scrubless solo** — V1–V3, auth, and Stripe billing — to
-  production.
+- Built **all of Scrubless solo** — V1–V3, auth, and Stripe billing.
 
 \vspace{0.3em}
 **In talks with two co-founders** with media experience to lead content and
 go-to-market.
 
-\footnotesize Embedding infrastructure is the day job — exactly the engine under
-Scrubless.
+\footnotesize Built the embedding engine *and* lived the problem it solves —
+rare founder-market fit for video.
 
 ## Vision
 
