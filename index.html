@@ -308,6 +308,24 @@
           </div>
         </div>
       </section>
+
+      <section id="adminView" class="hidden" style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+          <h2 style="margin:0">Admin</h2>
+          <span class="muted" id="adminWho"></span>
+        </div>
+        <div id="adminCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px"></div>
+        <div class="panel" style="margin-top:18px;padding:16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <h3 style="margin:0">Recent signups</h3>
+            <span class="muted" style="font-size:12px">last 10</span>
+          </div>
+          <div id="adminRecent" class="muted">Loading…</div>
+        </div>
+        <p class="muted" style="margin-top:18px;font-size:12px">
+          Revenue / MRR live in <a href="https://dashboard.stripe.com" target="_blank" style="color:var(--accent)">Stripe</a>. Traffic and logs in Railway.
+        </p>
+      </section>
     </div>
 
     <!-- Upgrade / pricing modal -->
@@ -374,8 +392,55 @@
             var hint = document.getElementById("limitHint");
             if (hint) hint.textContent = "Max " + fmtMB(s.upload_limit_bytes);
             if (s.user) loadMyLibrary();
+            if (location.pathname === "/admin") enterAdmin();
           })
           .catch(function () {});
+      }
+
+      // --- Admin (operator stats) — only useful when user.is_admin ---
+      function enterAdmin() {
+        if (!authState.user || !authState.user.is_admin) { location.href = "/"; return; }
+        ["upload","processing","workspace","libworkspace","myLibrary","folderPanel"]
+          .forEach(function (id) { var el = document.getElementById(id); if (el) el.classList.add("hidden"); });
+        show("adminView");
+        document.getElementById("adminWho").textContent = "signed in as " + authState.user.email;
+        loadAdminStats();
+      }
+      function loadAdminStats() {
+        fetch("/api/admin/stats")
+          .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+          .then(renderAdminStats)
+          .catch(function (e) {
+            document.getElementById("adminCards").innerHTML =
+              '<div class="panel" style="padding:16px;grid-column:1 / -1">Failed to load stats: ' + e.message + "</div>";
+          });
+      }
+      function card(label, value, sub) {
+        return '<div class="panel" style="padding:14px 16px">' +
+                 '<div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:0.04em">' + label + "</div>" +
+                 '<div style="font-size:28px;font-weight:700;margin:6px 0 2px">' + value + "</div>" +
+                 '<div class="muted" style="font-size:12px">' + (sub || "") + "</div>" +
+               "</div>";
+      }
+      function renderAdminStats(s) {
+        var tierBits = Object.keys(s.users.by_tier || {}).sort()
+          .map(function (k) { return k + ": " + s.users.by_tier[k]; }).join(" · ") || "—";
+        var statusBits = Object.keys(s.videos.by_status || {}).sort()
+          .map(function (k) { return k + ": " + s.videos.by_status[k]; }).join(" · ") || "—";
+        document.getElementById("adminCards").innerHTML =
+          card("Users", s.users.total, tierBits) +
+          card("Videos", s.videos.total, statusBits) +
+          card("Hours indexed", s.videos.hours_indexed + " h", "across all videos") +
+          card("Collections", s.collections.total, "library folders") +
+          card("Storage", s.storage.gb + " GB", s.storage.bytes.toLocaleString() + " bytes");
+        var recent = (s.recent_signups || []).map(function (u) {
+          var when = new Date(u.created_at * 1000).toLocaleString();
+          return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)">' +
+                   '<span>' + (u.email || "(no email)") + '</span>' +
+                   '<span class="muted" style="font-size:12px">' + u.tier + " · " + when + "</span>" +
+                 "</div>";
+        }).join("");
+        document.getElementById("adminRecent").innerHTML = recent || "No signups yet.";
       }
 
       function renderAuth() {
@@ -389,11 +454,15 @@
                 ? '<button class="btn-ghost" onclick="openPricing()">Upgrade</button>'
                 : '<button class="btn-ghost" onclick="openPortal()">Manage plan</button>';
           }
+          var adminBtn = authState.user.is_admin
+            ? '<button class="btn-ghost" onclick="location.href=\'/admin\'">Admin</button>'
+            : "";
           el.innerHTML =
             '<span class="muted">' + authState.user.email +
             ' · <strong style="color:var(--accent)">' + authState.user.tier +
             '</strong></span>' +
             '<button class="btn-ghost" onclick="location.href=\'/\'">My library</button>' +
+            adminBtn +
             billing +
             '<button class="btn-ghost" onclick="location.href=\'/api/auth/logout\'">Log out</button>';
         } else if (authState.auth_enabled) {

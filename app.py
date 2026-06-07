@@ -47,6 +47,11 @@ ENRICH_TOP_N = 3  # how many top results get a Claude Vision description
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 
+# Comma-separated emails (case-insensitive) allowed into /admin.
+ADMIN_EMAILS = {
+    e.strip().lower() for e in os.getenv("ADMIN_EMAILS", "").split(",") if e.strip()
+}
+
 # Auth (Auth0) + sessions + database
 SESSION_SECRET = (
     os.getenv("SESSION_SECRET")
@@ -217,6 +222,10 @@ def current_user(request):
         return None
     with Session(engine) as s:
         return s.get(User, uid)
+
+
+def is_admin(user):
+    return bool(user and user.email and user.email.lower() in ADMIN_EMAILS)
 
 
 def upload_limit_for(user):
@@ -755,10 +764,59 @@ async def auth_logout(request: Request):
 def auth_me(request: Request):
     user = current_user(request)
     return {
-        "user": ({"email": user.email, "tier": user.tier} if user else None),
+        "user": (
+            {"email": user.email, "tier": user.tier, "is_admin": is_admin(user)}
+            if user else None
+        ),
         "upload_limit_bytes": upload_limit_for(user),
         "auth_enabled": AUTH0_ENABLED,
         "billing_enabled": STRIPE_ENABLED,
+    }
+
+
+@app.get("/api/admin/stats")
+def admin_stats(request: Request):
+    """Operator dashboard: user / video / collection counts, hours indexed,
+    storage used, and recent signups. Gated by ADMIN_EMAILS."""
+    user = current_user(request)
+    if not is_admin(user):
+        raise HTTPException(403, "admin only")
+    from sqlalchemy import func
+    with Session(engine) as s:
+        users_total = s.scalar(select(func.count()).select_from(User)) or 0
+        by_tier = dict(s.execute(
+            select(User.tier, func.count()).group_by(User.tier)
+        ).all())
+        videos_total = s.scalar(select(func.count()).select_from(Video)) or 0
+        by_status = dict(s.execute(
+            select(Video.status, func.count()).group_by(Video.status)
+        ).all())
+        total_segments = s.scalar(select(func.coalesce(func.sum(Video.total_segments), 0))) or 0
+        collections_total = s.scalar(select(func.count()).select_from(Collection)) or 0
+        recent = s.execute(
+            select(User.email, User.tier, User.created_at)
+            .order_by(User.created_at.desc())
+            .limit(10)
+        ).all()
+    bytes_used = 0
+    for dirpath, _dirs, files in os.walk(STORAGE):
+        for f in files:
+            try:
+                bytes_used += os.path.getsize(os.path.join(dirpath, f))
+            except OSError:
+                pass
+    return {
+        "users": {"total": users_total, "by_tier": by_tier},
+        "videos": {
+            "total": videos_total,
+            "by_status": by_status,
+            "hours_indexed": round(total_segments * FRAME_INTERVAL / 3600.0, 1),
+        },
+        "collections": {"total": collections_total},
+        "storage": {"bytes": bytes_used, "gb": round(bytes_used / 1024**3, 2)},
+        "recent_signups": [
+            {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
+        ],
     }
 
 
@@ -1450,6 +1508,11 @@ def reel_status(reel_id: str):
 
 @app.get("/")
 def index():
+    return FileResponse(str(ROOT / "index.html"))
+
+
+@app.get("/admin")
+def admin_page():
     return FileResponse(str(ROOT / "index.html"))
 
 
