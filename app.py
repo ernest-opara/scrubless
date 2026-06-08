@@ -112,7 +112,9 @@ VIDEO_EXTS = {".mp4", ".mov", ".mkv", ".avi", ".webm", ".m4v", ".mpg", ".mpeg", 
 
 app = FastAPI(title="Scrubless")
 app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
-app.mount("/storage", StaticFiles(directory=str(STORAGE)), name="storage")
+# Static-mount only the public mascot. Storage is gated by storage_serve() below
+# so an uploader's videos / frames are only visible to the uploader (logged-in
+# users by owner; anonymous uploads by per-session allowlist).
 app.mount("/scrubby", StaticFiles(directory=str(ROOT / "scrubby")), name="scrubby")
 
 
@@ -159,6 +161,7 @@ class Collection(Base):
     name: Mapped[str] = mapped_column(String(512), default="")
     path: Mapped[str] = mapped_column(String(1024), default="")
     created: Mapped[float] = mapped_column(Float, default=time.time)
+    owner: Mapped[Optional[int]] = mapped_column(nullable=True, default=None)
 
 
 class Event(Base):
@@ -180,22 +183,28 @@ Base.metadata.create_all(engine)
 
 def ensure_columns():
     """Add columns introduced after a table was first created (create_all won't
-    alter an existing table). Cross-DB, idempotent, best-effort."""
-    wanted = {"videos": {"summary": "VARCHAR(2000)", "chapters": "VARCHAR(4000)"}}
+    alter an existing table). Cross-DB, idempotent, best-effort. The spec is
+    the full SQL after `ADD COLUMN <name>` so each column carries its own
+    DEFAULT (text vs integer can't share one)."""
+    wanted = {
+        "videos": {
+            "summary": "VARCHAR(2000) DEFAULT ''",
+            "chapters": "VARCHAR(4000) DEFAULT ''",
+        },
+        "collections": {"owner": "INTEGER DEFAULT NULL"},
+    }
     insp = inspect(engine)
     for table, cols in wanted.items():
         try:
             existing = {c["name"] for c in insp.get_columns(table)}
         except Exception:
             continue  # table doesn't exist yet — create_all already made it
-        for name, coltype in cols.items():
+        for name, spec in cols.items():
             if name in existing:
                 continue
             try:
                 with engine.begin() as conn:
-                    conn.execute(
-                        text("ALTER TABLE %s ADD COLUMN %s %s DEFAULT ''" % (table, name, coltype))
-                    )
+                    conn.execute(text("ALTER TABLE %s ADD COLUMN %s %s" % (table, name, spec)))
                 print("[scrubless] migrated: added %s.%s" % (table, name))
             except Exception as exc:  # noqa: BLE001
                 print("[scrubless] add column %s.%s: %s" % (table, name, exc))
@@ -246,6 +255,113 @@ def record_event(kind):
             s.commit()
     except Exception as exc:  # noqa: BLE001
         print("[scrubless] record_event %s failed: %s" % (kind, exc))
+
+
+# --------------------------------------------------------------------------
+# Access control
+# --------------------------------------------------------------------------
+SAMPLE_ID = "sample"
+
+
+def remember_anon_resource(request: Request, kind: str, rid: str):
+    """Remember that this anonymous session owns this video/collection/reel.
+    Lets the SAME browser session keep accessing what it just uploaded without
+    a login, while a different visitor can't reach it by guessing the id."""
+    key = "my_" + kind
+    owned = request.session.get(key) or []
+    if rid not in owned:
+        owned.append(rid)
+        # cap so an attacker can't bloat the cookie
+        request.session[key] = owned[-200:]
+
+
+def _owned_by_session(request: Request, kind: str, rid: str) -> bool:
+    return rid in (request.session.get("my_" + kind) or [])
+
+
+def can_access_video(video_id: str, request: Request) -> bool:
+    if video_id == SAMPLE_ID:
+        return True
+    video = VIDEOS.get(video_id)
+    if not video:
+        return False
+    user = current_user(request)
+    if is_admin(user):
+        return True
+    owner = video.get("owner")
+    if owner is not None:
+        return bool(user and user.id == owner)
+    return _owned_by_session(request, "videos", video_id)
+
+
+def can_access_collection(collection_id: str, request: Request) -> bool:
+    coll = COLLECTIONS.get(collection_id)
+    if not coll:
+        return False
+    user = current_user(request)
+    if is_admin(user):
+        return True
+    owner = coll.get("owner")
+    if owner is not None:
+        return bool(user and user.id == owner)
+    return _owned_by_session(request, "collections", collection_id)
+
+
+def can_access_reel(reel_id: str, request: Request) -> bool:
+    reel = REELS.get(reel_id)
+    if not reel:
+        return False
+    user = current_user(request)
+    if is_admin(user):
+        return True
+    owner = reel.get("owner")
+    if owner is not None:
+        return bool(user and user.id == owner)
+    return _owned_by_session(request, "reels", reel_id)
+
+
+def require_video(video_id: str, request: Request) -> dict:
+    """Return the video dict if the caller may access it, else raise 404.
+    Using 404 (not 403) prevents enumeration of valid video ids."""
+    if not can_access_video(video_id, request):
+        raise HTTPException(status_code=404, detail="video not found")
+    return VIDEOS[video_id]
+
+
+def require_collection(collection_id: str, request: Request) -> dict:
+    if not can_access_collection(collection_id, request):
+        raise HTTPException(status_code=404, detail="collection not found")
+    return COLLECTIONS[collection_id]
+
+
+def safe_video_ext(filename: str) -> str:
+    """Return a safe video extension from a user-supplied filename, or .mp4.
+    Refusing non-video extensions prevents serving an attacker's .html/.svg
+    from our own origin via the storage route (stored-XSS)."""
+    ext = Path(filename or "").suffix.lower()
+    return ext if ext in VIDEO_EXTS else ".mp4"
+
+
+@app.get("/storage/{rest:path}")
+def storage_serve(rest: str, request: Request):
+    """Gated replacement for the previous public StaticFiles mount.
+    Resolves the path under STORAGE (rejecting traversal), then checks access
+    based on whether the first path segment is a video_id or a reel id."""
+    target = (STORAGE / rest).resolve()
+    storage_root = STORAGE.resolve()
+    if storage_root != target and storage_root not in target.parents:
+        raise HTTPException(status_code=404, detail="not found")
+    if not target.is_file():
+        raise HTTPException(status_code=404, detail="not found")
+    first = rest.split("/", 1)[0]
+    if first == "reels":
+        reel_id = Path(rest).stem
+        if not can_access_reel(reel_id, request):
+            raise HTTPException(status_code=404, detail="not found")
+    else:
+        if not can_access_video(first, request):
+            raise HTTPException(status_code=404, detail="not found")
+    return FileResponse(str(target))
 
 
 def upload_limit_for(user):
@@ -330,6 +446,7 @@ def persist_collection(collection_id):
                     name=c.get("name") or "",
                     path=c.get("path") or "",
                     created=c.get("created") or time.time(),
+                    owner=c.get("owner"),
                 )
             )
             s.commit()
@@ -610,7 +727,7 @@ def process_video(video_id):
 # uploading anything. Storage is ephemeral (e.g. on Railway), so this re-runs
 # on every boot; it's cheap for a short clip.
 # --------------------------------------------------------------------------
-SAMPLE_ID = "sample"
+# SAMPLE_ID is declared earlier (next to the access-control helpers).
 
 
 def ingest_sample():
@@ -689,6 +806,7 @@ def restore_state():
                     "path": c.path,
                     "video_ids": [],
                     "created": c.created,
+                    "owner": c.owner,
                 }
             for v in s.scalars(select(Video)).all():
                 try:
@@ -981,7 +1099,7 @@ async def upload(
     vdir = STORAGE / video_id
     vdir.mkdir(parents=True, exist_ok=True)
 
-    ext = Path(file.filename or "").suffix.lower() or ".mp4"
+    ext = safe_video_ext(file.filename)
     source = vdir / ("source" + ext)
     total = 0
     with open(source, "wb") as out:
@@ -1006,16 +1124,16 @@ async def upload(
         "created": time.time(),
         "owner": user.id if user else None,
     }
+    if not user:
+        remember_anon_resource(request, "videos", video_id)
     persist_video(video_id)
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}
 
 
 @app.get("/api/status/{video_id}")
-def status(video_id: str):
-    video = VIDEOS.get(video_id)
-    if not video:
-        raise HTTPException(status_code=404, detail="video not found")
+def status(video_id: str, request: Request):
+    video = require_video(video_id, request)
     return {
         "status": video["status"],
         "progress": video["progress"],
@@ -1029,11 +1147,9 @@ def status(video_id: str):
 
 
 @app.post("/api/search/{video_id}")
-def search(video_id: str, req: SearchRequest):
+def search(video_id: str, req: SearchRequest, request: Request):
     record_event("search")
-    video = VIDEOS.get(video_id)
-    if not video:
-        raise HTTPException(status_code=404, detail="video not found")
+    video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
 
@@ -1092,12 +1208,10 @@ def transcript_context(video_id, limit=14000):
 
 
 @app.post("/api/qa/{video_id}")
-def video_qa(video_id: str, body: QARequest):
+def video_qa(video_id: str, body: QARequest, request: Request):
     """Answer a question about one video, grounded in its transcript."""
     record_event("qa")
-    video = VIDEOS.get(video_id)
-    if not video:
-        raise HTTPException(status_code=404, detail="video not found")
+    video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
     question = body.question.strip()
@@ -1137,24 +1251,21 @@ def video_qa(video_id: str, body: QARequest):
 
 
 @app.delete("/api/videos/{video_id}")
-def delete_endpoint(video_id: str):
+def delete_endpoint(video_id: str, request: Request):
     if video_id == SAMPLE_ID:
         raise HTTPException(status_code=400, detail="the sample video can't be deleted")
-    if video_id not in VIDEOS:
-        raise HTTPException(status_code=404, detail="video not found")
+    require_video(video_id, request)  # 404 if missing or not owned
     delete_video(video_id)
     return {"deleted": video_id}
 
 
 @app.get("/api/videos/{video_id}/source")
-def video_source(video_id: str):
+def video_source(video_id: str, request: Request):
     """Stream a video's source file (works for in-place library videos too).
 
     FileResponse honours Range requests, so the <video> element can seek.
     """
-    video = VIDEOS.get(video_id)
-    if not video:
-        raise HTTPException(status_code=404, detail="video not found")
+    video = require_video(video_id, request)
     src = Path(video["source"])
     if not src.exists():
         raise HTTPException(status_code=404, detail="source file missing")
@@ -1260,15 +1371,19 @@ class CreateCollectionRequest(BaseModel):
 
 
 @app.post("/api/library/create")
-def library_create(body: CreateCollectionRequest):
+def library_create(body: CreateCollectionRequest, request: Request):
     """Create an empty collection (for hosted folder upload)."""
+    user = current_user(request)
     collection_id = uuid.uuid4().hex[:12]
     COLLECTIONS[collection_id] = {
         "name": body.name or "Uploaded folder",
         "path": "",  # uploaded, not a server-side path
         "video_ids": [],
         "created": time.time(),
+        "owner": user.id if user else None,
     }
+    if not user:
+        remember_anon_resource(request, "collections", collection_id)
     persist_collection(collection_id)
     return {"collection_id": collection_id, "name": COLLECTIONS[collection_id]["name"]}
 
@@ -1282,9 +1397,7 @@ async def library_upload(
 ):
     """Upload one video into a collection, then index it (hosted folder mode)."""
     record_event("upload")
-    coll = COLLECTIONS.get(collection_id)
-    if not coll:
-        raise HTTPException(status_code=404, detail="collection not found")
+    coll = require_collection(collection_id, request)
 
     user = current_user(request)
     cap = upload_limit_for(user)
@@ -1295,7 +1408,7 @@ async def library_upload(
     video_id = uuid.uuid4().hex[:12]
     vdir = STORAGE / video_id
     vdir.mkdir(parents=True, exist_ok=True)
-    ext = Path(file.filename or "").suffix.lower() or ".mp4"
+    ext = safe_video_ext(file.filename)
     source = vdir / ("source" + ext)
     total = 0
     with open(source, "wb") as out:
@@ -1322,16 +1435,16 @@ async def library_upload(
         "collection_id": collection_id,
     }
     coll["video_ids"].append(video_id)
+    if not user:
+        remember_anon_resource(request, "videos", video_id)
     persist_video(video_id)
     background_tasks.add_task(process_video, video_id)
     return {"id": video_id, "status": "processing"}
 
 
 @app.get("/api/library/{collection_id}")
-def library_status(collection_id: str):
-    coll = COLLECTIONS.get(collection_id)
-    if not coll:
-        raise HTTPException(status_code=404, detail="collection not found")
+def library_status(collection_id: str, request: Request):
+    coll = require_collection(collection_id, request)
     videos, indexed = [], 0
     for vid in coll["video_ids"]:
         v = VIDEOS.get(vid)
@@ -1358,12 +1471,10 @@ def library_status(collection_id: str):
 
 
 @app.post("/api/library/{collection_id}/search")
-def library_search(collection_id: str, req: SearchRequest):
+def library_search(collection_id: str, req: SearchRequest, request: Request):
     """Search across every indexed video in a collection."""
     record_event("search")
-    coll = COLLECTIONS.get(collection_id)
-    if not coll:
-        raise HTTPException(status_code=404, detail="collection not found")
+    coll = require_collection(collection_id, request)
     query = req.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="query is required")
@@ -1408,13 +1519,11 @@ def library_search(collection_id: str, req: SearchRequest):
 
 
 @app.post("/api/library/{collection_id}/qa")
-def library_qa(collection_id: str, body: QARequest):
+def library_qa(collection_id: str, body: QARequest, request: Request):
     """Answer a question across a whole collection, with cited sources that
     map back to a specific video + timestamp."""
     record_event("qa")
-    coll = COLLECTIONS.get(collection_id)
-    if not coll:
-        raise HTTPException(status_code=404, detail="collection not found")
+    coll = require_collection(collection_id, request)
     question = body.question.strip()
     if not question:
         raise HTTPException(status_code=400, detail="question is required")
@@ -1519,22 +1628,35 @@ def build_reel(reel_id, moments, clip_seconds):
             ]
         )
         subprocess.run(cmd, check=True)
-        REELS[reel_id] = {"status": "ready", "url": "/storage/reels/%s.mp4" % reel_id, "error": ""}
+        REELS.setdefault(reel_id, {}).update(
+            status="ready", url="/storage/reels/%s.mp4" % reel_id, error=""
+        )
         print("[scrubless] reel %s ready (%d clips)" % (reel_id, n))
     except Exception as exc:  # noqa: BLE001
-        REELS[reel_id] = {"status": "error", "url": "", "error": str(exc)}
+        REELS.setdefault(reel_id, {}).update(status="error", url="", error=str(exc))
         print("[scrubless] reel %s failed: %s" % (reel_id, exc))
 
 
 @app.post("/api/reel")
-def create_reel(body: ReelRequest):
+def create_reel(body: ReelRequest, request: Request):
     record_event("reel")
     moments = [{"video_id": m.video_id, "timestamp": m.timestamp} for m in body.moments][:12]
     if not moments:
         raise HTTPException(status_code=400, detail="no moments to build a reel from")
+    # Reject reels that mix in any video the caller can't already access — stops
+    # an attacker from stitching someone else's footage into their own reel.
+    for m in moments:
+        if not can_access_video(m["video_id"], request):
+            raise HTTPException(status_code=404, detail="video not found")
+    user = current_user(request)
     clip_seconds = min(max(body.clip_seconds, 2.0), 10.0)
     reel_id = uuid.uuid4().hex[:12]
-    REELS[reel_id] = {"status": "building", "url": "", "error": ""}
+    REELS[reel_id] = {
+        "status": "building", "url": "", "error": "",
+        "owner": user.id if user else None,
+    }
+    if not user:
+        remember_anon_resource(request, "reels", reel_id)
     threading.Thread(
         target=build_reel, args=(reel_id, moments, clip_seconds), daemon=True
     ).start()
@@ -1542,11 +1664,10 @@ def create_reel(body: ReelRequest):
 
 
 @app.get("/api/reel/{reel_id}")
-def reel_status(reel_id: str):
-    r = REELS.get(reel_id)
-    if not r:
+def reel_status(reel_id: str, request: Request):
+    if not can_access_reel(reel_id, request):
         raise HTTPException(status_code=404, detail="reel not found")
-    return r
+    return REELS[reel_id]
 
 
 @app.get("/")
