@@ -55,19 +55,21 @@ language (Python), one backend file (`app.py`), one frontend file
 
 | Concern            | Choice                                              |
 |--------------------|-----------------------------------------------------|
-| Web framework      | FastAPI (single file: `app.py`)                     |
+| Web framework      | FastAPI — 14 sibling modules registered as routers, `app.py` is the thin entry |
 | ASGI server        | uvicorn                                             |
 | Video processing   | ffmpeg via `subprocess` (frames + audio)            |
 | Visual embeddings  | OpenCLIP **ViT-B/32** (`laion2b_s34b_b79k`)         |
 | Vector search      | ChromaDB (in-process `PersistentClient`, cosine)    |
 | Transcription      | OpenAI Whisper API (`whisper-1`) — optional         |
-| Result enrichment  | Anthropic Claude Vision (`claude-sonnet-4-6`)       |
+| LLM (Vision / chapters / Q&A) | Anthropic Claude (`claude-sonnet-4-6`)   |
+| Rate limiting      | `slowapi` (per-IP, in-memory)                       |
 | Frontend           | One `index.html` — vanilla JS + CSS, no build step  |
 | Auth               | Auth0 (OIDC) via Authlib + signed session cookies   |
 | Accounts DB        | SQLAlchemy 2.0 — SQLite (dev) / Postgres (prod)     |
-| Billing            | Stripe Checkout + Customer Portal + webhooks        |
+| Billing            | Stripe Checkout + Customer Portal + signed webhooks |
 | Deployment         | Docker image on Railway; custom domain via GoDaddy  |
 | Docs               | Markdown + Graphviz, rendered to PDF by pandoc       |
+| PowerPoint export  | `python-pptx` (pixel-match each PDF page → 16:9 slide) |
 
 **Deliberately *not* used:** Go, Docker Compose for dev, Terraform/AWS/ECS/S3,
 React build pipeline, face recognition, knowledge graphs, YouTube video
@@ -135,41 +137,54 @@ ChromaDB for the nearest frames.
 - **`segments`** (ChromaDB, on the storage volume) — one row per frame:
   embedding + metadata (`video_id`, `collection_id`, `timestamp`, `frame_path`,
   `transcript_segment`). Distance space: **cosine**.
-- **`VIDEOS` / `COLLECTIONS`** (in-memory) — fast caches of per-video status and
-  folder membership, rebuilt from the DB on boot by `restore_state()` (any video
-  left mid-index is resumed). No longer the source of truth.
+- **`events`** (relational) — `(id, kind, at)`. One row per page view / search
+  / Q&A / upload / reel, written fire-and-forget by `record_event()`. Feeds
+  the admin dashboard's totals, 24h / 7d windows, and per-day sparkline.
+- **`VIDEOS` / `COLLECTIONS` / `REELS`** (in-memory, in `state.py`) — fast
+  caches of per-video status, folder membership, and reel-build status, rebuilt
+  from the DB on boot by `restore_state()` (any video left mid-index is
+  resumed). Anonymous ownership is tracked in the signed session cookie under
+  `my_videos` / `my_collections` / `my_reels`, capped at 200 entries each.
 
 \newpage
 
 # API reference
 
-| Method | Path                       | Purpose                                   |
-|--------|----------------------------|-------------------------------------------|
-| GET    | `/`                        | Serve `index.html`                        |
-| POST   | `/api/upload`              | Upload a video, start indexing (cap-gated)|
-| GET    | `/api/status/{id}`         | Poll indexing status / progress           |
-| POST   | `/api/search/{id}`         | Natural-language search of one video      |
-| POST   | `/api/qa/{id}`             | Ask a question about a video, cited (V3)   |
-| DELETE | `/api/videos/{id}`         | Delete a video (sample is protected)      |
-| GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)  |
-| POST   | `/api/library/pick`        | Native folder chooser (local macOS) (V2)  |
-| POST   | `/api/library/scan`        | Index every video under a folder (V2)     |
-| POST   | `/api/library/create`      | Create an empty collection (upload) (V2)  |
-| POST   | `/api/library/{id}/upload` | Upload a video into a collection (V2)     |
-| GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)|
-| POST   | `/api/library/{id}/search` | Search across a whole collection (V2)     |
-| POST   | `/api/library/{id}/qa`     | Ask across a collection, cited (V3)        |
-| POST   | `/api/reel`                | Build a highlight reel from moments (V3)   |
-| GET    | `/api/reel/{id}`           | Reel build status + URL (V3)               |
-| GET    | `/api/auth/login`          | Redirect to Auth0 Universal Login         |
-| GET    | `/api/auth/callback`       | OIDC callback → create/find user, session |
-| GET    | `/api/auth/logout`         | Clear session + Auth0 logout              |
-| GET    | `/api/auth/me`             | Current user, upload cap, feature flags   |
-| GET    | `/api/me/library`          | Signed-in user's own videos + folders (V2)|
-| POST   | `/api/billing/checkout`    | Create a Stripe Checkout session          |
-| POST   | `/api/billing/portal`      | Open the Stripe Customer Portal           |
-| POST   | `/api/billing/webhook`     | Stripe webhook → update tier              |
-| —      | `/storage/*`, `/scrubby/*` | Static mounts (frames/video, mascot)      |
+Every `{id}` route resolves through the ownership gate (`require_video` /
+`require_collection` / `can_access_reel`): a 404 is returned to anyone who
+doesn't own the resource (admins see everything; the sample video is public).
+Rate limits are per-IP and shown as the `[N/window]` suffix where set.
+
+| Method | Path                       | Purpose                                              |
+|--------|----------------------------|------------------------------------------------------|
+| GET    | `/`                        | Serve `index.html`                                   |
+| GET    | `/admin`                   | Serve `index.html` (SPA shows admin view if admin)   |
+| GET    | `/storage/{path}`          | Gated stream of any file under `STORAGE` (frames, source.mp4, reels) — replaces the previous public static mount |
+| —      | `/scrubby/*`               | Static mount (mascot SVGs only — no user content)    |
+| POST   | `/api/upload`              | Upload a video, start indexing — cap-gated, `[20/h]` |
+| GET    | `/api/status/{id}`         | Poll indexing status / progress                      |
+| POST   | `/api/search/{id}`         | Natural-language search of one video — `[60/min]`    |
+| POST   | `/api/qa/{id}`             | Ask a question about a video, cited (V3) — `[20/min]` |
+| DELETE | `/api/videos/{id}`         | Delete a video (sample is protected)                 |
+| GET    | `/api/videos/{id}/source`  | Stream a video file, range-seekable (V2)             |
+| POST   | `/api/library/pick`        | Native folder chooser — **localhost-only** (V2)      |
+| POST   | `/api/library/scan`        | Index every video under a folder — **localhost-only** (V2) |
+| POST   | `/api/library/create`      | Create an empty collection (upload) (V2)             |
+| POST   | `/api/library/{id}/upload` | Upload a video into a collection (V2) — `[60/h]`     |
+| GET    | `/api/library/{id}`        | Collection status + per-video progress (V2)          |
+| POST   | `/api/library/{id}/search` | Search across a whole collection (V2) — `[60/min]`   |
+| POST   | `/api/library/{id}/qa`     | Ask across a collection, cited (V3) — `[20/min]`     |
+| POST   | `/api/reel`                | Build a highlight reel from moments (V3) — `[10/h]`  |
+| GET    | `/api/reel/{id}`           | Reel build status + URL (V3)                         |
+| GET    | `/api/auth/login`          | Redirect to Auth0 Universal Login — `[20/min]`       |
+| GET    | `/api/auth/callback`       | OIDC callback → create/find user, session            |
+| GET    | `/api/auth/logout`         | Clear session + Auth0 logout                         |
+| GET    | `/api/auth/me`             | Current user (incl. `is_admin`), upload cap, flags   |
+| GET    | `/api/me/library`          | Signed-in user's own videos + folders (V2)           |
+| POST   | `/api/billing/checkout`    | Create a Stripe Checkout session                     |
+| POST   | `/api/billing/portal`      | Open the Stripe Customer Portal                      |
+| POST   | `/api/billing/webhook`     | Stripe webhook → update tier (signature-verified)    |
+| GET    | `/api/admin/stats`         | Operator dashboard JSON — gated by `ADMIN_EMAILS`    |
 
 \newpage
 
@@ -199,19 +214,20 @@ Access is gated by upload size; anonymous visitors are treated as the free tier.
 | Variable                          | Enables / controls                       |
 |-----------------------------------|------------------------------------------|
 | `OPENAI_API_KEY`                  | Whisper transcription (else visual-only) |
-| `ANTHROPIC_API_KEY`               | Claude Vision result enrichment          |
-| `SESSION_SECRET` / `AUTH0_SECRET` | Signed session-cookie key                |
-| `APP_BASE_URL`                    | Public base URL for OAuth/Stripe redirects|
+| `ANTHROPIC_API_KEY`               | Claude Vision enrichment + chapters + Q&A |
+| `SESSION_SECRET` / `AUTH0_SECRET` | Signed session-cookie key — **must be ≥32 chars on HTTPS or the app refuses to boot** |
+| `APP_BASE_URL`                    | Public base URL for OAuth/Stripe redirects; `https://` flips on `Secure` cookies + HSTS |
 | `AUTH0_DOMAIN`                    | Auth0 tenant (scheme/slash tolerated)    |
 | `AUTH0_CLIENT_ID` / `_SECRET`     | Auth0 application credentials            |
-| `DATABASE_URL`                    | SQLite (dev) or Postgres (prod)          |
+| `DATABASE_URL`                    | SQLite (dev) or Postgres (prod) — `postgres://` normalized to `postgresql://` |
+| `ADMIN_EMAILS`                    | Comma-separated allowlist for `/admin` (case-insensitive) |
 | `STRIPE_SECRET_KEY`               | Enables billing                          |
 | `STRIPE_WEBHOOK_SECRET`           | Verifies webhook signatures              |
 | `STRIPE_PRICE_PRO` / `_STUDIO`    | Stripe price ids per plan                |
 
 Feature flags derived at startup: `AUTH0_ENABLED` (all three Auth0 vars present),
-`STRIPE_ENABLED` (`STRIPE_SECRET_KEY` present). Missing keys downgrade the
-feature, never crash the app.
+`STRIPE_ENABLED` (`STRIPE_SECRET_KEY` present), `IS_HTTPS` (`APP_BASE_URL` starts
+with `https://`). Missing keys downgrade the feature, never crash the app.
 
 \newpage
 
@@ -239,22 +255,123 @@ feature, never crash the app.
 
 ## Project layout
 
+The backend used to be a single 1.7k-line `app.py`. It's now 14 sibling modules
+that import each other in a one-way DAG (`config` → `state` → `models` →
+`embeddings`/`auth` → `access`/`billing`/`indexing` → route modules → `app`). The
+frontend is still one `index.html` (vanilla JS, no build).
+
 ```
 clipfind/
-├── app.py              # entire backend
-├── index.html          # entire frontend
+├── app.py            # FastAPI entry — middleware, mounts, router wiring, threads
+├── config.py         # env vars, paths, tier caps, enabled flags (cheap; no I/O)
+├── state.py          # in-memory VIDEOS / COLLECTIONS / REELS + SAMPLE_ID
+├── ratelimit.py      # shared slowapi Limiter (imported by every route module)
+├── models.py         # SQLAlchemy + engine + ensure_columns + persist_* + record_event
+├── embeddings.py     # CLIP model + Chroma collection + Claude (describe + summarize)
+├── auth.py           # Auth0 OAuth + current_user + is_admin + /api/auth/* router
+├── access.py         # can_access_* / require_* / require_localhost / safe_video_ext
+│                     # + gated /storage/{path} router (replaces public static mount)
+├── billing.py        # Stripe init + tier helpers + /api/billing/* router
+├── indexing.py       # ffmpeg + Whisper + process_video + ingest_sample / expiry / restore
+├── videos.py         # /api/upload + /api/status + /api/videos/{id} (+ /source)
+├── library.py        # /api/library/* + /api/me/library
+├── search.py         # /api/search/{id} + /api/qa/{id} + library variants
+├── reels.py          # build_reel + /api/reel/*
+├── admin.py          # /api/admin/stats + /admin
+├── index.html        # entire frontend (vanilla JS + CSS, no build step)
 ├── requirements.txt
 ├── Dockerfile, railway.toml, .dockerignore
-├── assets/sample.mp4   # auto-indexed demo clip (Big Buck Bunny)
-├── scrubby/            # mascot SVGs + favicon
-├── docs/
-│   ├── ARCHITECTURE.md     # source of truth (this document)
-│   ├── ARCHITECTURE.pdf    # rendered output
-│   ├── render.sh           # diagrams + pandoc build
-│   └── diagrams/*.dot      # Graphviz sources
-├── storage/            # runtime: uploads, frames, chroma (gitignored)
-└── legacy/             # archived Go + React + sidecar stack
+├── README.md         # one-screen orientation for a fresh visitor
+├── assets/           # sample.mp4 (auto-indexed demo) + screenshots used in PITCH
+├── scrubby/          # mascot SVGs + favicon (publicly mounted at /scrubby)
+├── docs/             # ARCHITECTURE.md (source of truth) + PITCH.md + render.sh + diagrams/
+├── storage/          # runtime: uploads, frames, chroma, reels (gitignored)
+└── legacy/           # archived earlier Go + React + sidecar stack
 ```
+
+The **`uvicorn app:app`** entrypoint is unchanged across the module split, so
+the Railway deploy needed no configuration update.
+
+\newpage
+
+# Security model
+
+Three layers between an attacker and another user's data: ownership gates on
+every `{id}` route, a gated `/storage` route that replaces the previously
+public static mount, and rate limits + headers + a prod-secret refusal at boot.
+
+**Resource ownership (the "404 not 403" rule).** Every `/api/.../{id}` and
+`/storage/{path}` request flows through `can_access_*` in `access.py`:
+
+- Logged-in user is owner → allowed.
+- Resource has no owner AND the caller's session has it in `my_videos` /
+  `my_collections` / `my_reels` → allowed (preserves the "no account needed"
+  flow for anonymous uploaders within the same browser session).
+- Caller's email is in `ADMIN_EMAILS` → allowed.
+- The sample video (`SAMPLE_ID = "sample"`) is world-readable.
+- Otherwise: **404** (not 403 — prevents enumeration of valid ids).
+
+**Gated `/storage`.** `app.mount("/storage", StaticFiles(...))` was removed.
+`storage_serve` in `access.py` now resolves the path under `STORAGE` (rejecting
+traversal), inspects the first segment to identify the video / reel, runs the
+same ownership check, and only then returns `FileResponse`.
+
+**Upload extension allow-list.** `safe_video_ext()` clamps any user-supplied
+extension to `VIDEO_EXTS`, defaulting to `.mp4` — uploaders can't land a `.html`
+or `.svg` on our own origin (closes a stored-XSS via the storage route).
+
+**Localhost-only host I/O.** `/api/library/scan` and `/api/library/pick` both
+call `require_localhost()`, so they're usable in self-host but return 404 on a
+public deploy.
+
+**Stripe webhook.** Signature-verified via `stripe.Webhook.construct_event` —
+the only way tier promotions reach the DB.
+
+**Prompt-injection hardening.** Both Q&A prompts wrap user-controllable text
+(`<transcript>...</transcript>`, `<excerpts>...</excerpts>`,
+`<question>...</question>`) and instruct Claude to treat anything inside as
+untrusted data, never as instructions. Best-effort; meaningful while there are
+no tool-use grants on those endpoints.
+
+**Per-IP rate limits.** `slowapi` `Limiter` decorates the sensitive routes —
+login `20/min`, upload `20/h`, library-upload `60/h`, search `60/min`, Q&A
+`20/min`, reel `10/h`. In-memory; single-instance assumption.
+
+**Boot-time hardening.** `app.py` refuses to start on HTTPS if `SESSION_SECRET`
+is the default or shorter than 32 chars. On HTTPS, session cookies get the
+`Secure` flag and the response middleware adds HSTS.
+
+**Response headers** (every response, by middleware): `X-Content-Type-Options:
+nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: same-origin`. HTML responses
+also get a CSP that whitelists Stripe + Auth0 form-actions and blocks framing
+entirely (`frame-ancestors 'none'`).
+
+\newpage
+
+# Admin dashboard
+
+`/admin` serves the SPA, which detects the path and renders the admin view —
+but only if `is_admin(user)` (the auth state already exposes it on
+`/api/auth/me`). Non-admins who hit `/admin` directly get bounced back to `/`
+client-side; the API endpoint backs that with a server-side 403.
+
+`GET /api/admin/stats` returns one JSON blob: users (total + by tier), videos
+(total + by status + hours indexed), collections, storage used (bytes + GB
+from an `os.walk` of `STORAGE`), the last 10 signups, and the activity block.
+
+**Activity tracking.** `record_event(kind)` is called fire-and-forget at the
+top of every `view` / `upload` / `search` / `qa` / `reel` handler and inserts
+one row into the `events` table. The admin endpoint aggregates per kind into
+`total` / `d1` / `d7` counts plus a 7-element `series` (slot 0 = events from
+6–7 days ago, slot 6 = the last 24 h). The SPA renders an inline SVG sparkline
+per card and a daily-breakdown table whose column labels are derived from
+`series_starts_at` so timezones stay local to the viewer.
+
+Revenue / MRR / churn live in the Stripe dashboard (linked from the admin
+page); traffic and logs in Railway. The in-app dashboard deliberately stops at
+counts.
+
+
 
 \newpage
 
@@ -387,3 +504,8 @@ update.
 | 2026-05-23 | "compare against ElevenLabs… close the gaps" | Hardened the deck against the ElevenLabs pre-seed benchmark (14 slides): added a **live-demo slide** (real CDP-captured screenshot of search on getscrubless.com, stored in `docs/assets/`), a **quantified-pain** callout, a **nested TAM/SAM/SOM/beachhead** market figure (`diagrams/market.dot`) + near-term revenue, a **2×2 competition matrix** (`diagrams/competition.dot`) replacing the table, and a **"why we win" moat** slide. |
 | 2026-05-23 | "can you make this a powerpoint?"             | Added an **editable PowerPoint** build (`md2pptx.py` → pandoc): rewrites the beamer-only LaTeX (`\alert`, `\vspace`, `\begin{center}`, size macros) into plain Markdown and folds image captions onto their slides. Single canonical source (`PITCH.md`). |
 | 2026-05-23 | "make it match"                               | Made the PowerPoint **brand-match the PDF**: `PITCH.pptx` is now built by `pdf2pptx.py` (python-pptx) — each `PITCH.pdf` page becomes a full-bleed 16:9 slide image, so it's pixel-identical to the metropolis deck and immune to font substitution. The editable variant lives on as `PITCH-editable.pptx`. |
+| 2026-06-08 | "/admin operator dashboard"                   | Added `/admin` (gated by `ADMIN_EMAILS`) + `/api/admin/stats`: users-by-tier, videos-by-status + hours indexed, collections, storage size, last 10 signups. SPA renders stat cards + a recent-signups list with a link-out to Stripe/Railway for revenue and traffic. |
+| 2026-06-08 | "site views + relevant stats + sparkline + daily breakdown" | Added an `events(kind, at)` table written fire-and-forget by `record_event()` from every view / upload / search / qa / reel handler; admin stats now include total + 24 h + 7 d counts and a 7-element series per kind, rendered as an inline SVG sparkline on each card and a daily breakdown table. |
+| 2026-06-08 | "security audit (50 vuln list) + fixes"       | Two-commit hardening pass: replaced the public `/storage` static mount with the gated `storage_serve`; added `can_access_*` / `require_*` helpers and applied them to every `{id}`/`{cid}` route (404, not 403, to prevent enumeration); per-session allowlist (`remember_anon_resource`) for anonymous uploaders; `safe_video_ext` extension allow-list closes stored-XSS; `Collection.owner` added (migration via `ensure_columns`); reels carry `owner` and check moment access at create time; `/api/library/scan` + `/pick` now `require_localhost`; `slowapi` rate limits on login / upload / search / qa / reel; prompt-injection fences on both Q&A prompts; `app.py` refuses to boot on HTTPS with a default / <32-char `SESSION_SECRET`; `Secure` cookies + HSTS on HTTPS; security-header middleware (`nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, CSP on HTML). |
+| 2026-06-08 | "split app.py into modules"                   | Refactored the 1.7k-line `app.py` into 14 sibling modules in a one-way DAG (`config` → `state` → `models` → `embeddings`/`auth` → `access`/`billing`/`indexing` → route modules → `app`). `app.py` shrinks to ~100 lines and just wires middleware, mounts, routers, and the background threads. Zero behavior change; `uvicorn app:app` entrypoint preserved. |
+| 2026-06-08 | "doc improvements"                            | Refreshed this document for the module split + everything shipped since 05-23: rewrote `Project layout` as the 14-module map, added `Security model` and `Admin dashboard` sections, updated the API table (`/admin`, `/api/admin/stats`, gated `/storage`, rate-limit annotations), added `ADMIN_EMAILS` to env vars, added the `events` table to the data model, refreshed the tech-stack table (`slowapi`, `python-pptx`). Also wrote a fresh top-level `README.md`. |
