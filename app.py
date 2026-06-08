@@ -1001,7 +1001,8 @@ def admin_stats(request: Request):
         # window — three GROUP BYs over a tiny indexed table.
         now = time.time()
         windows = {"total": None, "d1": now - 86400, "d7": now - 7 * 86400}
-        activity = {k: {} for k in ("view", "upload", "search", "qa", "reel")}
+        kinds = ("view", "upload", "search", "qa", "reel")
+        activity = {k: {} for k in kinds}
         for label, since in windows.items():
             q = select(Event.kind, func.count()).group_by(Event.kind)
             if since is not None:
@@ -1012,6 +1013,21 @@ def admin_stats(request: Request):
         for kind in activity:
             for label in windows:
                 activity[kind].setdefault(label, 0)
+        # 7-day series per kind: bucket every 7d event into a 0..6 slot where 6
+        # is the last 24h and 0 is the 7..6-days-ago window. One scan over the
+        # already-indexed (kind, at) tuples — tiny.
+        for kind in kinds:
+            activity[kind]["series"] = [0] * 7
+        rows = s.execute(
+            select(Event.kind, Event.at).where(Event.at >= windows["d7"])
+        ).all()
+        for kind, at in rows:
+            if kind not in activity:
+                continue
+            slot = 6 - int((now - at) // 86400)
+            if 0 <= slot <= 6:
+                activity[kind]["series"][slot] += 1
+        series_starts_at = windows["d7"]  # epoch seconds of slot 0 (oldest)
     bytes_used = 0
     for dirpath, _dirs, files in os.walk(STORAGE):
         for f in files:
@@ -1029,6 +1045,7 @@ def admin_stats(request: Request):
         "collections": {"total": collections_total},
         "storage": {"bytes": bytes_used, "gb": round(bytes_used / 1024**3, 2)},
         "activity": activity,
+        "series_starts_at": series_starts_at,
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
         ],

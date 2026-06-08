@@ -317,6 +317,9 @@
         <div id="adminCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px"></div>
         <h3 style="margin:22px 0 10px">Activity</h3>
         <div id="adminActivity" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px"></div>
+        <div class="panel" style="margin-top:14px;padding:10px 6px">
+          <div id="adminBreakdown" class="muted">Loading…</div>
+        </div>
         <div class="panel" style="margin-top:18px;padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
             <h3 style="margin:0">Recent signups</h3>
@@ -436,21 +439,72 @@
           card("Collections", s.collections.total, "library folders") +
           card("Storage", s.storage.gb + " GB", s.storage.bytes.toLocaleString() + " bytes");
 
-        // Activity cards (page views + key actions, total with 24h / 7d sub).
+        // Activity cards (page views + key actions, total with 24h / 7d sub
+        // and a 7-day sparkline). Plus a daily breakdown table below.
         var a = s.activity || {};
-        function act(label, k) {
-          var v = a[k] || { total: 0, d1: 0, d7: 0 };
-          return card(label, v.total.toLocaleString(),
-                      v.d1 + " in 24h · " + v.d7 + " in 7d");
+        var KINDS = [
+          ["Site views", "view"], ["Searches", "search"], ["Q&A asks", "qa"],
+          ["Uploads", "upload"], ["Reels", "reel"]
+        ];
+        function spark(values) {
+          var W = 100, H = 26;
+          if (!values || !values.length) return "";
+          var max = Math.max.apply(null, values) || 1;
+          var step = values.length > 1 ? W / (values.length - 1) : 0;
+          var pts = values.map(function (v, i) {
+            var x = i * step;
+            var y = H - 1 - (v / max) * (H - 2);
+            return x.toFixed(1) + "," + y.toFixed(1);
+          }).join(" ");
+          return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H +
+                 '" style="display:block;margin-top:8px;width:100%;height:' + H + 'px">' +
+                   '<polyline fill="none" stroke="var(--accent)" stroke-width="1.5" ' +
+                            'stroke-linejoin="round" stroke-linecap="round" points="' + pts + '" />' +
+                 "</svg>";
+        }
+        function actCard(label, k) {
+          var v = a[k] || { total: 0, d1: 0, d7: 0, series: [] };
+          return '<div class="panel" style="padding:14px 16px">' +
+                   '<div class="muted" style="font-size:12px;text-transform:uppercase;letter-spacing:0.04em">' + label + "</div>" +
+                   '<div style="font-size:28px;font-weight:700;margin:6px 0 2px">' + (v.total || 0).toLocaleString() + "</div>" +
+                   '<div class="muted" style="font-size:12px">' + (v.d1 || 0) + " in 24h · " + (v.d7 || 0) + " in 7d</div>" +
+                   spark(v.series) +
+                 "</div>";
         }
         var actHost = document.getElementById("adminActivity");
-        if (actHost) {
-          actHost.innerHTML =
-            act("Site views", "view") +
-            act("Searches", "search") +
-            act("Q&A asks", "qa") +
-            act("Uploads", "upload") +
-            act("Reels", "reel");
+        if (actHost) actHost.innerHTML = KINDS.map(function (p) { return actCard(p[0], p[1]); }).join("");
+
+        // Daily breakdown table: one row per kind, one col per day (oldest left,
+        // today right). Day labels derived from series_starts_at + day index.
+        var startsAt = s.series_starts_at || 0;
+        function dayLabel(idx) {
+          // Each slot is a 24h bucket; label with the end-of-bucket day so slot 5
+          // reads as "yesterday" and slot 0 as "~6 days ago".
+          var d = new Date((startsAt + (idx + 1) * 86400) * 1000);
+          return d.toLocaleDateString(undefined, { weekday: "short", month: "numeric", day: "numeric" });
+        }
+        var bd = document.getElementById("adminBreakdown");
+        if (bd) {
+          var headCells = "";
+          for (var i = 0; i < 7; i++) {
+            headCells += '<th style="text-align:right;font-weight:500;color:var(--muted);font-size:11px;padding:6px 10px">' +
+                         (i === 6 ? "today" : dayLabel(i)) + "</th>";
+          }
+          var rows = KINDS.map(function (p) {
+            var v = a[p[1]] || { series: [] };
+            var ser = v.series || [];
+            var cells = "";
+            for (var j = 0; j < 7; j++) {
+              cells += '<td style="text-align:right;padding:6px 10px;font-variant-numeric:tabular-nums">' + (ser[j] || 0) + "</td>";
+            }
+            return '<tr><td style="padding:6px 10px">' + p[0] + "</td>" + cells + "</tr>";
+          }).join("");
+          bd.innerHTML =
+            '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+              '<thead><tr><th style="text-align:left;font-weight:500;color:var(--muted);font-size:11px;padding:6px 10px">Kind</th>' +
+              headCells + "</tr></thead>" +
+              "<tbody>" + rows + "</tbody>" +
+            "</table>";
         }
 
         var recent = (s.recent_signups || []).map(function (u) {
