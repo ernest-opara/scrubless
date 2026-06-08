@@ -315,6 +315,8 @@
           <span class="muted" id="adminWho"></span>
         </div>
         <div id="adminCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px"></div>
+        <h3 style="margin:22px 0 10px">Activity</h3>
+        <div id="adminActivity" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px"></div>
         <div class="panel" style="margin-top:18px;padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
             <h3 style="margin:0">Recent signups</h3>
@@ -433,6 +435,24 @@
           card("Hours indexed", s.videos.hours_indexed + " h", "across all videos") +
           card("Collections", s.collections.total, "library folders") +
           card("Storage", s.storage.gb + " GB", s.storage.bytes.toLocaleString() + " bytes");
+
+        // Activity cards (page views + key actions, total with 24h / 7d sub).
+        var a = s.activity || {};
+        function act(label, k) {
+          var v = a[k] || { total: 0, d1: 0, d7: 0 };
+          return card(label, v.total.toLocaleString(),
+                      v.d1 + " in 24h · " + v.d7 + " in 7d");
+        }
+        var actHost = document.getElementById("adminActivity");
+        if (actHost) {
+          actHost.innerHTML =
+            act("Site views", "view") +
+            act("Searches", "search") +
+            act("Q&A asks", "qa") +
+            act("Uploads", "upload") +
+            act("Reels", "reel");
+        }
+
         var recent = (s.recent_signups || []).map(function (u) {
           var when = new Date(u.created_at * 1000).toLocaleString();
           return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)">' +

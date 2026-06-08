@@ -161,6 +161,16 @@ class Collection(Base):
     created: Mapped[float] = mapped_column(Float, default=time.time)
 
 
+class Event(Base):
+    """Lightweight activity log for the admin dashboard — every visit, search,
+    Q&A, upload, and reel writes one row. Aggregated by kind + time window."""
+
+    __tablename__ = "events"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    kind: Mapped[str] = mapped_column(String(20), index=True)
+    at: Mapped[float] = mapped_column(Float, default=time.time, index=True)
+
+
 _engine_args = {"pool_pre_ping": True}
 if DATABASE_URL.startswith("sqlite"):
     _engine_args["connect_args"] = {"check_same_thread": False}
@@ -226,6 +236,16 @@ def current_user(request):
 
 def is_admin(user):
     return bool(user and user.email and user.email.lower() in ADMIN_EMAILS)
+
+
+def record_event(kind):
+    """Fire-and-forget activity log; never block a request on a tracking write."""
+    try:
+        with Session(engine) as s:
+            s.add(Event(kind=kind, at=time.time()))
+            s.commit()
+    except Exception as exc:  # noqa: BLE001
+        print("[scrubless] record_event %s failed: %s" % (kind, exc))
 
 
 def upload_limit_for(user):
@@ -798,6 +818,21 @@ def admin_stats(request: Request):
             .order_by(User.created_at.desc())
             .limit(10)
         ).all()
+        # Activity: total + last 24h + last 7d, per event kind. One query per
+        # window — three GROUP BYs over a tiny indexed table.
+        now = time.time()
+        windows = {"total": None, "d1": now - 86400, "d7": now - 7 * 86400}
+        activity = {k: {} for k in ("view", "upload", "search", "qa", "reel")}
+        for label, since in windows.items():
+            q = select(Event.kind, func.count()).group_by(Event.kind)
+            if since is not None:
+                q = q.where(Event.at >= since)
+            for kind, n in s.execute(q).all():
+                if kind in activity:
+                    activity[kind][label] = n
+        for kind in activity:
+            for label in windows:
+                activity[kind].setdefault(label, 0)
     bytes_used = 0
     for dirpath, _dirs, files in os.walk(STORAGE):
         for f in files:
@@ -814,6 +849,7 @@ def admin_stats(request: Request):
         },
         "collections": {"total": collections_total},
         "storage": {"bytes": bytes_used, "gb": round(bytes_used / 1024**3, 2)},
+        "activity": activity,
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
         ],
@@ -932,6 +968,7 @@ async def billing_webhook(request: Request):
 async def upload(
     request: Request, background_tasks: BackgroundTasks, file: UploadFile = File(...)
 ):
+    record_event("upload")
     user = current_user(request)
     cap = upload_limit_for(user)
 
@@ -993,6 +1030,7 @@ def status(video_id: str):
 
 @app.post("/api/search/{video_id}")
 def search(video_id: str, req: SearchRequest):
+    record_event("search")
     video = VIDEOS.get(video_id)
     if not video:
         raise HTTPException(status_code=404, detail="video not found")
@@ -1056,6 +1094,7 @@ def transcript_context(video_id, limit=14000):
 @app.post("/api/qa/{video_id}")
 def video_qa(video_id: str, body: QARequest):
     """Answer a question about one video, grounded in its transcript."""
+    record_event("qa")
     video = VIDEOS.get(video_id)
     if not video:
         raise HTTPException(status_code=404, detail="video not found")
@@ -1242,6 +1281,7 @@ async def library_upload(
     file: UploadFile = File(...),
 ):
     """Upload one video into a collection, then index it (hosted folder mode)."""
+    record_event("upload")
     coll = COLLECTIONS.get(collection_id)
     if not coll:
         raise HTTPException(status_code=404, detail="collection not found")
@@ -1320,6 +1360,7 @@ def library_status(collection_id: str):
 @app.post("/api/library/{collection_id}/search")
 def library_search(collection_id: str, req: SearchRequest):
     """Search across every indexed video in a collection."""
+    record_event("search")
     coll = COLLECTIONS.get(collection_id)
     if not coll:
         raise HTTPException(status_code=404, detail="collection not found")
@@ -1370,6 +1411,7 @@ def library_search(collection_id: str, req: SearchRequest):
 def library_qa(collection_id: str, body: QARequest):
     """Answer a question across a whole collection, with cited sources that
     map back to a specific video + timestamp."""
+    record_event("qa")
     coll = COLLECTIONS.get(collection_id)
     if not coll:
         raise HTTPException(status_code=404, detail="collection not found")
@@ -1486,6 +1528,7 @@ def build_reel(reel_id, moments, clip_seconds):
 
 @app.post("/api/reel")
 def create_reel(body: ReelRequest):
+    record_event("reel")
     moments = [{"video_id": m.video_id, "timestamp": m.timestamp} for m in body.moments][:12]
     if not moments:
         raise HTTPException(status_code=400, detail="no moments to build a reel from")
@@ -1508,6 +1551,7 @@ def reel_status(reel_id: str):
 
 @app.get("/")
 def index():
+    record_event("view")
     return FileResponse(str(ROOT / "index.html"))
 
 
