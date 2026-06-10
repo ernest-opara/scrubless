@@ -59,8 +59,10 @@ async def security_headers(request, call_next):
         response.headers.setdefault(
             "Content-Security-Policy",
             "default-src 'self'; img-src 'self' data:; media-src 'self' blob:; "
-            "style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' "
-            "https://js.stripe.com; connect-src 'self' https://api.stripe.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline' https://js.stripe.com; "
+            "connect-src 'self' https://api.stripe.com; "
             "frame-src https://js.stripe.com https://hooks.stripe.com; "
             "frame-ancestors 'none'; base-uri 'self'; form-action 'self' "
             "https://*.auth0.com https://checkout.stripe.com",
