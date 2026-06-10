@@ -897,7 +897,7 @@
         var form = new FormData();
         form.append("file", file);
         document.getElementById("uperr").classList.add("hidden");
-        drop.querySelector("h2").textContent = "Uploading…";
+        drop.querySelector("h3").textContent = "Uploading…";
         drop.querySelector(".hint").textContent = file.name;
 
         fetch("/api/upload", { method: "POST", body: form })
@@ -916,8 +916,8 @@
             var e = document.getElementById("uperr");
             e.textContent = err.message;
             e.classList.remove("hidden");
-            drop.querySelector("h2").textContent = "Drop a video here";
-            drop.querySelector(".hint").textContent = "or click to choose a file";
+            drop.querySelector("h3").textContent = "Drop a video here";
+            drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM — <span id="limitHint">up to 500MB</span>';
           });
       }
 
