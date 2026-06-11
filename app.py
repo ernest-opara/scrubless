@@ -75,7 +75,7 @@ async def security_headers(request, call_next):
 app.mount("/scrubby", StaticFiles(directory=str(config.ROOT / "scrubby")), name="scrubby")
 
 # Routers — order doesn't matter for routing but mirrors the module list.
-import access, admin, auth, billing, library, reels, search, videos  # noqa: E402
+import access, admin, auth, billing, library, pages, reels, search, videos  # noqa: E402
 
 for r in (
     auth.router,
@@ -86,6 +86,7 @@ for r in (
     search.router,
     reels.router,
     admin.router,
+    pages.router,
 ):
     app.include_router(r)
 
@@ -140,16 +141,6 @@ _ROBOTS_TXT = (
     "Disallow: /storage/\n"
     "Sitemap: " + _CANONICAL_HOST + "/sitemap.xml\n"
 )
-_SITEMAP_XML = (
-    '<?xml version="1.0" encoding="UTF-8"?>\n'
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    "  <url>\n"
-    "    <loc>" + _CANONICAL_HOST + "/</loc>\n"
-    "    <changefreq>weekly</changefreq>\n"
-    "    <priority>1.0</priority>\n"
-    "  </url>\n"
-    "</urlset>\n"
-)
 
 
 @app.get("/robots.txt")
@@ -160,8 +151,31 @@ def robots_txt():
 
 @app.get("/sitemap.xml")
 def sitemap_xml():
+    """Built fresh from the actual blog/page URLs so it never drifts from
+    what's published."""
     from fastapi.responses import Response
-    return Response(content=_SITEMAP_XML, media_type="application/xml")
+
+    urls = [
+        ("/", "1.0", "weekly"),
+        ("/blog", "0.8", "weekly"),
+        ("/pricing", "0.8", "monthly"),
+        ("/about", "0.6", "monthly"),
+    ]
+    for post in pages.list_posts():
+        urls.append(("/blog/" + post["slug"], "0.7", "monthly"))
+
+    body = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    body += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for path, prio, freq in urls:
+        body += (
+            "  <url>\n"
+            "    <loc>" + _CANONICAL_HOST + path + "</loc>\n"
+            "    <changefreq>" + freq + "</changefreq>\n"
+            "    <priority>" + prio + "</priority>\n"
+            "  </url>\n"
+        )
+    body += "</urlset>\n"
+    return Response(content=body, media_type="application/xml")
 
 
 @app.get("/")
