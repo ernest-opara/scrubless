@@ -68,24 +68,31 @@ def admin_stats(request: Request):
                 activity[kind]["series"][slot] += 1
         series_starts_at = windows["d7"]  # epoch seconds of slot 0 (oldest)
 
-        # Traffic sources: aggregate the `source` column on view events. We
-        # bucket internal navigation separately and surface the top external
-        # referers / UTM tags so the operator can see what's actually driving
-        # visits. Older rows (pre-migration) have source=NULL and are skipped.
-        src_rows = s.execute(
-            select(Event.source, func.count())
-            .where(Event.kind == "view", Event.source.is_not(None))
-            .group_by(Event.source)
-        ).all()
-        external, internal_views = [], 0
-        for src, n in src_rows:
-            if src == "internal":
-                internal_views = n
-            else:
-                external.append({"source": src, "count": n})
-        external.sort(key=lambda r: r["count"], reverse=True)
-        top_sources = external[:10]
-        external_total = sum(r["count"] for r in external)
+        # Traffic sources: aggregate the `source` column on view events for
+        # total / last 24 h / last 7 d. Internal navigation is split out so the
+        # admin panel can default to 7 d external traffic while leaving the
+        # all-time view a click away. Pre-migration rows have source=NULL
+        # and are skipped.
+        traffic_by_window = {}
+        for label, since in windows.items():
+            q = select(Event.source, func.count()).where(
+                Event.kind == "view", Event.source.is_not(None)
+            )
+            if since is not None:
+                q = q.where(Event.at >= since)
+            rows = s.execute(q.group_by(Event.source)).all()
+            ext, internal_n = [], 0
+            for src, n in rows:
+                if src == "internal":
+                    internal_n = n
+                else:
+                    ext.append({"source": src, "count": n})
+            ext.sort(key=lambda r: r["count"], reverse=True)
+            traffic_by_window[label] = {
+                "top_sources": ext[:10],
+                "external_total": sum(r["count"] for r in ext),
+                "internal_views": internal_n,
+            }
     bytes_used = 0
     for dirpath, _dirs, files in os.walk(STORAGE):
         for f in files:
@@ -104,11 +111,7 @@ def admin_stats(request: Request):
         "storage": {"bytes": bytes_used, "gb": round(bytes_used / 1024**3, 2)},
         "activity": activity,
         "series_starts_at": series_starts_at,
-        "traffic": {
-            "top_sources": top_sources,
-            "external_total": external_total,
-            "internal_views": internal_views,
-        },
+        "traffic": traffic_by_window,
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
         ],

@@ -542,10 +542,15 @@
           <div id="adminBreakdown" class="muted">Loading…</div>
         </div>
         <div class="panel" style="margin-top:18px;padding:18px">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;flex-wrap:wrap">
             <h3 style="margin:0">Top traffic sources</h3>
-            <span id="adminTrafficSummary" class="muted" style="font-size:12px"></span>
+            <span class="tabs" id="adminTrafficWindow" style="margin:0">
+              <button class="tab" data-window="total">all time</button>
+              <button class="tab" data-window="d1">24h</button>
+              <button class="tab active" data-window="d7">7d</button>
+            </span>
           </div>
+          <p class="muted" id="adminTrafficSummary" style="font-size:12px;margin:0 0 14px"></p>
           <div id="adminSources" class="muted">Loading…</div>
         </div>
         <div class="panel" style="margin-top:18px;padding:16px">
@@ -741,30 +746,42 @@
             "</table>";
         }
 
-        // Top traffic sources — horizontal bars scaled to the top entry.
-        var traffic = s.traffic || { top_sources: [], external_total: 0, internal_views: 0 };
-        var sources = traffic.top_sources || [];
+        // Top traffic sources — windowed (total / 24h / 7d). 7d is the default
+        // because that's what tracks campaigns; the tabs swap the live data.
+        var trafficByWindow = s.traffic || {};
         var srcHost = document.getElementById("adminSources");
         var srcSummary = document.getElementById("adminTrafficSummary");
-        if (srcSummary) {
-          srcSummary.textContent =
-            traffic.external_total + " external · " + traffic.internal_views + " internal";
-        }
-        if (srcHost) {
-          if (!sources.length) {
-            srcHost.innerHTML = "No external visits recorded yet.";
-          } else {
-            var max = sources[0].count || 1;
-            srcHost.innerHTML = sources.map(function (r) {
-              var pct = Math.max(2, Math.round((r.count / max) * 100));
-              return '<div style="display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px">' +
-                       '<span style="flex:0 0 140px;font-family:var(--font-mono);font-size:12px;letter-spacing:0.04em">' + r.source + '</span>' +
-                       '<span style="flex:1;height:6px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><span style="display:block;height:100%;width:' + pct + '%;background:var(--accent);border-radius:999px"></span></span>' +
-                       '<span style="flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums">' + r.count + '</span>' +
-                     '</div>';
-            }).join("");
+        var windowEmpty = {
+          total: "No external visits recorded yet.",
+          d1: "No external visits in the last 24 hours.",
+          d7: "No external visits in the last 7 days."
+        };
+        function renderTraffic(win) {
+          var w = trafficByWindow[win] || { top_sources: [], external_total: 0, internal_views: 0 };
+          document.querySelectorAll("#adminTrafficWindow .tab").forEach(function (b) {
+            b.classList.toggle("active", b.dataset.window === win);
+          });
+          if (srcSummary) {
+            srcSummary.textContent =
+              w.external_total + " external · " + w.internal_views + " internal";
           }
+          if (!srcHost) return;
+          var sources = w.top_sources || [];
+          if (!sources.length) { srcHost.innerHTML = windowEmpty[win] || windowEmpty.total; return; }
+          var max = sources[0].count || 1;
+          srcHost.innerHTML = sources.map(function (r) {
+            var pct = Math.max(2, Math.round((r.count / max) * 100));
+            return '<div style="display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px">' +
+                     '<span style="flex:0 0 140px;font-family:var(--font-mono);font-size:12px;letter-spacing:0.04em">' + r.source + '</span>' +
+                     '<span style="flex:1;height:6px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><span style="display:block;height:100%;width:' + pct + '%;background:var(--accent);border-radius:999px"></span></span>' +
+                     '<span style="flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums">' + r.count + '</span>' +
+                   '</div>';
+          }).join("");
         }
+        document.querySelectorAll("#adminTrafficWindow .tab").forEach(function (b) {
+          b.onclick = function () { renderTraffic(b.dataset.window); };
+        });
+        renderTraffic("d7");
 
         var recent = (s.recent_signups || []).map(function (u) {
           var when = new Date(u.created_at * 1000).toLocaleString();
