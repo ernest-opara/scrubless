@@ -3,11 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrubless — stop scrubbing, start searching</title>
+    <title>Scrubless · Semantic video search — find any moment by description</title>
+    <meta name="description" content="Search inside any video using natural language. Upload a video or a whole folder, then find the exact moment by describing what was said or shown. Free to try, no account required." />
+    <meta name="theme-color" content="#f2efe8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14151a" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://www.getscrubless.com/" />
     <link rel="icon" type="image/svg+xml" href="/scrubby/scrubby-avatar.svg" />
+    <link rel="apple-touch-icon" href="/scrubby/scrubby-avatar.svg" />
+
+    <!-- Open Graph / Twitter cards — control how shared links unfurl. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Scrubless" />
+    <meta property="og:title" content="Scrubless · Semantic video search" />
+    <meta property="og:description" content="Find any moment in any video by describing it — what was said, what was shown. Stop scrubbing." />
+    <meta property="og:url" content="https://www.getscrubless.com/" />
+    <meta property="og:image" content="https://www.getscrubless.com/scrubby/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Scrubless — Stop scrubbing. Start searching." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scrubless · Semantic video search" />
+    <meta name="twitter:description" content="Find any moment in any video by describing it. Stop scrubbing." />
+    <meta name="twitter:image" content="https://www.getscrubless.com/scrubby/og.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+    <!-- Structured data: lets Google show Scrubless as a SoftwareApplication
+         in rich results and surfaces the right keywords for product searches. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Scrubless",
+      "description": "Semantic video search — find any moment in any video by describing it in plain English. Searches what's visible and what's spoken.",
+      "url": "https://www.getscrubless.com/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Natural-language search inside any video",
+        "Library mode — search across a whole folder of videos",
+        "Ask — cited answers with clickable timestamps",
+        "Auto-chapters and summaries",
+        "Highlight reel export"
+      ]
+    }
+    </script>
     <style>
       /* ===================== Design tokens ===================== */
       :root {
@@ -108,7 +155,7 @@
       }
       .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
       .brand .logo { width: 38px; height: 38px; border-radius: 50%; background: var(--screen); display: block; }
-      .brand h1 {
+      .brand-wordmark {
         font-family: var(--font-display); font-weight: 400; font-size: 26px;
         margin: 0; letter-spacing: -0.005em; line-height: 1;
       }
@@ -354,7 +401,7 @@
         header.site {
           flex-wrap: wrap; gap: 10px; padding-bottom: 14px; margin-bottom: 32px;
         }
-        .brand h1 { font-size: 22px; }
+        .brand-wordmark { font-size: 22px; }
         .brand .logo { width: 32px; height: 32px; }
         .nav { gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
         .nav a, .nav button { padding: 6px 10px; font-size: 13.5px; }
@@ -419,10 +466,10 @@
   <body>
     <div class="wrap">
       <header class="site">
-        <div class="brand" onclick="location.href='/'" title="Home">
-          <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="Scrubby, the Scrubless mascot" />
-          <h1>Scrubless</h1>
-        </div>
+        <a class="brand" href="/" aria-label="Scrubless — home">
+          <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="" />
+          <span class="brand-wordmark">Scrubless</span>
+        </a>
         <nav class="nav">
           <a href="/" id="navLibrary">Library</a>
           <a href="#" onclick="openPricing();return false">Pricing</a>
@@ -438,6 +485,7 @@
         </nav>
       </header>
 
+      <main>
       <!-- 1. Upload -->
       <section id="upload">
         <div class="hero">
@@ -633,6 +681,7 @@
           Revenue / MRR live in <a href="https://dashboard.stripe.com" target="_blank" style="color:var(--accent)">Stripe</a>. Traffic and logs in Railway.
         </p>
       </section>
+      </main>
     </div>
 
     <!-- Upgrade / pricing modal -->

@@ -131,6 +131,39 @@ def request_source(request: Request) -> str:
     return _SOURCE_ALIASES.get(host, host)[:64]
 
 
+_CANONICAL_HOST = "https://www.getscrubless.com"
+_ROBOTS_TXT = (
+    "User-agent: *\n"
+    "Allow: /\n"
+    "Disallow: /api/\n"
+    "Disallow: /admin\n"
+    "Disallow: /storage/\n"
+    "Sitemap: " + _CANONICAL_HOST + "/sitemap.xml\n"
+)
+_SITEMAP_XML = (
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    "  <url>\n"
+    "    <loc>" + _CANONICAL_HOST + "/</loc>\n"
+    "    <changefreq>weekly</changefreq>\n"
+    "    <priority>1.0</priority>\n"
+    "  </url>\n"
+    "</urlset>\n"
+)
+
+
+@app.get("/robots.txt")
+def robots_txt():
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(_ROBOTS_TXT)
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml():
+    from fastapi.responses import Response
+    return Response(content=_SITEMAP_XML, media_type="application/xml")
+
+
 @app.get("/")
 def index(request: Request):
     record_event("view", source=request_source(request))
