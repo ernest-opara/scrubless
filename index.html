@@ -798,7 +798,9 @@
         if (!el) return;
         if (authState.user) {
           var billing = "";
-          if (authState.billing_enabled) {
+          // Admins skip the billing UI entirely — they get the admin cap and
+          // shouldn't be prompted to upgrade.
+          if (authState.billing_enabled && !authState.user.is_admin) {
             billing =
               authState.user.tier === "free"
                 ? '<a href="#" onclick="openPricing();return false">Upgrade</a>'

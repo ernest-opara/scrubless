@@ -51,6 +51,9 @@ MB = 1024 * 1024
 GB = 1024 * MB
 ANON_LIMIT = 500 * MB
 TIER_LIMITS = {"free": 500 * MB, "pro": 2 * GB, "studio": 10 * GB}
+# Admins (ADMIN_EMAILS) ignore the tier ladder — set well above any realistic
+# single file but bounded so a runaway test can't fill the volume by accident.
+ADMIN_LIMIT = 100 * GB
 
 # Stripe billing
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "").strip()

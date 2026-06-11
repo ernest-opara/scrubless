@@ -5,8 +5,9 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from auth import current_user
+from auth import current_user, is_admin
 from config import (
+    ADMIN_LIMIT,
     ANON_LIMIT,
     APP_BASE_URL,
     MB,
@@ -27,6 +28,8 @@ else:
 
 
 def upload_limit_for(user):
+    if is_admin(user):
+        return ADMIN_LIMIT
     return TIER_LIMITS.get(user.tier, ANON_LIMIT) if user else ANON_LIMIT
 
 
