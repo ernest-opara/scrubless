@@ -345,6 +345,75 @@
         max-width: 720px; width: 100%; box-shadow: var(--shadow-md);
         border: 1px solid var(--line);
       }
+
+      /* ===================== Mobile (tablet + phone) ===================== */
+      @media (max-width: 760px) {
+        body { font-size: 14.5px; background-attachment: scroll; }
+        .wrap { padding: 16px 18px 64px; }
+
+        header.site {
+          flex-wrap: wrap; gap: 10px; padding-bottom: 14px; margin-bottom: 32px;
+        }
+        .brand h1 { font-size: 22px; }
+        .brand .logo { width: 32px; height: 32px; }
+        .nav { gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
+        .nav a, .nav button { padding: 6px 10px; font-size: 13.5px; }
+        .switch { margin: 0 0 0 2px; }
+
+        .display { font-size: clamp(40px, 11vw, 60px); line-height: 1.02; }
+        .display br { display: none; }
+        .lead { font-size: 15.5px; margin-top: 16px; }
+        .hero { margin-bottom: 36px; }
+        .hero-grid { gap: 14px; }
+        .card { padding: 20px; }
+        .card h2 { font-size: 24px; }
+
+        /* drop zone stacks vertically — icon → copy → Choose file */
+        #drop {
+          flex-direction: column; align-items: stretch; gap: 12px; padding: 16px;
+        }
+        #drop .icon { width: 44px; height: 44px; }
+        #drop .pickbtn { width: 100%; }
+        #drop .copy h3 { font-size: 20px; }
+
+        /* tighter sample preview on small screens */
+        .thumb-strip { grid-template-columns: repeat(3, 1fr); }
+
+        /* modals: full-bleed and scrollable */
+        .modal-bg { padding: 10px; align-items: flex-end; }
+        .modal { padding: 18px; max-height: 92vh; overflow-y: auto; border-radius: 16px 16px 0 0; }
+        .modal h2 { font-size: 22px !important; }
+
+        /* workspace + library: stack player above results */
+        #workspace, #libworkspace { grid-template-columns: 1fr; gap: 18px; }
+        .col-player { position: static; }
+        #vtitle, #libtitle { font-size: 22px; }
+        .result img { width: 92px; height: 52px; }
+
+        /* admin: drop to 2-up cards, breakdown table scrolls horizontally */
+        #adminCards, #adminActivity { grid-template-columns: 1fr 1fr; }
+        #adminBreakdown { overflow-x: auto; }
+        #adminBreakdown table { min-width: 520px; }
+      }
+
+      @media (max-width: 460px) {
+        .display { font-size: clamp(36px, 12vw, 48px); }
+        .card h2 { font-size: 22px; }
+        .feature-list li { font-size: 14px; }
+        .thumb-strip { grid-template-columns: repeat(2, 1fr); }
+
+        /* admin one-up at phone widths */
+        #adminCards, #adminActivity { grid-template-columns: 1fr; }
+
+        /* result cards stack image above text */
+        .result { flex-direction: column; gap: 10px; }
+        .result img { width: 100%; height: 160px; }
+
+        /* hide the "Library" + "Pricing" nav links — they're never the
+           primary action; the brand still links home, the theme switch and
+           auth state remain reachable. */
+        .nav > a:not([href^="/api"]) { display: none; }
+      }
     </style>
   </head>
   <body>
@@ -373,7 +442,7 @@
       <section id="upload">
         <div class="hero">
           <p class="eyebrow"><span class="dash">——</span>Semantic Video Search</p>
-          <h1 class="display" style="margin-top:14px">Stop scrubbing.<br/>Start <em>searching.</em></h1>
+          <h1 class="display" style="margin-top:14px">Stop scrubbing. <br/>Start <em>searching.</em></h1>
           <p class="lead">Find the exact moment in any video by describing it — what was seen, what was said. No timeline-dragging required.</p>
         </div>
 
