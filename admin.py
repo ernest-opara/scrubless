@@ -67,6 +67,25 @@ def admin_stats(request: Request):
             if 0 <= slot <= 6:
                 activity[kind]["series"][slot] += 1
         series_starts_at = windows["d7"]  # epoch seconds of slot 0 (oldest)
+
+        # Traffic sources: aggregate the `source` column on view events. We
+        # bucket internal navigation separately and surface the top external
+        # referers / UTM tags so the operator can see what's actually driving
+        # visits. Older rows (pre-migration) have source=NULL and are skipped.
+        src_rows = s.execute(
+            select(Event.source, func.count())
+            .where(Event.kind == "view", Event.source.is_not(None))
+            .group_by(Event.source)
+        ).all()
+        external, internal_views = [], 0
+        for src, n in src_rows:
+            if src == "internal":
+                internal_views = n
+            else:
+                external.append({"source": src, "count": n})
+        external.sort(key=lambda r: r["count"], reverse=True)
+        top_sources = external[:10]
+        external_total = sum(r["count"] for r in external)
     bytes_used = 0
     for dirpath, _dirs, files in os.walk(STORAGE):
         for f in files:
@@ -85,6 +104,11 @@ def admin_stats(request: Request):
         "storage": {"bytes": bytes_used, "gb": round(bytes_used / 1024**3, 2)},
         "activity": activity,
         "series_starts_at": series_starts_at,
+        "traffic": {
+            "top_sources": top_sources,
+            "external_total": external_total,
+            "internal_views": internal_views,
+        },
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
         ],

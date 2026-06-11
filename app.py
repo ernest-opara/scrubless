@@ -90,9 +90,50 @@ for r in (
     app.include_router(r)
 
 
+# Hosts we collapse onto a short label for the admin "Top sources" panel —
+# anything not in this map shows up as its bare hostname.
+_SOURCE_ALIASES = {
+    "t.co": "twitter", "twitter.com": "twitter", "x.com": "twitter",
+    "news.ycombinator.com": "hn",
+    "producthunt.com": "producthunt", "www.producthunt.com": "producthunt",
+    "linkedin.com": "linkedin", "www.linkedin.com": "linkedin", "lnkd.in": "linkedin",
+    "reddit.com": "reddit", "www.reddit.com": "reddit", "old.reddit.com": "reddit",
+    "google.com": "google", "www.google.com": "google",
+    "bing.com": "bing", "duckduckgo.com": "duckduckgo",
+    "facebook.com": "facebook", "www.facebook.com": "facebook", "m.facebook.com": "facebook",
+    "youtube.com": "youtube", "www.youtube.com": "youtube",
+    "instagram.com": "instagram", "github.com": "github",
+}
+
+
+def request_source(request: Request) -> str:
+    """Best-effort traffic attribution for a landing-page view.
+    Order: explicit ?utm_source= (wins) → Referer hostname (normalized) →
+    `direct`. Same-host referers collapse to `internal` so the admin panel
+    can filter our own navigation back out."""
+    from urllib.parse import urlparse
+
+    utm = (request.query_params.get("utm_source") or "").strip().lower()[:32]
+    if utm:
+        return "utm:" + utm
+    ref = request.headers.get("referer") or ""
+    if not ref:
+        return "direct"
+    try:
+        host = (urlparse(ref).hostname or "").lower()
+    except Exception:  # noqa: BLE001
+        return "direct"
+    if not host:
+        return "direct"
+    our_host = (urlparse(config.APP_BASE_URL).hostname or "").lower()
+    if our_host and (host == our_host or host.endswith("." + our_host)):
+        return "internal"
+    return _SOURCE_ALIASES.get(host, host)[:64]
+
+
 @app.get("/")
-def index():
-    record_event("view")
+def index(request: Request):
+    record_event("view", source=request_source(request))
     return FileResponse(str(config.ROOT / "index.html"))
 
 

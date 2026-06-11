@@ -56,12 +56,15 @@ class Collection(Base):
 
 class Event(Base):
     """Lightweight activity log for the admin dashboard — every visit, search,
-    Q&A, upload, and reel writes one row. Aggregated by kind + time window."""
+    Q&A, upload, and reel writes one row. Aggregated by kind + time window.
+    `source` is set on view events: a normalized referer / UTM tag (twitter,
+    hn, producthunt, direct, internal, etc.); NULL on other event kinds."""
 
     __tablename__ = "events"
     id: Mapped[int] = mapped_column(primary_key=True)
     kind: Mapped[str] = mapped_column(String(20), index=True)
     at: Mapped[float] = mapped_column(Float, default=time.time, index=True)
+    source: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, default=None)
 
 
 _engine_args = {"pool_pre_ping": True}
@@ -82,6 +85,7 @@ def ensure_columns():
             "chapters": "VARCHAR(4000) DEFAULT ''",
         },
         "collections": {"owner": "INTEGER DEFAULT NULL"},
+        "events": {"source": "VARCHAR(64) DEFAULT NULL"},
     }
     insp = inspect(engine)
     for table, cols in wanted.items():
@@ -165,11 +169,12 @@ def forget_video(video_id):
         print("[scrubless] forget_video %s: %s" % (video_id, exc))
 
 
-def record_event(kind):
-    """Fire-and-forget activity log; never block a request on a tracking write."""
+def record_event(kind, source=None):
+    """Fire-and-forget activity log; never block a request on a tracking write.
+    `source` is recorded on view events for traffic attribution; None otherwise."""
     try:
         with Session(engine) as s:
-            s.add(Event(kind=kind, at=time.time()))
+            s.add(Event(kind=kind, at=time.time(), source=source))
             s.commit()
     except Exception as exc:  # noqa: BLE001
         print("[scrubless] record_event %s failed: %s" % (kind, exc))

@@ -541,6 +541,13 @@
         <div class="panel" style="margin-top:14px;padding:10px 6px">
           <div id="adminBreakdown" class="muted">Loading…</div>
         </div>
+        <div class="panel" style="margin-top:18px;padding:18px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+            <h3 style="margin:0">Top traffic sources</h3>
+            <span id="adminTrafficSummary" class="muted" style="font-size:12px"></span>
+          </div>
+          <div id="adminSources" class="muted">Loading…</div>
+        </div>
         <div class="panel" style="margin-top:18px;padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
             <h3 style="margin:0">Recent signups</h3>
@@ -732,6 +739,31 @@
               headCells + "</tr></thead>" +
               "<tbody>" + rows + "</tbody>" +
             "</table>";
+        }
+
+        // Top traffic sources — horizontal bars scaled to the top entry.
+        var traffic = s.traffic || { top_sources: [], external_total: 0, internal_views: 0 };
+        var sources = traffic.top_sources || [];
+        var srcHost = document.getElementById("adminSources");
+        var srcSummary = document.getElementById("adminTrafficSummary");
+        if (srcSummary) {
+          srcSummary.textContent =
+            traffic.external_total + " external · " + traffic.internal_views + " internal";
+        }
+        if (srcHost) {
+          if (!sources.length) {
+            srcHost.innerHTML = "No external visits recorded yet.";
+          } else {
+            var max = sources[0].count || 1;
+            srcHost.innerHTML = sources.map(function (r) {
+              var pct = Math.max(2, Math.round((r.count / max) * 100));
+              return '<div style="display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px">' +
+                       '<span style="flex:0 0 140px;font-family:var(--font-mono);font-size:12px;letter-spacing:0.04em">' + r.source + '</span>' +
+                       '<span style="flex:1;height:6px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><span style="display:block;height:100%;width:' + pct + '%;background:var(--accent);border-radius:999px"></span></span>' +
+                       '<span style="flex:0 0 60px;text-align:right;font-variant-numeric:tabular-nums">' + r.count + '</span>' +
+                     '</div>';
+            }).join("");
+          }
         }
 
         var recent = (s.recent_signups || []).map(function (u) {
