@@ -81,6 +81,28 @@
       </header>
 
       <main>
+      <!-- Approaching-cap banner — only renders for signed-in non-admin users
+           on a tier with a finite monthly cap (Free / Pro / Studio) once usage
+           crosses 80%. Dismissable per session. -->
+      <div id="capBanner" class="hidden" role="status"
+           style="margin:0 0 22px;padding:14px 18px;border-radius:12px;
+                  background:var(--accent-soft);border:1px solid var(--accent);
+                  color:var(--fg);display:flex;align-items:center;
+                  justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div style="min-width:0;flex:1">
+          <strong id="capBannerTitle" style="font-size:14.5px"></strong>
+          <span id="capBannerDetail" style="margin-left:8px;font-size:13.5px;color:var(--fg-muted)"></span>
+          <div id="capBannerBar" style="height:4px;background:rgba(20,18,14,0.10);border-radius:999px;overflow:hidden;margin-top:8px;max-width:380px">
+            <div id="capBannerFill" style="height:100%;width:0%;background:var(--accent);border-radius:999px;transition:width .3s"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+          <button class="btn" id="capBannerCta" onclick="openPricing()">Upgrade</button>
+          <button class="btn-ghost" onclick="dismissCapBanner()" aria-label="Dismiss"
+                  style="padding:6px 12px;font-size:18px;line-height:1">×</button>
+        </div>
+      </div>
+
       <!-- 1. Upload -->
       <section id="upload">
         <div class="hero">
@@ -360,12 +382,68 @@
           .then(function (s) {
             authState = s;
             renderAuth();
+            renderCapBanner();
             var hint = document.getElementById("limitHint");
             if (hint) hint.textContent = "Max " + fmtMB(s.upload_limit_bytes);
             if (s.user) loadMyLibrary();
             if (location.pathname === "/admin") enterAdmin();
           })
           .catch(function () {});
+      }
+
+      // Approaching-cap banner. Shows at >=80% of either monthly limit
+      // (Q&A or hours indexed); escalates copy + color at >=100%. Hides for
+      // anon, admins, and unlimited tiers (Team). Dismissable per session;
+      // a fresh page load after upgrading clears it.
+      function renderCapBanner() {
+        var el = document.getElementById("capBanner");
+        if (!el) return;
+        var u = authState.user;
+        var usage = authState.usage || {};
+        if (!u || u.is_admin) { el.classList.add("hidden"); return; }
+        if (sessionStorage.getItem("capDismissed") === "1") { el.classList.add("hidden"); return; }
+
+        var qa = usage.qa || {};
+        var hrs = usage.hours_indexed || {};
+        var qaPct = qa.cap ? (qa.used || 0) / qa.cap : 0;
+        var hrsPct = hrs.cap ? (hrs.used || 0) / hrs.cap : 0;
+        var pct = Math.max(qaPct, hrsPct);
+        if (pct < 0.8) { el.classList.add("hidden"); return; }
+
+        // Which dimension is closer to the cap drives the copy.
+        var worst = qaPct >= hrsPct ? "qa" : "hours";
+        var detail;
+        if (worst === "qa") {
+          detail = "Q&A · " + (qa.used || 0) + " / " + qa.cap + " this month";
+        } else {
+          detail = "Indexing · " + (hrs.used || 0).toFixed(1) + " / " + hrs.cap + " hr this month";
+        }
+
+        var atLimit = pct >= 1;
+        var nextTier = u.tier === "free" ? "Pro" : (u.tier === "pro" ? "Studio" : "Team");
+        document.getElementById("capBannerTitle").textContent =
+          atLimit ? "You've hit your monthly limit." : "You're approaching your monthly limit.";
+        document.getElementById("capBannerDetail").textContent = detail;
+        document.getElementById("capBannerCta").textContent = "Upgrade to " + nextTier;
+        var fill = document.getElementById("capBannerFill");
+        fill.style.width = Math.min(100, Math.round(pct * 100)) + "%";
+        // Coral-ish at the limit; indigo accent below it.
+        if (atLimit) {
+          el.style.background = "#fdece7";
+          el.style.borderColor = "#e0623e";
+          fill.style.background = "#e0623e";
+        } else {
+          el.style.background = "";
+          el.style.borderColor = "";
+          fill.style.background = "";
+        }
+        el.classList.remove("hidden");
+      }
+
+      function dismissCapBanner() {
+        sessionStorage.setItem("capDismissed", "1");
+        var el = document.getElementById("capBanner");
+        if (el) el.classList.add("hidden");
       }
 
       // --- Admin (operator stats) — only useful when user.is_admin ---
