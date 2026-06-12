@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrubless · Semantic video search - find any moment by description</title>
+    <title>Scrubless · Semantic video search, find any moment by description</title>
     <meta name="description" content="Search inside any video using natural language. Upload a video or a whole folder, then find the exact moment by describing what was said or shown. Free to try, no account required." />
     <meta name="theme-color" content="#f2efe8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#14151a" media="(prefers-color-scheme: dark)" />
@@ -11,16 +11,16 @@
     <link rel="icon" type="image/svg+xml" href="/scrubby/scrubby-avatar.svg" />
     <link rel="apple-touch-icon" href="/scrubby/scrubby-avatar.svg" />
 
-    <!-- Open Graph / Twitter cards - control how shared links unfurl. -->
+    <!-- Open Graph / Twitter cards, control how shared links unfurl. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Scrubless" />
     <meta property="og:title" content="Scrubless · Semantic video search" />
-    <meta property="og:description" content="Find any moment in any video by describing it - what was said, what was shown. Stop scrubbing." />
+    <meta property="og:description" content="Find any moment in any video by describing it, what was said, what was shown. Stop scrubbing." />
     <meta property="og:url" content="https://www.getscrubless.com/" />
     <meta property="og:image" content="https://www.getscrubless.com/scrubby/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Scrubless - Stop scrubbing. Start searching." />
+    <meta property="og:image:alt" content="Scrubless, Stop scrubbing. Start searching." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Scrubless · Semantic video search" />
     <meta name="twitter:description" content="Find any moment in any video by describing it. Stop scrubbing." />
@@ -37,7 +37,7 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Scrubless",
-      "description": "Semantic video search - find any moment in any video by describing it in plain English. Searches what's visible and what's spoken.",
+      "description": "Semantic video search, find any moment in any video by describing it in plain English. Searches what's visible and what's spoken.",
       "url": "https://www.getscrubless.com/",
       "applicationCategory": "MultimediaApplication",
       "operatingSystem": "Web",
@@ -48,8 +48,8 @@
       },
       "featureList": [
         "Natural-language search inside any video",
-        "Library mode - search across a whole folder of videos",
-        "Ask - cited answers with clickable timestamps",
+        "Library mode, search across a whole folder of videos",
+        "Ask, cited answers with clickable timestamps",
         "Auto-chapters and summaries",
         "Highlight reel export"
       ]
@@ -60,7 +60,7 @@
   <body>
     <div class="wrap">
       <header class="site">
-        <a class="brand" href="/" aria-label="Scrubless - home">
+        <a class="brand" href="/" aria-label="Scrubless, home">
           <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="" />
           <span class="brand-wordmark">Scrubless</span>
         </a>
@@ -81,7 +81,7 @@
       </header>
 
       <main>
-      <!-- Approaching-cap banner - only renders for signed-in non-admin users
+      <!-- Approaching-cap banner, only renders for signed-in non-admin users
            on a tier with a finite monthly cap (Free / Pro / Studio) once usage
            crosses 80%. Dismissable per session. -->
       <div id="capBanner" class="hidden" role="status"
@@ -108,11 +108,11 @@
         <div class="hero">
           <p class="eyebrow"><span class="dash">--</span>Semantic Video Search</p>
           <h1 class="display" style="margin-top:14px">Stop scrubbing. <br/>Start <em>searching.</em></h1>
-          <p class="lead">Find the exact moment in any video by describing it - what was seen, what was said. No timeline-dragging required.</p>
+          <p class="lead">Find the exact moment in any video by describing it, what was seen, what was said. No timeline-dragging required.</p>
         </div>
 
         <div class="hero-grid">
-          <!-- Card 1 - Add a video -->
+          <!-- Card 1, Add a video -->
           <div class="card">
             <p class="card-eyebrow"><span class="num">01</span>&nbsp;&nbsp;·&nbsp;&nbsp;Add a video</p>
             <div id="drop">
@@ -121,7 +121,7 @@
               </div>
               <div class="copy">
                 <h3>Drop a video here</h3>
-                <p class="hint">MP4 · MOV · MKV · WEBM - <span id="limitHint">up to 500MB</span></p>
+                <p class="hint">MP4 · MOV · MKV · WEBM, <span id="limitHint">up to 500MB</span></p>
               </div>
               <button type="button" class="pickbtn" onclick="event.stopPropagation();document.getElementById('file').click()">Choose file</button>
             </div>
@@ -141,11 +141,11 @@
             <button id="trysample" class="hidden">Try a sample video</button>
           </div>
 
-          <!-- Card 2 - Library / folder search -->
+          <!-- Card 2, Library / folder search -->
           <div class="card" id="folderPanel">
             <p class="card-eyebrow"><span class="num">02</span>&nbsp;&nbsp;·&nbsp;&nbsp;Or go wide</p>
             <h2>Search a whole folder</h2>
-            <p class="lead" style="margin-top:14px;font-size:15px">Index a directory of videos and search across all of them at once - one query, every clip.</p>
+            <p class="lead" style="margin-top:14px;font-size:15px">Index a directory of videos and search across all of them at once, one query, every clip.</p>
             <button class="btn btn-block" id="folderUploadBtn" style="margin-top:18px">Open the library</button>
             <input id="folderUpload" type="file" webkitdirectory multiple class="hidden" />
             <ul class="feature-list">
@@ -215,7 +215,7 @@
               <input id="question" type="text" placeholder="Ask anything about this video…" />
               <button class="btn" id="askbtn">Ask</button>
             </div>
-            <div id="answer" class="empty" style="margin-top:14px">Ask a question - the answer cites moments you can click.</div>
+            <div id="answer" class="empty" style="margin-top:14px">Ask a question, the answer cites moments you can click.</div>
           </div>
         </div>
       </section>
@@ -259,7 +259,7 @@
               <input id="libquestion" type="text" placeholder="Ask across this whole folder…" />
               <button class="btn" id="libaskbtn" disabled>Ask</button>
             </div>
-            <div id="libAnswer" class="empty" style="margin-top:14px">Ask a question across every video - the answer cites the exact clip, click to jump there.</div>
+            <div id="libAnswer" class="empty" style="margin-top:14px">Ask a question across every video, the answer cites the exact clip, click to jump there.</div>
           </div>
         </div>
       </section>
@@ -446,7 +446,7 @@
         if (el) el.classList.add("hidden");
       }
 
-      // --- Admin (operator stats) - only useful when user.is_admin ---
+      // --- Admin (operator stats), only useful when user.is_admin ---
       function enterAdmin() {
         if (!authState.user || !authState.user.is_admin) { location.href = "/"; return; }
         ["upload","processing","workspace","libworkspace","myLibrary","folderPanel"]
@@ -494,10 +494,10 @@
           var W = 100, H = 26;
           if (!values || !values.length) return "";
           var max = Math.max.apply(null, values) || 1;
-          var step = values.length > 1 ? W / (values.length - 1) : 0;
+          var step = values.length > 1 ? W / (values.length, 1) : 0;
           var pts = values.map(function (v, i) {
             var x = i * step;
-            var y = H - 1 - (v / max) * (H - 2);
+            var y = H, 1, (v / max) * (H, 2);
             return x.toFixed(1) + "," + y.toFixed(1);
           }).join(" ");
           return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H +
@@ -551,7 +551,7 @@
             "</table>";
         }
 
-        // Top traffic sources - windowed (total / 24h / 7d). 7d is the default
+        // Top traffic sources, windowed (total / 24h / 7d). 7d is the default
         // because that's what tracks campaigns; the tabs swap the live data.
         var trafficByWindow = s.traffic || {};
         var srcHost = document.getElementById("adminSources");
@@ -603,7 +603,7 @@
         if (!el) return;
         if (authState.user) {
           var billing = "";
-          // Admins skip the billing UI entirely - they get the admin cap and
+          // Admins skip the billing UI entirely, they get the admin cap and
           // shouldn't be prompted to upgrade.
           if (authState.billing_enabled && !authState.user.is_admin) {
             billing =
@@ -653,7 +653,7 @@
         });
       })();
 
-      // Monthly vs yearly toggle state - picked up by startCheckout. Defaults
+      // Monthly vs yearly toggle state, picked up by startCheckout. Defaults
       // to monthly; the cycle picker only renders when annual_enabled.
       var pricingCycle = "monthly";
       function setPricingCycle(cycle) {
@@ -723,7 +723,7 @@
       // CLIP cosine similarity is compressed (~0.15 weak, ~0.32 strong);
       // rescale to an intuitive confidence figure.
       function confidence(score) {
-        var t = Math.min(1, Math.max(0, (score - 0.13) / (0.32 - 0.13)));
+        var t = Math.min(1, Math.max(0, (score, 0.13) / (0.32, 0.13)));
         return Math.round((0.55 + 0.44 * t) * 100);
       }
       function show(id) { document.getElementById(id).classList.remove("hidden"); }
@@ -768,10 +768,10 @@
             } else {
               msg.textContent =
                 "Your " + authState.user.tier + " plan allows up to " + lim +
-                " - upgrade for larger uploads.";
+                ", upgrade for larger uploads.";
             }
           } else {
-            msg.textContent = "That file is over " + lim + " - try a shorter clip.";
+            msg.textContent = "That file is over " + lim + ", try a shorter clip.";
           }
           msg.classList.remove("hidden");
           return;
@@ -785,7 +785,7 @@
         fetch("/api/upload", { method: "POST", body: form })
           .then(function (r) {
             if (r.status === 402) {
-              // Monthly cap - show the upgrade modal instead of an inline error
+              // Monthly cap, show the upgrade modal instead of an inline error
               // and let the user fix the constraint, not just see it.
               return r.json().then(function (d) {
                 escalateCap(d.detail || "Monthly limit reached.");
@@ -806,18 +806,18 @@
             if (err && err.message === "__handled__") {
               // 402 was already handled by escalateCap; just restore the drop UI.
               drop.querySelector("h3").textContent = "Drop a video here";
-              drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM - <span id="limitHint">up to 500MB</span>';
+              drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM, <span id="limitHint">up to 500MB</span>';
               return;
             }
             var e = document.getElementById("uperr");
             e.textContent = err.message;
             e.classList.remove("hidden");
             drop.querySelector("h3").textContent = "Drop a video here";
-            drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM - <span id="limitHint">up to 500MB</span>';
+            drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM, <span id="limitHint">up to 500MB</span>';
           });
       }
 
-      // Centralised 402 handler - pops the pricing modal and clears the
+      // Centralised 402 handler, pops the pricing modal and clears the
       // dismissed flag so the cap banner re-renders once we're back. Used by
       // upload + Q&A flows; safe to call from anywhere that gets a 402.
       function escalateCap(message) {
@@ -855,7 +855,7 @@
                 (s.error || "") + "</p>";
             }
           })
-          .catch(function () { /* transient - keep polling */ });
+          .catch(function () { /* transient, keep polling */ });
       }
 
       // --- Workspace ---
@@ -864,7 +864,7 @@
         show("workspace");
         document.getElementById("vtitle").textContent = status.title || "";
         document.getElementById("player").src = status.source_url;
-        // The sample is Big Buck Bunny - nudge the visitor toward a query
+        // The sample is Big Buck Bunny, nudge the visitor toward a query
         // that actually matches it.
         if (videoId === "sample") {
           document
@@ -989,7 +989,7 @@
 
       // ===================== Library Mode =====================
       // Local directory scan only makes sense when the server can see the
-      // folder - i.e. self-hosted/local. Show it on localhost (or ?lib).
+      // folder, i.e. self-hosted/local. Show it on localhost (or ?lib).
       var LIBRARY_LOCAL =
         location.hostname === "localhost" ||
         location.hostname === "127.0.0.1" ||
@@ -1019,7 +1019,7 @@
           })
           .catch(function (e) {
             err.textContent =
-              "Couldn't open the folder picker - paste a path instead. (" + e.message + ")";
+              "Couldn't open the folder picker, paste a path instead. (" + e.message + ")";
             err.classList.remove("hidden");
           })
           .finally(function () {
@@ -1082,7 +1082,7 @@
               document.getElementById("libProgressFill").style.width = pct + "%";
               if (done) {
                 document.getElementById("libProgressText").textContent =
-                  "✓ All " + s.total + " video" + (s.total === 1 ? "" : "s") + " indexed - search away!";
+                  "✓ All " + s.total + " video" + (s.total === 1 ? "" : "s") + " indexed, search away!";
                 document.getElementById("libProgressCount").textContent = "";
                 setTimeout(function () { prog.classList.add("hidden"); }, 6000);
               } else {
@@ -1092,7 +1092,7 @@
             }
             if (done) clearInterval(libPoll);
           })
-          .catch(function () { /* transient - keep polling */ });
+          .catch(function () { /* transient, keep polling */ });
       }
 
       function runLibSearch() {
@@ -1229,7 +1229,7 @@
       }
 
       // Hosted folder upload: pick a folder in the browser, upload each video
-      // into a new collection, then search across them - works anywhere.
+      // into a new collection, then search across them, works anywhere.
       function isVideoName(name) {
         return /\.(mp4|mov|mkv|avi|webm|m4v|mpg|mpeg|wmv)$/i.test(name);
       }
@@ -1376,7 +1376,7 @@
         document.getElementById("libquestion").value = "";
         var la = document.getElementById("libAnswer");
         la.className = "empty";
-        la.textContent = "Ask a question across every video - the answer cites the exact clip, click to jump there.";
+        la.textContent = "Ask a question across every video, the answer cites the exact clip, click to jump there.";
         showLibTab("search");
         libPoll = setInterval(pollLibrary, 2000);
         pollLibrary();

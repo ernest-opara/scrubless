@@ -1,4 +1,4 @@
-"""Static marketing pages - /blog, /blog/{slug}, /pricing, /about.
+"""Static marketing pages, /blog, /blog/{slug}, /pricing, /about.
 
 These live outside the SPA so each one has its own crawlable URL, title,
 description, OG tags, and indexable content. They share the design system
@@ -117,7 +117,7 @@ _HEAD = """<!doctype html>
   <body>
     <div class="wrap">
       <header class="site">
-        <a class="brand" href="/" aria-label="Scrubless - home">
+        <a class="brand" href="/" aria-label="Scrubless, home">
           <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="" />
           <span class="brand-wordmark">Scrubless</span>
         </a>
@@ -149,7 +149,7 @@ _FOOT = """      </main>
 """
 
 
-# Approaching-cap banner - same look + threshold logic as the SPA's
+# Approaching-cap banner, same look + threshold logic as the SPA's
 # renderCapBanner, but standalone so /blog and /about can render it too
 # without pulling in the whole index.html script bundle. Fetches /api/auth/me
 # and renders inline; silently does nothing when the user is anon, admin,
@@ -242,7 +242,7 @@ def blog_index():
             '<div class="prose">'
             '<p class="post-meta">The Scrubless blog</p>'
             '<h1>Who uses Scrubless</h1>'
-            '<p>Real workflows from people who got tired of scrubbing - short stories on how creators, podcasters, teams, and ordinary people use semantic video search to find the moment that matters.</p>'
+            '<p>Real workflows from people who got tired of scrubbing, short stories on how creators, podcasters, teams, and ordinary people use semantic video search to find the moment that matters.</p>'
             '<ul class="blog-list">' + items + '</ul>'
             '</div>'
         )
@@ -250,7 +250,7 @@ def blog_index():
         body = '<div class="prose"><h1>Coming soon</h1><p>No posts published yet.</p></div>'
     return HTMLResponse(_page(
         title="Blog · Scrubless",
-        description="Stories on how creators, podcasters, teams, and individuals use Scrubless to search inside their videos - by what was said and what was shown.",
+        description="Stories on how creators, podcasters, teams, and individuals use Scrubless to search inside their videos, by what was said and what was shown.",
         body=body,
         canonical=CANONICAL + "/blog",
     ))
@@ -349,7 +349,7 @@ def pricing_page():
     for p in plans:
         featured = " featured" if p.get("featured") else ""
         suffix = "/seat/mo" if p.get("per_seat") else "/mo"
-        # Two price spans (monthly + yearly) - the JS toggle swaps which one's
+        # Two price spans (monthly + yearly), the JS toggle swaps which one's
         # visible. Falls back to the monthly one if yearly billing isn't wired.
         price_block = (
             '<div class="price" data-price="monthly"><span class="amt">$' + str(p["price_monthly"]) + '</span><small>' + suffix + '</small></div>'
@@ -395,7 +395,7 @@ def pricing_page():
         '<h3>What if I go over my monthly cap?</h3>'
         '<p>New uploads or Q&amp;A requests will pause until the start of next month or until you upgrade. Existing videos stay searchable.</p>'
         '<h3>Do you offer enterprise / on-prem?</h3>'
-        '<p>Yes - that’s the Team plan, plus optional self-hosted deploys for larger orgs. <a href="mailto:sales@getscrubless.com">Email sales</a>.</p>'
+        '<p>Yes, that’s the Team plan, plus optional self-hosted deploys for larger orgs. <a href="mailto:sales@getscrubless.com">Email sales</a>.</p>'
         '</div>'
         # Toggle script for monthly/yearly. No-op if the toggle isn't rendered.
         '<script>'
@@ -407,7 +407,7 @@ def pricing_page():
         '</script>'
     )
     return HTMLResponse(_page(
-        title="Pricing · Scrubless - Semantic video search",
+        title="Pricing · Scrubless, Semantic video search",
         description="Free to try, no account required. Pro $15/mo for creators. Studio $39/mo for podcasters. Team $99/seat for organizations. Every plan includes semantic search, Q&A with citations, auto-chapters, and highlight reels.",
         body=body,
         canonical=CANONICAL + "/pricing",
@@ -421,16 +421,16 @@ def about_page():
         '<div class="prose">'
         '<p class="post-meta">About</p>'
         '<h1>The story behind Scrubless.</h1>'
-        '<p>Scrubless exists because finding a single moment inside a long video is still painful in 2026 - and that’s absurd.</p>'
-        '<p>Every other medium got searchable years ago. Documents have <code>Ctrl+F</code>. Email has full-text search. Music streaming has lyrics search. But the medium people <em>actually</em> spend their time on - video - is still stuck at "drag the timeline back and forth until you guess right." That’s the gap Scrubless fills.</p>'
+        '<p>Scrubless exists because finding a single moment inside a long video is still painful in 2026, and that’s absurd.</p>'
+        '<p>Every other medium got searchable years ago. Documents have <code>Ctrl+F</code>. Email has full-text search. Music streaming has lyrics search. But the medium people <em>actually</em> spend their time on, video, is still stuck at "drag the timeline back and forth until you guess right." That’s the gap Scrubless fills.</p>'
         '<h2>What it does</h2>'
-        '<p>You upload a video (or point Scrubless at a whole folder of videos), and then you can search it like you’d search a document - in plain English. Type <em>"the part where someone says we should ship it"</em> and Scrubless takes you to that exact second. Type <em>"the rabbit"</em> and it finds every shot of the rabbit. It searches what was <strong>said</strong> and what was <strong>shown</strong>, not just the captions.</p>'
+        '<p>You upload a video (or point Scrubless at a whole folder of videos), and then you can search it like you’d search a document, in plain English. Type <em>"the part where someone says we should ship it"</em> and Scrubless takes you to that exact second. Type <em>"the rabbit"</em> and it finds every shot of the rabbit. It searches what was <strong>said</strong> and what was <strong>shown</strong>, not just the captions.</p>'
         '<p>It also writes auto-chapters and summaries for every video, answers questions about your videos with cited timestamps, and lets you stitch search-result moments into a highlight reel.</p>'
         '<h2>Who it’s for</h2>'
-        '<p>Creators, editors, podcasters, teachers, researchers, support teams, security analysts - anyone who has more video than they can remember. Read <a href="/blog">the blog</a> for specific workflows.</p>'
+        '<p>Creators, editors, podcasters, teachers, researchers, support teams, security analysts, anyone who has more video than they can remember. Read <a href="/blog">the blog</a> for specific workflows.</p>'
         '<h2>Who built it</h2>'
-        '<p>Scrubless is built by <a href="https://linkedin.com/in/ernest-opara" target="_blank">Chukwuebuka Ernest-Opara</a>, an ML &amp; platform engineer who spent years working with embedding infrastructure and video before turning the two into a product.</p>'
-        '<p>Reach out at <a href="mailto:contact@getscrubless.com">contact@getscrubless.com</a> - or, if you just want to say hi to the mascot, <a href="mailto:scrubby@getscrubless.com">scrubby@getscrubless.com</a> reads everything too.</p>'
+        '<p>Scrubless is built by <a href="https://linkedin.com/in/chukwuebuka-ernest-opara" target="_blank">Chukwuebuka Ernest-Opara</a>, an ML &amp; platform engineer who spent years working with embedding infrastructure and video before turning the two into a product.</p>'
+        '<p>Reach out at <a href="mailto:contact@getscrubless.com">contact@getscrubless.com</a>, or, if you just want to say hi to the mascot, <a href="mailto:scrubby@getscrubless.com">scrubby@getscrubless.com</a> reads everything too.</p>'
         '<div class="post-cta">'
         '<h3>Try it on your own video.</h3>'
         '<p>No account needed. Free.</p>'
@@ -439,8 +439,8 @@ def about_page():
         '</div>'
     )
     return HTMLResponse(_page(
-        title="About · Scrubless - Semantic video search",
-        description="Scrubless makes any video searchable by description - what was said and what was shown. Built by Chukwuebuka Ernest-Opara, an ML & platform engineer.",
+        title="About · Scrubless, Semantic video search",
+        description="Scrubless makes any video searchable by description, what was said and what was shown. Built by Chukwuebuka Ernest-Opara, an ML & platform engineer.",
         body=body,
         canonical=CANONICAL + "/about",
     ))

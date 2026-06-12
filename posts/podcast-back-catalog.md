@@ -1,12 +1,12 @@
 ---
 title: "Searching a podcast back-catalog for that one quote"
 slug: podcast-back-catalog
-description: "Index hours of podcast recordings and find any guest, topic, or quote in plain English - for podcasters whose archives have outgrown manual notes."
+description: "Index hours of podcast recordings and find any guest, topic, or quote in plain English, for podcasters whose archives have outgrown manual notes."
 audience: "Podcasters"
 date: "2026-06-09"
 ---
 
-A friend who runs a podcast asked me last month: *"Do you remember the episode where my guest talked about hiring their first engineer?"* - and I couldn't, because there were 84 of them.
+A friend who runs a podcast asked me last month: *"Do you remember the episode where my guest talked about hiring their first engineer?"*, and I couldn't, because there were 84 of them.
 
 This is the problem Scrubless solves cleanly. You drop a folder of episodes in (or upload them one at a time), and instead of scrubbing through the timeline trying to remember which one had the bit you want, you just type what you remember and click the moment that comes back.
 
@@ -23,7 +23,7 @@ That's it. No re-listening, no scanning transcript dumps, no remembering which e
 
 ## Why it works for talk-heavy content
 
-Podcasts are mostly speech, and that's the easiest signal to search well. Scrubless transcribes every episode at index time, so you can search for what was said even if the episode title gives nothing away. But it also looks at visual cues if you uploaded video - useful for video podcasts where you might want *"when they pulled up the slide about Q3 numbers."*
+Podcasts are mostly speech, and that's the easiest signal to search well. Scrubless transcribes every episode at index time, so you can search for what was said even if the episode title gives nothing away. But it also looks at visual cues if you uploaded video, useful for video podcasts where you might want *"when they pulled up the slide about Q3 numbers."*
 
 A few queries that work well on real podcast archives:
 
@@ -36,17 +36,17 @@ You don't have to phrase it like a database query. Just type how you'd say it to
 
 ## Things that surprised people
 
-**Asking questions.** The Ask tab will give you a written answer with citations - clickable links back to the exact moments the answer relied on. So you can ask *"which guests have mentioned therapy?"* and get back a sentence with `[Episode 32 @ 14:22]` you can click.
+**Asking questions.** The Ask tab will give you a written answer with citations, clickable links back to the exact moments the answer relied on. So you can ask *"which guests have mentioned therapy?"* and get back a sentence with `[Episode 32 @ 14:22]` you can click.
 
 **Highlight reels.** Once you've found four or five matching moments, one button stitches them into a single video you can post to social. The original cuts of each moment, scaled to a common 720p frame, audio dropped (so clips from different mics don't clash).
 
-**Auto-chapters.** Every uploaded episode gets a summary and chapter list automatically - handy if you need to write show notes for old episodes you don't remember.
+**Auto-chapters.** Every uploaded episode gets a summary and chapter list automatically, handy if you need to write show notes for old episodes you don't remember.
 
 ## What it costs
 
-Anyone can try it for free at [getscrubless.com](/) - upload a single episode (up to 500MB), search it, ask questions. No account needed.
+Anyone can try it for free at [getscrubless.com](/), upload a single episode (up to 500MB), search it, ask questions. No account needed.
 
-For a real podcast archive - full episodes, kept around forever, searched across - you'll want the Pro plan ($10/mo). Studio ($30/mo) is for longer episodes or larger archives.
+For a real podcast archive, full episodes, kept around forever, searched across, you'll want the Pro plan ($10/mo). Studio ($30/mo) is for longer episodes or larger archives.
 
 [See pricing](/pricing).
 
@@ -55,7 +55,7 @@ For a real podcast archive - full episodes, kept around forever, searched across
 A few honest caveats:
 
 - Scrubless searches **what was said and what was shown**, not metadata you typed elsewhere. If your search depends on tags or labels, it'll miss.
-- The transcription is good but not perfect - accents and overlapping speech sometimes hurt accuracy. The visual search still helps in those cases.
+- The transcription is good but not perfect, accents and overlapping speech sometimes hurt accuracy. The visual search still helps in those cases.
 - It's not a transcription product. You can get the transcript back via the Ask feature, but the value is in the search, not the words on a page.
 
 Try it on one episode at [getscrubless.com](/). If the first search lands on the right moment, you'll know.
