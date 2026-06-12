@@ -335,7 +335,7 @@
             <h3 style="margin:0;font-family:var(--font-display);font-weight:400;font-size:22px">Team</h3>
             <p data-tier-price="team" style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)" data-monthly="$99" data-yearly="$79">$99<span class="faint" style="font-size:14px;font-weight:400">/seat/mo</span></p>
             <p class="muted" style="font-size:13px;margin:6px 0 12px">25GB · unlimited · shared library</p>
-            <a class="btn-ghost" href="mailto:e@getscrubless.com?subject=Scrubless%20Team%20plan" style="margin-top:auto;text-align:center;text-decoration:none">Talk to us</a>
+            <a class="btn-ghost" href="mailto:sales@getscrubless.com?subject=Scrubless%20Team%20plan" style="margin-top:auto;text-align:center;text-decoration:none">Talk to us</a>
           </div>
         </div>
         <p class="muted" style="margin:14px 0 0;font-size:12px;text-align:center">Need more? <a href="/pricing" style="color:var(--accent)">See full pricing</a></p>
@@ -784,6 +784,14 @@
 
         fetch("/api/upload", { method: "POST", body: form })
           .then(function (r) {
+            if (r.status === 402) {
+              // Monthly cap — show the upgrade modal instead of an inline error
+              // and let the user fix the constraint, not just see it.
+              return r.json().then(function (d) {
+                escalateCap(d.detail || "Monthly limit reached.");
+                throw new Error("__handled__");
+              });
+            }
             if (!r.ok) throw new Error("upload failed (" + r.status + ")");
             return r.json();
           })
@@ -795,12 +803,39 @@
             pollStatus();
           })
           .catch(function (err) {
+            if (err && err.message === "__handled__") {
+              // 402 was already handled by escalateCap; just restore the drop UI.
+              drop.querySelector("h3").textContent = "Drop a video here";
+              drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM — <span id="limitHint">up to 500MB</span>';
+              return;
+            }
             var e = document.getElementById("uperr");
             e.textContent = err.message;
             e.classList.remove("hidden");
             drop.querySelector("h3").textContent = "Drop a video here";
             drop.querySelector(".hint").innerHTML = 'MP4 · MOV · MKV · WEBM — <span id="limitHint">up to 500MB</span>';
           });
+      }
+
+      // Centralised 402 handler — pops the pricing modal and clears the
+      // dismissed flag so the cap banner re-renders once we're back. Used by
+      // upload + Q&A flows; safe to call from anywhere that gets a 402.
+      function escalateCap(message) {
+        try { sessionStorage.removeItem("capDismissed"); } catch (e) {}
+        // Refresh auth/usage so the banner re-evaluates immediately after upgrade.
+        loadAuth();
+        openPricing();
+        // Soft toast under the modal so the user knows WHY it opened.
+        var t = document.getElementById("capToast") || (function () {
+          var n = document.createElement("div");
+          n.id = "capToast";
+          n.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg-dark, #15161a);color:#faf8f3;padding:12px 18px;border-radius:999px;font-size:13.5px;z-index:60;box-shadow:0 12px 36px rgba(0,0,0,0.18);max-width:90vw;text-align:center";
+          document.body.appendChild(n);
+          return n;
+        })();
+        t.textContent = message;
+        clearTimeout(window.__capToastT);
+        window.__capToastT = setTimeout(function () { t.remove(); }, 6000);
       }
 
       // --- Processing poll ---
@@ -1465,11 +1500,24 @@
           body: JSON.stringify({ question: q }),
         })
           .then(function (r) {
+            if (r.status === 402) {
+              return r.json().then(function (d) {
+                escalateCap(d.detail || "Monthly Q&A limit reached.");
+                throw new Error("__handled__");
+              });
+            }
+            if (r.status === 401) {
+              return r.json().then(function (d) {
+                ans.innerHTML = '<span class="muted">' + escapeHtml(d.detail) + ' <a href="/api/auth/login" style="color:var(--accent)">Log in</a></span>';
+                throw new Error("__handled__");
+              });
+            }
             if (!r.ok) return r.json().then(function (e) { throw new Error(e.detail || "failed"); });
             return r.json();
           })
           .then(function (d) { renderAnswer(d.answer); })
           .catch(function (e) {
+            if (e && e.message === "__handled__") return;
             ans.className = "";
             ans.innerHTML = '<span style="color:#e0623e">' + escapeHtml(e.message) + "</span>";
           })
@@ -1535,11 +1583,24 @@
           body: JSON.stringify({ question: q }),
         })
           .then(function (r) {
+            if (r.status === 402) {
+              return r.json().then(function (d) {
+                escalateCap(d.detail || "Monthly Q&A limit reached.");
+                throw new Error("__handled__");
+              });
+            }
+            if (r.status === 401) {
+              return r.json().then(function (d) {
+                box.innerHTML = '<span class="muted">' + escapeHtml(d.detail) + ' <a href="/api/auth/login" style="color:var(--accent)">Log in</a></span>';
+                throw new Error("__handled__");
+              });
+            }
             if (!r.ok) return r.json().then(function (e) { throw new Error(e.detail || "failed"); });
             return r.json();
           })
           .then(function (d) { renderLibAnswer(d.answer, d.sources); })
           .catch(function (e) {
+            if (e && e.message === "__handled__") return;
             box.className = "";
             box.innerHTML = '<span style="color:#e0623e">' + escapeHtml(e.message) + "</span>";
           })

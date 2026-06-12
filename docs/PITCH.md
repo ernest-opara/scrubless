@@ -210,5 +210,5 @@ Search was the gateway to the web. Scrubless is that gateway for video.
 
 \vspace{0.8em}
 \begin{center}
-\footnotesize getscrubless.com \quad·\quad e@getscrubless.com
+\footnotesize getscrubless.com \quad·\quad contact@getscrubless.com
 \end{center}

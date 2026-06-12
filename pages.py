@@ -130,6 +130,7 @@ _HEAD = """<!doctype html>
         </nav>
       </header>
       <main>
+{cap_banner}
 """
 
 _FOOT = """      </main>
@@ -140,7 +141,7 @@ _FOOT = """      </main>
           <a href="/pricing">Pricing</a>
           <a href="/about">About</a>
         </div>
-        <div>© Scrubless · <a href="mailto:e@getscrubless.com">e@getscrubless.com</a></div>
+        <div>© Scrubless · <a href="mailto:contact@getscrubless.com">contact@getscrubless.com</a></div>
       </footer>
     </div>
   </body>
@@ -148,13 +149,75 @@ _FOOT = """      </main>
 """
 
 
-def _page(*, title, description, body, canonical, og_type="website", og_title=None):
+# Approaching-cap banner — same look + threshold logic as the SPA's
+# renderCapBanner, but standalone so /blog and /about can render it too
+# without pulling in the whole index.html script bundle. Fetches /api/auth/me
+# and renders inline; silently does nothing when the user is anon, admin,
+# unlimited tier, or hasn't crossed the 80% threshold.
+_CAP_BANNER = """
+<div id="capBanner" class="hidden" role="status"
+     style="margin:0 0 22px;padding:14px 18px;border-radius:12px;
+            background:var(--accent-soft);border:1px solid var(--accent);
+            color:var(--fg);display:flex;align-items:center;
+            justify-content:space-between;gap:14px;flex-wrap:wrap">
+  <div style="min-width:0;flex:1">
+    <strong id="capBannerTitle" style="font-size:14.5px"></strong>
+    <span id="capBannerDetail" style="margin-left:8px;font-size:13.5px;color:var(--fg-muted)"></span>
+    <div style="height:4px;background:rgba(20,18,14,0.10);border-radius:999px;overflow:hidden;margin-top:8px;max-width:380px">
+      <div id="capBannerFill" style="height:100%;width:0%;background:var(--accent);border-radius:999px;transition:width .3s"></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+    <a id="capBannerCta" class="btn" href="/pricing" style="text-decoration:none">Upgrade</a>
+    <button class="btn-ghost" id="capDismissBtn" aria-label="Dismiss"
+            style="padding:6px 12px;font-size:18px;line-height:1">×</button>
+  </div>
+</div>
+<script>
+(function(){
+  var el=document.getElementById("capBanner");if(!el)return;
+  document.getElementById("capDismissBtn").addEventListener("click",function(){
+    try{sessionStorage.setItem("capDismissed","1")}catch(e){}
+    el.classList.add("hidden");
+  });
+  if(sessionStorage.getItem("capDismissed")==="1")return;
+  fetch("/api/auth/me").then(function(r){return r.json()}).then(function(s){
+    var u=s.user,usage=s.usage||{};
+    if(!u||u.is_admin)return;
+    var qa=usage.qa||{},hrs=usage.hours_indexed||{};
+    var qaPct=qa.cap?(qa.used||0)/qa.cap:0;
+    var hrsPct=hrs.cap?(hrs.used||0)/hrs.cap:0;
+    var pct=Math.max(qaPct,hrsPct);
+    if(pct<0.8)return;
+    var worst=qaPct>=hrsPct?"qa":"hours";
+    var detail=worst==="qa"
+      ?"Q&A · "+(qa.used||0)+" / "+qa.cap+" this month"
+      :"Indexing · "+(hrs.used||0).toFixed(1)+" / "+hrs.cap+" hr this month";
+    var atLimit=pct>=1;
+    var next=u.tier==="free"?"Pro":(u.tier==="pro"?"Studio":"Team");
+    document.getElementById("capBannerTitle").textContent=atLimit
+      ?"You've hit your monthly limit."
+      :"You're approaching your monthly limit.";
+    document.getElementById("capBannerDetail").textContent=detail;
+    document.getElementById("capBannerCta").textContent="Upgrade to "+next;
+    var fill=document.getElementById("capBannerFill");
+    fill.style.width=Math.min(100,Math.round(pct*100))+"%";
+    if(atLimit){el.style.background="#fdece7";el.style.borderColor="#e0623e";fill.style.background="#e0623e";}
+    el.classList.remove("hidden");
+  }).catch(function(){});
+})();
+</script>
+"""
+
+
+def _page(*, title, description, body, canonical, og_type="website", og_title=None, show_cap_banner=True):
     head = _HEAD.format(
         title=title,
         description=html.escape(description, quote=True),
         canonical=canonical,
         og_type=og_type,
         og_title=html.escape(og_title or title, quote=True),
+        cap_banner=_CAP_BANNER if show_cap_banner else "",
     )
     return head + body + _FOOT
 
@@ -278,7 +341,7 @@ def pricing_page():
                 "Single sign-on (SSO)",
                 "Audit log + dedicated support",
             ],
-            "cta": ("mailto:e@getscrubless.com?subject=Scrubless%20Team%20plan", "Talk to us", "btn-ghost"),
+            "cta": ("mailto:sales@getscrubless.com?subject=Scrubless%20Team%20plan", "Talk to us", "btn-ghost"),
         },
     ]
 
@@ -332,7 +395,7 @@ def pricing_page():
         '<h3>What if I go over my monthly cap?</h3>'
         '<p>New uploads or Q&amp;A requests will pause until the start of next month or until you upgrade. Existing videos stay searchable.</p>'
         '<h3>Do you offer enterprise / on-prem?</h3>'
-        '<p>Yes — that’s the Team plan, plus optional self-hosted deploys for larger orgs. <a href="mailto:e@getscrubless.com">Email us</a>.</p>'
+        '<p>Yes — that’s the Team plan, plus optional self-hosted deploys for larger orgs. <a href="mailto:sales@getscrubless.com">Email sales</a>.</p>'
         '</div>'
         # Toggle script for monthly/yearly. No-op if the toggle isn't rendered.
         '<script>'
@@ -348,6 +411,7 @@ def pricing_page():
         description="Free to try, no account required. Pro $15/mo for creators. Studio $39/mo for podcasters. Team $99/seat for organizations. Every plan includes semantic search, Q&A with citations, auto-chapters, and highlight reels.",
         body=body,
         canonical=CANONICAL + "/pricing",
+        show_cap_banner=False,
     ))
 
 
@@ -366,7 +430,7 @@ def about_page():
         '<p>Creators, editors, podcasters, teachers, researchers, support teams, security analysts — anyone who has more video than they can remember. Read <a href="/blog">the blog</a> for specific workflows.</p>'
         '<h2>Who built it</h2>'
         '<p>Scrubless is built by <a href="https://linkedin.com/in/ernest-opara" target="_blank">Chukwuebuka Ernest-Opara</a>, an ML &amp; platform engineer who spent years working with embedding infrastructure and video before turning the two into a product.</p>'
-        '<p>Reach out: <a href="mailto:e@getscrubless.com">e@getscrubless.com</a>.</p>'
+        '<p>Reach out at <a href="mailto:contact@getscrubless.com">contact@getscrubless.com</a> — or, if you just want to say hi to the mascot, <a href="mailto:scrubby@getscrubless.com">scrubby@getscrubless.com</a> reads everything too.</p>'
         '<div class="post-cta">'
         '<h3>Try it on your own video.</h3>'
         '<p>No account needed. Free.</p>'
