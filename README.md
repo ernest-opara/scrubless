@@ -2,7 +2,7 @@
 
 > Stop scrubbing. Start searching.
 
-Semantic video search — upload a video (or point at a folder of them), then find
+Semantic video search - upload a video (or point at a folder of them), then find
 the right moment in plain English. Live at **[getscrubless.com](https://getscrubless.com)**.
 
 ```
@@ -15,28 +15,28 @@ type "the part where someone is laughing"
 
 ## What it does
 
-- **Search inside a video** — visual *and* spoken, not just captions.
-- **Library mode** — semantic search across an entire folder at once.
-- **Ask** — questions about a video or a folder, answered in prose with
+- **Search inside a video** - visual *and* spoken, not just captions.
+- **Library mode** - semantic search across an entire folder at once.
+- **Ask** - questions about a video or a folder, answered in prose with
   clickable cited timestamps.
 - **Auto-chapters & summaries** on every upload.
-- **Highlight reels** — stitch search-result moments into one shareable clip.
-- **Auth + billing** — Auth0 login, Stripe Checkout / Customer Portal, tiered
+- **Highlight reels** - stitch search-result moments into one shareable clip.
+- **Auth + billing** - Auth0 login, Stripe Checkout / Customer Portal, tiered
   upload caps.
-- **Admin dashboard** — `/admin`, gated by `ADMIN_EMAILS`, with user / video /
+- **Admin dashboard** - `/admin`, gated by `ADMIN_EMAILS`, with user / video /
   storage stats and a 7-day activity sparkline per event kind.
 
 ## Stack
 
 Python (FastAPI), OpenCLIP ViT-B/32, ChromaDB, OpenAI Whisper, Anthropic Claude,
 ffmpeg, SQLAlchemy (SQLite / Postgres), Auth0, Stripe, slowapi, Docker on
-Railway. **One vanilla-JS `index.html` for the entire frontend — no build step.**
+Railway. **One vanilla-JS `index.html` for the entire frontend - no build step.**
 
 ## Repo layout
 
 ```
 clipfind/
-├── app.py            # FastAPI entry — middleware, mounts, router wiring
+├── app.py            # FastAPI entry - middleware, mounts, router wiring
 ├── config.py         # env vars, paths, tier caps
 ├── state.py          # in-memory VIDEOS / COLLECTIONS / REELS
 ├── ratelimit.py      # shared slowapi Limiter
@@ -80,15 +80,15 @@ uvicorn app:app --reload --port 8080
 open http://localhost:8080
 ```
 
-Auth0 + Stripe vars are optional — without them, anonymous uploads still work
+Auth0 + Stripe vars are optional - without them, anonymous uploads still work
 (capped at 500 MB, auto-deleted after 24 h).
 
 ## Read more
 
-- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — the source of truth.
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - the source of truth.
   How indexing works, the data model, the security model, deployment, and the
   full change log.
-- **[CLAUDE.md](CLAUDE.md)** — the V1 constraints the codebase is built under
-  ("radical simplicity" — one backend file became 14 sibling modules but the
+- **[CLAUDE.md](CLAUDE.md)** - the V1 constraints the codebase is built under
+  ("radical simplicity" - one backend file became 14 sibling modules but the
   same constraints still apply).
-- **[docs/PITCH.pdf](docs/PITCH.pdf)** — the pitch deck.
+- **[docs/PITCH.pdf](docs/PITCH.pdf)** - the pitch deck.
