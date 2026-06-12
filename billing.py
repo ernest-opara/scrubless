@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from auth import current_user, is_admin
 from config import (
     ADMIN_LIMIT,
+    ANNUAL_ENABLED,
     ANON_LIMIT,
     APP_BASE_URL,
     MB,
@@ -17,6 +18,7 @@ from config import (
     STRIPE_WEBHOOK_SECRET,
     TIER_LIMITS,
     TIER_TO_PRICE,
+    TIER_TO_PRICE_YEARLY,
 )
 from models import User, engine
 
@@ -69,6 +71,9 @@ def set_tier_by_customer(customer_id, tier, sub_id=""):
 
 class CheckoutRequest(BaseModel):
     tier: str
+    # "monthly" (default) or "yearly". Falls back to monthly if no annual
+    # price is configured for the requested tier.
+    cycle: str = "monthly"
 
 
 router = APIRouter()
@@ -81,7 +86,12 @@ def billing_checkout(request: Request, body: CheckoutRequest):
     user = current_user(request)
     if not user:
         raise HTTPException(status_code=401, detail="sign in first")
-    price = TIER_TO_PRICE.get(body.tier)
+    # Pick monthly vs yearly: yearly wins if requested AND configured;
+    # otherwise we fall back to the monthly price so the flow never breaks.
+    if body.cycle == "yearly":
+        price = TIER_TO_PRICE_YEARLY.get(body.tier) or TIER_TO_PRICE.get(body.tier)
+    else:
+        price = TIER_TO_PRICE.get(body.tier)
     if not price:
         raise HTTPException(status_code=400, detail="unknown or unavailable tier")
     session = stripe.checkout.Session.create(

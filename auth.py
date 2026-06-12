@@ -95,7 +95,8 @@ async def auth_logout(request: Request):
 def auth_me(request: Request):
     # Imported here to avoid a circular import (billing imports auth).
     from billing import upload_limit_for
-    from config import AUTH0_ENABLED as ae, STRIPE_ENABLED
+    from config import ANNUAL_ENABLED, AUTH0_ENABLED as ae, STRIPE_ENABLED
+    from usage import usage_summary
 
     user = current_user(request)
     return {
@@ -106,4 +107,6 @@ def auth_me(request: Request):
         "upload_limit_bytes": upload_limit_for(user),
         "auth_enabled": ae,
         "billing_enabled": STRIPE_ENABLED,
+        "annual_enabled": ANNUAL_ENABLED,
+        "usage": usage_summary(user),
     }

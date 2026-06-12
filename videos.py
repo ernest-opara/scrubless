@@ -15,6 +15,7 @@ from indexing import delete_video, process_video
 from models import persist_video, record_event
 from ratelimit import limiter
 from state import SAMPLE_ID, VIDEOS
+from usage import require_indexing_within_cap
 
 router = APIRouter()
 
@@ -24,8 +25,9 @@ router = APIRouter()
 async def upload(
     request: Request, background_tasks: BackgroundTasks, file: UploadFile = File(...)
 ):
-    record_event("upload")
     user = current_user(request)
+    require_indexing_within_cap(user)
+    record_event("upload", user_id=user.id if user else None)
     cap = upload_limit_for(user)
 
     # Fast reject via Content-Length before streaming the whole body.

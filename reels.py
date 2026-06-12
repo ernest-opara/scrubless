@@ -79,7 +79,8 @@ router = APIRouter()
 @router.post("/api/reel")
 @limiter.limit("10/hour")
 def create_reel(body: ReelRequest, request: Request):
-    record_event("reel")
+    user = current_user(request)
+    record_event("reel", user_id=user.id if user else None)
     moments = [{"video_id": m.video_id, "timestamp": m.timestamp} for m in body.moments][:12]
     if not moments:
         raise HTTPException(status_code=400, detail="no moments to build a reel from")
@@ -88,7 +89,6 @@ def create_reel(body: ReelRequest, request: Request):
     for m in moments:
         if not can_access_video(m["video_id"], request):
             raise HTTPException(status_code=404, detail="video not found")
-    user = current_user(request)
     clip_seconds = min(max(body.clip_seconds, 2.0), 10.0)
     reel_id = uuid.uuid4().hex[:12]
     REELS[reel_id] = {

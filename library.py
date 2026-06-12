@@ -22,6 +22,7 @@ from indexing import process_video
 from models import persist_collection, persist_video, record_event
 from ratelimit import limiter
 from state import COLLECTIONS, VIDEOS
+from usage import require_indexing_within_cap
 
 
 class ScanRequest(BaseModel):
@@ -151,10 +152,11 @@ async def library_upload(
     file: UploadFile = File(...),
 ):
     """Upload one video into a collection, then index it (hosted folder mode)."""
-    record_event("upload")
+    user = current_user(request)
+    require_indexing_within_cap(user)
+    record_event("upload", user_id=user.id if user else None)
     coll = require_collection(collection_id, request)
 
-    user = current_user(request)
     cap = upload_limit_for(user)
     clen = int(request.headers.get("content-length") or 0)
     if clen and clen > cap:

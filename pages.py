@@ -225,50 +225,127 @@ def blog_post(slug: str):
 
 @router.get("/pricing", response_class=HTMLResponse)
 def pricing_page():
+    from config import ANNUAL_ENABLED
+
+    # Per-tier numbers come straight from config so this page can never drift
+    # from what the API actually enforces.
+    plans = [
+        {
+            "id": "free", "name": "Free", "audience": "No account needed.",
+            "price_monthly": 0, "price_yearly": 0,
+            "features": [
+                "500MB per video",
+                "2 hr indexed / month",
+                "10 Q&amp;A questions / month",
+                "Search, chapters, highlight reels",
+                "Auto-deletes after 24h",
+            ],
+            "cta": ("/", "Try it now", "btn-ghost"),
+        },
+        {
+            "id": "pro", "name": "Pro", "audience": "For creators &amp; individuals.",
+            "price_monthly": 15, "price_yearly": 12,
+            "features": [
+                "2GB per video",
+                "20 hr indexed / month",
+                "200 Q&amp;A / month",
+                "Videos persist forever",
+                "Folder search + highlight reels",
+            ],
+            "featured": True,
+            "cta": ("/api/auth/login", "Get Pro", "btn"),
+        },
+        {
+            "id": "studio", "name": "Studio", "audience": "For podcasters &amp; large archives.",
+            "price_monthly": 39, "price_yearly": 32,
+            "features": [
+                "10GB per video",
+                "100 hr indexed / month",
+                "1,000 Q&amp;A / month",
+                "Everything in Pro",
+                "Priority indexing + direct support",
+            ],
+            "cta": ("/api/auth/login", "Get Studio", "btn-ghost"),
+        },
+        {
+            "id": "team", "name": "Team", "audience": "For 3+ seat teams.",
+            "price_monthly": 99, "price_yearly": 79,
+            "per_seat": True,
+            "features": [
+                "25GB per video",
+                "Unlimited indexing &amp; Q&amp;A",
+                "Shared team library",
+                "Single sign-on (SSO)",
+                "Audit log + dedicated support",
+            ],
+            "cta": ("mailto:e@getscrubless.com?subject=Scrubless%20Team%20plan", "Talk to us", "btn-ghost"),
+        },
+    ]
+
+    cards = []
+    for p in plans:
+        featured = " featured" if p.get("featured") else ""
+        suffix = "/seat/mo" if p.get("per_seat") else "/mo"
+        # Two price spans (monthly + yearly) — the JS toggle swaps which one's
+        # visible. Falls back to the monthly one if yearly billing isn't wired.
+        price_block = (
+            '<div class="price" data-price="monthly"><span class="amt">$' + str(p["price_monthly"]) + '</span><small>' + suffix + '</small></div>'
+            '<div class="price hidden" data-price="yearly"><span class="amt">$' + str(p["price_yearly"]) + '</span><small>' + suffix + '</small><small class="muted" style="display:block;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-top:4px">billed annually</small></div>'
+        )
+        cta_href, cta_text, cta_class = p["cta"]
+        items = "".join('<li>' + f + '</li>' for f in p["features"])
+        cards.append(
+            '<div class="plan' + featured + '">'
+            '<h3>' + p["name"] + '</h3>'
+            + price_block +
+            '<p class="muted">' + p["audience"] + '</p>'
+            '<ul>' + items + '</ul>'
+            '<a class="' + cta_class + '" href="' + cta_href + '" style="text-decoration:none;text-align:center">' + cta_text + '</a>'
+            '</div>'
+        )
+
+    annual_toggle = ""
+    if ANNUAL_ENABLED:
+        annual_toggle = (
+            '<div class="tabs" id="pricingCycle" style="margin:24px auto 8px;display:inline-flex">'
+            '  <button class="tab active" data-cycle="monthly">Monthly</button>'
+            '  <button class="tab" data-cycle="yearly">Yearly <span class="tag" style="margin-left:6px;color:var(--accent)">−20%</span></button>'
+            '</div>'
+        )
+
     body = (
-        '<div class="prose">'
+        '<div class="prose" style="text-align:center">'
         '<p class="post-meta">Pricing</p>'
         '<h1>Search any video, on any plan.</h1>'
-        '<p>Every plan includes semantic search, library mode, Q&A with citations, auto-chapters, and highlight reels. The only thing that changes is how big the videos you upload can be.</p>'
+        '<p>Every plan includes semantic search, library mode, Q&amp;A with citations, auto-chapters, and highlight reels. What changes is how much you upload and ask each month.</p>'
+        + annual_toggle +
         '</div>'
-        '<div class="pricing-grid">'
-        '<div class="plan">'
-        '  <h3>Free</h3>'
-        '  <div class="price">$0<small>/mo</small></div>'
-        '  <p class="muted">No account needed.</p>'
-        '  <ul><li>Up to 500MB per video</li><li>Auto-deletes in 24h</li><li>Sample video for trying it out</li><li>Every search + Q&A feature</li></ul>'
-        '  <a class="btn-ghost" href="/" style="text-decoration:none;text-align:center">Try it now</a>'
-        '</div>'
-        '<div class="plan featured">'
-        '  <h3>Pro</h3>'
-        '  <div class="price">$10<small>/mo</small></div>'
-        '  <p class="muted">For creators and individuals.</p>'
-        '  <ul><li>Up to 2GB per video</li><li>Videos persist forever</li><li>Folder search across your library</li><li>Highlight reel export</li></ul>'
-        '  <a class="btn" href="/api/auth/login" style="text-decoration:none;text-align:center">Get Pro</a>'
-        '</div>'
-        '<div class="plan">'
-        '  <h3>Studio</h3>'
-        '  <div class="price">$30<small>/mo</small></div>'
-        '  <p class="muted">For podcasters, teams, and large archives.</p>'
-        '  <ul><li>Up to 10GB per video</li><li>Everything in Pro</li><li>Priority indexing</li><li>Direct support</li></ul>'
-        '  <a class="btn-ghost" href="/api/auth/login" style="text-decoration:none;text-align:center">Get Studio</a>'
-        '</div>'
-        '</div>'
+        '<div class="pricing-grid" style="grid-template-columns:repeat(4, 1fr)">' + "".join(cards) + '</div>'
         '<div class="prose" style="margin-top:48px">'
         '<h2>Frequently asked</h2>'
         '<h3>Do I need an account to try it?</h3>'
-        '<p>No. Anyone can drop a video at <a href="/">getscrubless.com</a> and search it immediately — anonymous uploads just auto-delete after 24 hours.</p>'
+        '<p>No. Anyone can drop a video at <a href="/">getscrubless.com</a> and search it immediately. Anonymous uploads auto-delete after 24 hours. Q&amp;A requires a free account.</p>'
+        '<h3>What counts toward the hours-indexed cap?</h3>'
+        '<p>It’s the total duration of videos you’ve had Scrubless index this calendar month. The counter resets on the 1st. Reuploads of the same file count again.</p>'
         '<h3>Can I cancel anytime?</h3>'
-        '<p>Yes. Plans are monthly through Stripe; the Customer Portal handles upgrades, downgrades, and cancellations in one click.</p>'
-        '<h3>Where are my videos stored?</h3>'
-        '<p>On Scrubless’s storage, encrypted in transit (HTTPS), accessible only to you (or anyone you share the link with). Anonymous uploads auto-expire; account uploads stay until you delete them.</p>'
-        '<h3>What’s the difference between Search and Ask?</h3>'
-        '<p>Search returns a ranked list of clips with thumbnails and match scores. Ask returns a written answer with clickable citations back to the moments it relied on. Search finds; Ask explains.</p>'
+        '<p>Yes. Plans are billed through Stripe; the Customer Portal handles upgrades, downgrades, and cancellations in one click.</p>'
+        '<h3>What if I go over my monthly cap?</h3>'
+        '<p>New uploads or Q&amp;A requests will pause until the start of next month or until you upgrade. Existing videos stay searchable.</p>'
+        '<h3>Do you offer enterprise / on-prem?</h3>'
+        '<p>Yes — that’s the Team plan, plus optional self-hosted deploys for larger orgs. <a href="mailto:e@getscrubless.com">Email us</a>.</p>'
         '</div>'
+        # Toggle script for monthly/yearly. No-op if the toggle isn't rendered.
+        '<script>'
+        '(function(){var t=document.getElementById("pricingCycle");if(!t)return;'
+        'function set(c){t.querySelectorAll(".tab").forEach(function(b){b.classList.toggle("active",b.dataset.cycle===c)});'
+        'document.querySelectorAll("[data-price]").forEach(function(el){el.classList.toggle("hidden",el.dataset.price!==c)});}'
+        't.querySelectorAll(".tab").forEach(function(b){b.addEventListener("click",function(){set(b.dataset.cycle)})});'
+        '})();'
+        '</script>'
     )
     return HTMLResponse(_page(
         title="Pricing · Scrubless — Semantic video search",
-        description="Free to try, no account required. Pro $10/mo for creators (2GB videos). Studio $30/mo for podcasters and teams (10GB videos). Every plan includes search, library mode, Q&A, chapters, and highlight reels.",
+        description="Free to try, no account required. Pro $15/mo for creators. Studio $39/mo for podcasters. Team $99/seat for organizations. Every plan includes semantic search, Q&A with citations, auto-chapters, and highlight reels.",
         body=body,
         canonical=CANONICAL + "/pricing",
     ))

@@ -3,12 +3,14 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from access import require_collection, require_video
+from auth import current_user
 from config import ANTHROPIC_API_KEY, ENRICH_TOP_N, ROOT
 from embeddings import describe_frame, embed_text, segments
 from indexing import transcript_context
 from models import record_event
 from ratelimit import limiter
 from state import VIDEOS
+from usage import require_qa_within_cap
 
 
 class SearchRequest(BaseModel):
@@ -25,7 +27,8 @@ router = APIRouter()
 @router.post("/api/search/{video_id}")
 @limiter.limit("60/minute")
 def search(video_id: str, req: SearchRequest, request: Request):
-    record_event("search")
+    u = current_user(request)
+    record_event("search", user_id=u.id if u else None)
     video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
@@ -65,8 +68,13 @@ def search(video_id: str, req: SearchRequest, request: Request):
 @router.post("/api/qa/{video_id}")
 @limiter.limit("20/minute")
 def video_qa(video_id: str, body: QARequest, request: Request):
-    """Answer a question about one video, grounded in its transcript."""
-    record_event("qa")
+    """Answer a question about one video, grounded in its transcript.
+    Sign-in required + monthly Q&A cap by tier."""
+    user = current_user(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in to use Ask.")
+    require_qa_within_cap(user)
+    record_event("qa", user_id=user.id)
     video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
@@ -118,7 +126,8 @@ def video_qa(video_id: str, body: QARequest, request: Request):
 @limiter.limit("60/minute")
 def library_search(collection_id: str, req: SearchRequest, request: Request):
     """Search across every indexed video in a collection."""
-    record_event("search")
+    u = current_user(request)
+    record_event("search", user_id=u.id if u else None)
     require_collection(collection_id, request)
     query = req.query.strip()
     if not query:
@@ -167,8 +176,12 @@ def library_search(collection_id: str, req: SearchRequest, request: Request):
 @limiter.limit("20/minute")
 def library_qa(collection_id: str, body: QARequest, request: Request):
     """Answer a question across a whole collection, with cited sources that
-    map back to a specific video + timestamp."""
-    record_event("qa")
+    map back to a specific video + timestamp. Sign-in required + monthly cap."""
+    user = current_user(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in to use Ask.")
+    require_qa_within_cap(user)
+    record_event("qa", user_id=user.id)
     require_collection(collection_id, request)
     question = body.question.strip()
     if not question:

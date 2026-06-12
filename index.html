@@ -281,28 +281,42 @@
 
     <!-- Upgrade / pricing modal -->
     <div id="pricing" class="hidden modal-bg">
-      <div class="modal" style="max-width:560px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px">
+      <div class="modal" style="max-width:880px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:12px">
           <div>
             <p class="card-eyebrow" style="margin-bottom:6px">Upgrade</p>
             <h2 style="font-family:var(--font-display);font-weight:400;font-size:28px;margin:0;letter-spacing:-0.005em">Choose your plan</h2>
           </div>
+          <span class="tabs hidden" id="modalCycle" style="margin:0">
+            <button class="tab active" data-cycle="monthly">Monthly</button>
+            <button class="tab" data-cycle="yearly">Yearly <span class="tag" style="margin-left:6px;color:var(--accent)">−20%</span></button>
+          </span>
           <button class="btn-ghost" onclick="closePricing()">Close</button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div style="border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="pricingTiers">
+          <!-- Pro -->
+          <div style="border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;display:flex;flex-direction:column">
             <h3 style="margin:0;font-family:var(--font-display);font-weight:400;font-size:22px">Pro</h3>
-            <p style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)">$10<span class="faint" style="font-size:14px;font-weight:400">/mo</span></p>
-            <p class="muted" style="font-size:13px;margin:6px 0 16px">Up to 2GB per video</p>
-            <button class="btn btn-block" onclick="startCheckout('pro')">Choose Pro</button>
+            <p data-tier-price="pro" style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)" data-monthly="$15" data-yearly="$12">$15<span class="faint" style="font-size:14px;font-weight:400">/mo</span></p>
+            <p class="muted" style="font-size:13px;margin:6px 0 12px">2GB · 20 hr · 200 Q&amp;A / mo</p>
+            <button class="btn btn-block" style="margin-top:auto" onclick="startCheckout('pro')">Choose Pro</button>
           </div>
-          <div style="border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;background:var(--accent-soft)">
+          <!-- Studio (featured) -->
+          <div style="border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;background:var(--accent-soft);display:flex;flex-direction:column">
             <h3 style="margin:0;font-family:var(--font-display);font-weight:400;font-size:22px">Studio</h3>
-            <p style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)">$30<span class="faint" style="font-size:14px;font-weight:400">/mo</span></p>
-            <p class="muted" style="font-size:13px;margin:6px 0 16px">Up to 10GB per video</p>
-            <button class="btn btn-accent btn-block" onclick="startCheckout('studio')">Choose Studio</button>
+            <p data-tier-price="studio" style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)" data-monthly="$39" data-yearly="$32">$39<span class="faint" style="font-size:14px;font-weight:400">/mo</span></p>
+            <p class="muted" style="font-size:13px;margin:6px 0 12px">10GB · 100 hr · 1,000 Q&amp;A / mo</p>
+            <button class="btn btn-accent btn-block" style="margin-top:auto" onclick="startCheckout('studio')">Choose Studio</button>
+          </div>
+          <!-- Team -->
+          <div style="border:1px solid var(--line);border-radius:var(--radius-sm);padding:18px;display:flex;flex-direction:column">
+            <h3 style="margin:0;font-family:var(--font-display);font-weight:400;font-size:22px">Team</h3>
+            <p data-tier-price="team" style="margin:6px 0 2px;font-size:28px;font-weight:500;font-family:var(--font-display)" data-monthly="$99" data-yearly="$79">$99<span class="faint" style="font-size:14px;font-weight:400">/seat/mo</span></p>
+            <p class="muted" style="font-size:13px;margin:6px 0 12px">25GB · unlimited · shared library</p>
+            <a class="btn-ghost" href="mailto:e@getscrubless.com?subject=Scrubless%20Team%20plan" style="margin-top:auto;text-align:center;text-decoration:none">Talk to us</a>
           </div>
         </div>
+        <p class="muted" style="margin:14px 0 0;font-size:12px;text-align:center">Need more? <a href="/pricing" style="color:var(--accent)">See full pricing</a></p>
       </div>
     </div>
 
@@ -561,7 +575,33 @@
         });
       })();
 
+      // Monthly vs yearly toggle state — picked up by startCheckout. Defaults
+      // to monthly; the cycle picker only renders when annual_enabled.
+      var pricingCycle = "monthly";
+      function setPricingCycle(cycle) {
+        pricingCycle = cycle;
+        var t = document.getElementById("modalCycle");
+        if (t) t.querySelectorAll(".tab").forEach(function (b) {
+          b.classList.toggle("active", b.dataset.cycle === cycle);
+        });
+        // Swap each tier's displayed price text.
+        document.querySelectorAll("[data-tier-price]").forEach(function (el) {
+          var amt = el.getAttribute(cycle === "yearly" ? "data-yearly" : "data-monthly");
+          var suffix = el.getAttribute("data-tier-price") === "team" ? "/seat/mo" : "/mo";
+          var hint = cycle === "yearly" ? '<small class="faint" style="font-size:11px;display:block">billed annually</small>' : "";
+          el.innerHTML = amt + '<span class="faint" style="font-size:14px;font-weight:400">' + suffix + '</span>' + hint;
+        });
+      }
       function openPricing() {
+        // Show the cycle toggle only when the backend has annual prices wired.
+        var t = document.getElementById("modalCycle");
+        if (t) t.classList.toggle("hidden", !authState.annual_enabled);
+        if (t && !t.dataset.bound) {
+          t.querySelectorAll(".tab").forEach(function (b) {
+            b.addEventListener("click", function () { setPricingCycle(b.dataset.cycle); });
+          });
+          t.dataset.bound = "1";
+        }
         document.getElementById("pricing").classList.remove("hidden");
       }
       function closePricing() {
@@ -571,7 +611,7 @@
         fetch("/api/billing/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tier: tier }),
+          body: JSON.stringify({ tier: tier, cycle: pricingCycle }),
         })
           .then(function (r) { return r.json(); })
           .then(function (d) {
