@@ -86,6 +86,17 @@ def billing_checkout(request: Request, body: CheckoutRequest):
     user = current_user(request)
     if not user:
         raise HTTPException(status_code=401, detail="sign in first")
+    # Existing subscribers don't hit Checkout — they go to the Customer
+    # Portal, which Stripe-natively handles plan switches (Pro -> Studio,
+    # monthly -> yearly, etc.) with automatic proration on the card on
+    # file. Without this guard, an existing Pro user clicking "Choose
+    # Studio" would create a SECOND subscription instead of upgrading.
+    if user.stripe_subscription_id and user.tier != "free":
+        portal = stripe.billing_portal.Session.create(
+            customer=user.stripe_customer_id,
+            return_url=APP_BASE_URL + "/",
+        )
+        return {"url": portal.url, "via": "portal"}
     # Pick monthly vs yearly: yearly wins if requested AND configured;
     # otherwise we fall back to the monthly price so the flow never breaks.
     if body.cycle == "yearly":
@@ -103,7 +114,7 @@ def billing_checkout(request: Request, body: CheckoutRequest):
         cancel_url=APP_BASE_URL + "/",
         allow_promotion_codes=True,
     )
-    return {"url": session.url}
+    return {"url": session.url, "via": "checkout"}
 
 
 @router.post("/api/billing/portal")
