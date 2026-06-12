@@ -64,7 +64,12 @@
           <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="" />
           <span class="brand-wordmark">Scrubless</span>
         </a>
-        <nav class="nav">
+        <button id="hamburger" class="hamburger" aria-label="Menu" aria-expanded="false"
+                onclick="toggleNav()">
+          <svg id="hamburgerOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="hamburgerClose" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+        </button>
+        <nav class="nav" id="primaryNav">
           <a href="/blog">Blog</a>
           <a href="/pricing">Pricing</a>
           <a href="/about">About</a>
@@ -494,10 +499,10 @@
           var W = 100, H = 26;
           if (!values || !values.length) return "";
           var max = Math.max.apply(null, values) || 1;
-          var step = values.length > 1 ? W / (values.length, 1) : 0;
+          var step = values.length > 1 ? W / (values.length - 1) : 0;
           var pts = values.map(function (v, i) {
             var x = i * step;
-            var y = H, 1, (v / max) * (H, 2);
+            var y = H - 1 - (v / max) * (H - 2);
             return x.toFixed(1) + "," + y.toFixed(1);
           }).join(" ");
           return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H +
@@ -627,6 +632,37 @@
             '<button class="btn" onclick="document.getElementById(\'file\').click()">Get started</button>';
         }
       }
+
+      // --- Mobile nav (hamburger). Desktop ignores this entirely because the
+      //     .hamburger button is display:none above 760px. ---
+      function toggleNav(force) {
+        var nav = document.getElementById("primaryNav");
+        var btn = document.getElementById("hamburger");
+        var open = document.getElementById("hamburgerOpen");
+        var close = document.getElementById("hamburgerClose");
+        if (!nav || !btn) return;
+        var isOpen = nav.classList.contains("open");
+        var next = typeof force === "boolean" ? force : !isOpen;
+        nav.classList.toggle("open", next);
+        btn.setAttribute("aria-expanded", next ? "true" : "false");
+        if (open && close) {
+          open.classList.toggle("hidden", next);
+          close.classList.toggle("hidden", !next);
+        }
+      }
+      // Tap any link inside the open nav -> close it (lets users navigate).
+      document.addEventListener("click", function (e) {
+        var nav = document.getElementById("primaryNav");
+        if (!nav || !nav.classList.contains("open")) return;
+        var t = e.target;
+        if (t.closest && t.closest("#primaryNav a")) toggleNav(false);
+        // Click outside the header closes too.
+        if (t.closest && !t.closest("header.site")) toggleNav(false);
+      });
+      // Escape closes the menu.
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") toggleNav(false);
+      });
 
       // --- Theme toggle (light default; pref stored in localStorage) ---
       (function () {

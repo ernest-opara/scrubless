@@ -122,6 +122,15 @@
       .switch button.on { background: var(--accent); color: var(--accent-ink); }
       .switch svg { width: 16px; height: 16px; }
 
+      /* Hamburger button - hidden on desktop, shown on mobile by the media
+         query below. The aria-expanded attribute on the button tracks state. */
+      .hamburger {
+        display: none; background: transparent; border: 1px solid var(--line);
+        border-radius: 10px; padding: 8px; cursor: pointer; color: var(--fg);
+      }
+      .hamburger:hover { background: var(--bg-soft); }
+      .hamburger svg { width: 22px; height: 22px; display: block; }
+
       /* ===================== Buttons ===================== */
       .btn {
         background: var(--pill); color: var(--pill-ink); border: 0; border-radius: 999px;
@@ -342,12 +351,34 @@
 
         header.site {
           flex-wrap: wrap; gap: 10px; padding-bottom: 14px; margin-bottom: 32px;
+          position: relative;
         }
         .brand-wordmark { font-size: 22px; }
         .brand .logo { width: 32px; height: 32px; }
-        .nav { gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
-        .nav a, .nav button { padding: 6px 10px; font-size: 13.5px; }
-        .switch { margin: 0 0 0 2px; }
+
+        /* Hamburger pattern: button appears, nav collapses into a full-width
+           dropdown below the header. Click outside or any link to close. */
+        .hamburger { display: inline-flex; align-items: center; justify-content: center; }
+        .nav {
+          display: none; width: 100%; flex-basis: 100%;
+          flex-direction: column; align-items: stretch; gap: 4px;
+          padding: 12px 0 4px; margin-top: 4px;
+          border-top: 1px solid var(--line);
+        }
+        .nav.open { display: flex; }
+        .nav a, .nav button {
+          padding: 12px 14px; font-size: 16px; border-radius: 10px;
+          width: 100%; text-align: left;
+        }
+        .nav .btn {
+          text-align: center; padding: 14px 18px; margin-top: 6px;
+        }
+        .switch { margin: 8px 0 0; align-self: flex-start; }
+        #authArea {
+          flex-direction: column !important; align-items: stretch !important;
+          gap: 4px !important; width: 100%;
+        }
+        #authArea a { padding: 12px 14px; font-size: 16px; border-radius: 10px; }
 
         .display { font-size: clamp(40px, 11vw, 60px); line-height: 1.02; }
         .display br { display: none; }
@@ -398,8 +429,4 @@
         .result { flex-direction: column; gap: 10px; }
         .result img { width: 100%; height: 160px; }
 
-        /* hide the "Library" + "Pricing" nav links — they're never the
-           primary action; the brand still links home, the theme switch and
-           auth state remain reachable. */
-        .nav > a:not([href^="/api"]) { display: none; }
       }

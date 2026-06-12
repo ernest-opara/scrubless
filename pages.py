@@ -121,7 +121,11 @@ _HEAD = """<!doctype html>
           <img class="logo" src="/scrubby/scrubby-avatar.svg" alt="" />
           <span class="brand-wordmark">Scrubless</span>
         </a>
-        <nav class="nav">
+        <button id="hamburger" class="hamburger" aria-label="Menu" aria-expanded="false" onclick="toggleNav()">
+          <svg id="hamburgerOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="hamburgerClose" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+        </button>
+        <nav class="nav" id="primaryNav">
           <a href="/blog">Blog</a>
           <a href="/pricing">Pricing</a>
           <a href="/about">About</a>
@@ -144,6 +148,35 @@ _FOOT = """      </main>
         <div>© Scrubless · <a href="mailto:contact@getscrubless.com">contact@getscrubless.com</a></div>
       </footer>
     </div>
+    <script>
+    // Hamburger nav (mobile). Same behaviour as the SPA: toggle on tap,
+    // close on outside-click, close on Escape, close on link tap.
+    function toggleNav(force) {
+      var nav = document.getElementById("primaryNav");
+      var btn = document.getElementById("hamburger");
+      var open = document.getElementById("hamburgerOpen");
+      var close = document.getElementById("hamburgerClose");
+      if (!nav || !btn) return;
+      var isOpen = nav.classList.contains("open");
+      var next = typeof force === "boolean" ? force : !isOpen;
+      nav.classList.toggle("open", next);
+      btn.setAttribute("aria-expanded", next ? "true" : "false");
+      if (open && close) {
+        open.classList.toggle("hidden", next);
+        close.classList.toggle("hidden", !next);
+      }
+    }
+    document.addEventListener("click", function (e) {
+      var nav = document.getElementById("primaryNav");
+      if (!nav || !nav.classList.contains("open")) return;
+      var t = e.target;
+      if (t.closest && t.closest("#primaryNav a")) toggleNav(false);
+      if (t.closest && !t.closest("header.site")) toggleNav(false);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") toggleNav(false);
+    });
+    </script>
   </body>
 </html>
 """
