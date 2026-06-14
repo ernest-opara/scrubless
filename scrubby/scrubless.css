@@ -170,10 +170,10 @@
       /* ===================== Landing ===================== */
       .hero { margin-bottom: 56px; }
       .hero-grid {
-        display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px;
+        display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 22px;
         align-items: stretch;
       }
-      @media (max-width: 920px) { .hero-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 920px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } }
 
       /* upload card */
       #drop {
@@ -208,7 +208,7 @@
       :root[data-theme="dark"] #uperr { background: #2d1f10; color: #f3c688; border-color: #533a18; }
 
       .thumb-strip {
-        display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+        display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px;
         margin-top: 18px;
       }
       .thumb-strip img {
@@ -242,8 +242,90 @@
       /* ===================== Processing ===================== */
       #processing { padding: 48px 28px; text-align: center; background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); }
       #processing h2 { font-family: var(--font-display); font-weight: 400; font-size: 28px; margin: 0 0 6px; letter-spacing: -0.005em; }
-      .bar { height: 4px; background: var(--line-soft); border-radius: 999px; overflow: hidden; margin: 22px auto 0; max-width: 420px; }
-      .bar > div { height: 100%; background: var(--accent); width: 0%; transition: width .5s ease; }
+      .bar { height: 4px; background: var(--line-soft); border-radius: 999px; overflow: hidden; margin: 22px auto 0; max-width: 420px; position: relative; }
+      .bar > div { height: 100%; background: var(--accent); width: 0%; transition: width .5s ease; position: relative; }
+      /* Shimmer sliding across the filled portion — makes the bar feel alive
+         even when the % isn't moving every poll. */
+      .bar.shimmer > div::after {
+        content: ""; position: absolute; inset: 0; border-radius: inherit;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55) 50%, transparent);
+        animation: bar-shimmer 1.6s linear infinite;
+      }
+      @keyframes bar-shimmer { from { transform: translateX(-100%);} to { transform: translateX(100%);} }
+      [data-theme="dark"] .bar.shimmer > div::after {
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18) 50%, transparent);
+      }
+
+      /* Skeleton placeholder shown in place of the player while nothing is loaded. */
+      .player-skeleton {
+        width: 100%; aspect-ratio: 16/9; background: var(--screen);
+        border-radius: 12px; border: 1px solid var(--line); position: relative; overflow: hidden;
+        display: flex; align-items: flex-end; padding: 14px 16px;
+      }
+      .player-skeleton .skel-screen {
+        position: absolute; inset: 0;
+        background: linear-gradient(90deg, var(--screen) 0%, var(--bg-soft) 50%, var(--screen) 100%);
+        background-size: 220% 100%;
+        animation: skel-slide 2.4s ease-in-out infinite;
+      }
+      .player-skeleton .skel-copy { position: relative; z-index: 1; width: 60%; }
+      .player-skeleton .skel-line {
+        height: 10px; background: rgba(255,255,255,0.18); border-radius: 6px; margin: 6px 0;
+      }
+      .player-skeleton .skel-line.short { width: 40%; }
+      @keyframes skel-slide { 0% { background-position: 0 0;} 100% { background-position: 220% 0;} }
+
+      /* "While you wait" tip card */
+      .tip-card {
+        background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px 18px; margin-top: 14px;
+      }
+      .tip-card.center { text-align: center; }
+      .tip-eyebrow {
+        display: inline-block; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--fg-faint); font-weight: 600;
+      }
+      .tip-text { margin: 6px 0 10px; font-size: 14.5px; line-height: 1.55; min-height: 44px; }
+      .tip-text.fade-in { animation: tip-fade 480ms ease both; }
+      @keyframes tip-fade { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: none;} }
+      .tip-dots { display: flex; gap: 6px; justify-content: center; }
+      .tip-card:not(.center) .tip-dots { justify-content: flex-start; }
+      .tip-dots .dot {
+        width: 6px; height: 6px; border-radius: 999px; background: var(--line);
+        transition: background 200ms, transform 200ms;
+      }
+      .tip-dots .dot.on { background: var(--accent); transform: scale(1.25); }
+
+      /* Live per-file upload queue (client-side, before backend knows) */
+      .upload-queue { display: flex; flex-direction: column; gap: 6px; }
+      .upload-queue .lbl {
+        font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--fg-faint); font-weight: 600; margin-bottom: 4px;
+      }
+      .queue-row {
+        display: flex; align-items: center; gap: 10px;
+        padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
+        background: var(--bg-card);
+      }
+      .queue-row .name {
+        flex: 1; min-width: 0; font-size: 13.5px;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .queue-row.active { border-color: var(--accent); }
+      .libitem.indexing { opacity: 0.78; }
+      .libitem .status-dot, .queue-row .status-dot {
+        flex-shrink: 0; width: 8px; height: 8px; border-radius: 999px; background: var(--line);
+      }
+      .status-dot.ok { background: var(--accent); }
+      .status-dot.pulse {
+        background: var(--accent);
+        animation: dot-pulse 1.2s ease-in-out infinite;
+      }
+      .status-dot.idle { background: var(--line); }
+      @keyframes dot-pulse {
+        0%, 100% { transform: scale(0.85); opacity: 0.55; }
+        50%      { transform: scale(1.15); opacity: 1; }
+      }
 
       /* ===================== Workspace ===================== */
       #workspace, #libworkspace {
@@ -304,7 +386,9 @@
         border-radius: 10px; cursor: pointer; font-size: 13.5px; transition: border-color .12s, background .12s;
       }
       .libitem:hover { border-color: var(--accent); background: var(--accent-soft); }
-      .libitem .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .libitem .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .libitem.indexing { cursor: default; }
+      .libitem.indexing:hover { border-color: var(--line); background: var(--bg-card); }
 
       .chapter {
         display: flex; gap: 10px; align-items: baseline; padding: 8px 12px;
@@ -396,8 +480,9 @@
         #drop .pickbtn { width: 100%; }
         #drop .copy h3 { font-size: 20px; }
 
-        /* tighter sample preview on small screens */
-        .thumb-strip { grid-template-columns: repeat(3, 1fr); }
+        /* tighter sample preview on small screens (minmax(0,1fr) so the imgs
+           are allowed to shrink below their intrinsic width). */
+        .thumb-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
         /* modals: full-bleed and scrollable */
         .modal-bg { padding: 10px; align-items: flex-end; }
@@ -420,7 +505,7 @@
         .display { font-size: clamp(36px, 12vw, 48px); }
         .card h2 { font-size: 22px; }
         .feature-list li { font-size: 14px; }
-        .thumb-strip { grid-template-columns: repeat(2, 1fr); }
+        .thumb-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
         /* admin one-up at phone widths */
         #adminCards, #adminActivity { grid-template-columns: 1fr; }
@@ -429,4 +514,12 @@
         .result { flex-direction: column; gap: 10px; }
         .result img { width: 100%; height: 160px; }
 
+        /* tip card + queue rows: tighten paddings on phone */
+        .tip-card { padding: 14px 14px; }
+        .tip-text { font-size: 14px; min-height: 56px; }
+        .queue-row { padding: 10px 12px; }
+
+        /* Allow searchrows with 3+ children (browse + input + scan) to wrap. */
+        .searchrow { flex-wrap: wrap; }
+        .searchrow > input { min-width: 0; flex-basis: 100%; }
       }

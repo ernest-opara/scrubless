@@ -99,8 +99,10 @@ _HEAD = """<!doctype html>
       .blog-list h2 a {{ color: var(--fg); text-decoration: none; }}
       .blog-list h2 a:hover {{ color: var(--accent); }}
       .blog-list p {{ color: var(--fg-muted); margin: 0; font-size: 15.5px; line-height: 1.5; }}
-      .pricing-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }}
-      @media (max-width: 760px) {{ .pricing-grid {{ grid-template-columns: 1fr; }} }}
+      .pricing-grid {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }}
+      .pricing-grid.four-up {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
+      @media (max-width: 960px) {{ .pricing-grid.four-up {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }} }}
+      @media (max-width: 760px) {{ .pricing-grid, .pricing-grid.four-up {{ grid-template-columns: 1fr; }} }}
       .plan {{ padding: 28px; background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; }}
       .plan.featured {{ background: var(--accent-soft); }}
       .plan h3 {{ font-family: var(--font-display); font-weight: 400; font-size: 26px; margin: 0; letter-spacing: -0.005em; }}
@@ -416,7 +418,7 @@ def pricing_page():
         '<p>Every plan includes semantic search, library mode, Q&amp;A with citations, auto-chapters, and highlight reels. What changes is how much you upload and ask each month.</p>'
         + annual_toggle +
         '</div>'
-        '<div class="pricing-grid" style="grid-template-columns:repeat(4, 1fr)">' + "".join(cards) + '</div>'
+        '<div class="pricing-grid four-up">' + "".join(cards) + '</div>'
         '<div class="prose" style="margin-top:48px">'
         '<h2>Frequently asked</h2>'
         '<h3>Do I need an account to try it?</h3>'

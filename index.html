@@ -185,8 +185,13 @@
         <p class="card-eyebrow" style="text-align:center;margin-bottom:10px">Indexing</p>
         <h2>Reading your video</h2>
         <p class="muted" id="pstage" style="margin:6px 0 0;font-size:14px">Extracting frames…</p>
-        <div class="bar"><div id="pfill"></div></div>
+        <div class="bar shimmer"><div id="pfill"></div></div>
         <p class="faint" id="ppct" style="font-family:var(--font-mono);font-size:12px;letter-spacing:0.1em;margin-top:14px">0%</p>
+        <div id="procTipCard" class="tip-card center" style="margin:26px auto 0;max-width:520px">
+          <span class="tip-eyebrow">While we read</span>
+          <p class="tip-text" id="procTipText"></p>
+          <div class="tip-dots" id="procTipDots"></div>
+        </div>
       </section>
 
       <!-- 3. Workspace -->
@@ -232,7 +237,8 @@
             <span id="libProgressText">Uploading…</span>
             <span id="libProgressCount" class="muted"></span>
           </div>
-          <div class="bar"><div id="libProgressFill"></div></div>
+          <div class="bar shimmer"><div id="libProgressFill"></div></div>
+          <p id="libProgressSub" class="muted" style="font-size:12.5px;margin:8px 0 0">Hang tight, this can take a minute per ten videos.</p>
         </div>
         <div class="col-player">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
@@ -241,7 +247,15 @@
           </div>
           <p id="nowplaying" class="faint" style="font-size:12.5px;margin:0 0 10px">Click a result to play that video.</p>
           <video id="libplayer" controls playsinline></video>
+          <div id="libPlayerSkeleton" class="player-skeleton hidden">
+            <div class="skel-screen"></div>
+            <div class="skel-copy">
+              <p class="skel-line"></p>
+              <p class="skel-line short"></p>
+            </div>
+          </div>
           <div id="libNow" style="margin-top:14px"></div>
+          <div id="libUploadQueue" class="upload-queue hidden" style="margin-top:18px"></div>
           <div id="libVideoList" style="margin-top:18px;display:flex;flex-direction:column;gap:8px"></div>
         </div>
         <div>
@@ -257,6 +271,11 @@
             <button id="libReelBtn" class="btn-ghost hidden" style="margin-top:10px;width:100%">🎬&nbsp; Make highlight reel</button>
             <div id="libresults">
               <div class="empty">Search across every video in this folder.</div>
+              <div id="libTipCard" class="tip-card hidden">
+                <span class="tip-eyebrow">While we index</span>
+                <p class="tip-text" id="libTipText"></p>
+                <div class="tip-dots" id="libTipDots"></div>
+              </div>
             </div>
           </div>
           <div id="libAskPane" class="hidden">
@@ -784,6 +803,7 @@
         videoId = "sample";
         hide("upload");
         show("processing");
+        startTipRotator("proc");
         pollTimer = setInterval(pollStatus, 2000);
         pollStatus();
       });
@@ -835,6 +855,7 @@
             videoId = data.id;
             hide("upload");
             show("processing");
+            startTipRotator("proc");
             pollTimer = setInterval(pollStatus, 2000);
             pollStatus();
           })
@@ -896,6 +917,7 @@
 
       // --- Workspace ---
       function startWorkspace(status) {
+        stopTipRotator("proc");
         hide("processing");
         show("workspace");
         document.getElementById("vtitle").textContent = status.title || "";
@@ -1087,6 +1109,9 @@
             hide("upload");
             show("libworkspace");
             document.getElementById("libtitle").textContent = res.d.name;
+            document.getElementById("libplayer").classList.add("hidden");
+            document.getElementById("libPlayerSkeleton").classList.remove("hidden");
+            startTipRotator("lib");
             libPoll = setInterval(pollLibrary, 2000);
             pollLibrary();
           })
@@ -1120,7 +1145,9 @@
                 document.getElementById("libProgressText").textContent =
                   "✓ All " + s.total + " video" + (s.total === 1 ? "" : "s") + " indexed, search away!";
                 document.getElementById("libProgressCount").textContent = "";
+                document.getElementById("libProgressSub").textContent = "";
                 setTimeout(function () { prog.classList.add("hidden"); }, 6000);
+                stopTipRotator("lib");
               } else {
                 document.getElementById("libProgressText").textContent = "⚙️ Indexing…";
                 document.getElementById("libProgressCount").textContent = s.indexed + " / " + s.total;
@@ -1160,6 +1187,8 @@
       // Load a video into the library player, seek, and show its details.
       function playLibVideo(vid, title, timestamp) {
         var libplayer = document.getElementById("libplayer");
+        document.getElementById("libPlayerSkeleton").classList.add("hidden");
+        libplayer.classList.remove("hidden");
         if (curLibVideo !== vid) {
           curLibVideo = vid;
           libplayer.src = "/api/videos/" + vid + "/source";
@@ -1210,6 +1239,9 @@
         var box = document.getElementById("libVideoList");
         if (!box) return;
         if (!videos || !videos.length) { box.innerHTML = ""; return; }
+        // Once the backend knows about the files, retire the client-side queue panel.
+        var queue = document.getElementById("libUploadQueue");
+        if (queue) { queue.classList.add("hidden"); queue.innerHTML = ""; }
         box.innerHTML = "";
         var lbl = document.createElement("div");
         lbl.className = "lbl";
@@ -1218,13 +1250,90 @@
         videos.forEach(function (v) {
           var ready = v.status === "indexed";
           var row = document.createElement("div");
-          row.className = "libitem";
-          if (!ready) row.style.opacity = "0.6";
-          row.innerHTML = '<span class="name">🎬 ' + escapeHtml(v.title) + "</span>" +
-            '<span class="muted" style="font-size:12px;flex-shrink:0">' + (ready ? "play" : v.status) + "</span>";
+          row.className = "libitem" + (ready ? "" : " indexing");
+          row.innerHTML =
+            '<span class="status-dot ' + (ready ? "ok" : "pulse") + '" aria-hidden="true"></span>' +
+            '<span class="name">🎬 ' + escapeHtml(v.title) + "</span>" +
+            '<span class="muted" style="font-size:12px;flex-shrink:0">' +
+              (ready ? "play" : (v.status || "indexing")) + "</span>";
           if (ready) row.addEventListener("click", function () { playLibVideo(v.id, v.title, 0); });
           box.appendChild(row);
         });
+      }
+
+      // While videos are being uploaded we already know the file list client-side,
+      // so paint a live "queued / uploading / done" list before the backend has them.
+      function renderUploadQueue(files, currentIdx) {
+        var box = document.getElementById("libUploadQueue");
+        if (!box) return;
+        box.classList.remove("hidden");
+        var lbl = '<div class="lbl">UPLOADING (' + currentIdx + ' / ' + files.length + ')</div>';
+        var rows = "";
+        var max = Math.min(files.length, 60); // cap render for huge folders
+        for (var k = 0; k < max; k++) {
+          var f = files[k];
+          var name = f.webkitRelativePath || f.name;
+          name = name.split("/").pop();
+          var state, dot;
+          if (k < currentIdx) { state = "uploaded"; dot = "ok"; }
+          else if (k === currentIdx) { state = "uploading…"; dot = "pulse"; }
+          else { state = "queued"; dot = "idle"; }
+          rows +=
+            '<div class="queue-row ' + (k === currentIdx ? "active" : "") + '">' +
+              '<span class="status-dot ' + dot + '" aria-hidden="true"></span>' +
+              '<span class="name">' + escapeHtml(name) + '</span>' +
+              '<span class="muted" style="font-size:12px;flex-shrink:0">' + state + '</span>' +
+            '</div>';
+        }
+        if (files.length > max) {
+          rows += '<div class="muted" style="font-size:12px;padding:6px 4px">+ ' +
+                  (files.length - max) + ' more</div>';
+        }
+        box.innerHTML = lbl + rows;
+      }
+
+      // Rotating "while you wait" tips. Two contexts: single-video (#processing) and
+      // library-upload (#libworkspace). Tiny: a setInterval that swaps text + dot.
+      var TIPS = [
+        "Search by what you saw, not exact words. “The lake at sunset” works.",
+        "Once it’s ready, try “the part where someone laughs” — or whatever the moment was for you.",
+        "Ask answers questions across every clip with clickable citations.",
+        "Make a highlight reel from any search — the matching moments get stitched together.",
+        "Indexing reads the visuals and the audio together, so transcripts and frames are both searchable."
+      ];
+      var tipTimers = {};
+      function startTipRotator(scope) {
+        var card = document.getElementById(scope === "lib" ? "libTipCard" : "procTipCard");
+        var text = document.getElementById(scope === "lib" ? "libTipText" : "procTipText");
+        var dots = document.getElementById(scope === "lib" ? "libTipDots" : "procTipDots");
+        if (!card || !text || !dots) return;
+        card.classList.remove("hidden");
+        dots.innerHTML = TIPS.map(function (_, idx) {
+          return '<span class="dot' + (idx === 0 ? " on" : "") + '"></span>';
+        }).join("");
+        text.textContent = TIPS[0];
+        text.classList.remove("fade-in");
+        void text.offsetWidth; // restart anim
+        text.classList.add("fade-in");
+        var i = 0;
+        if (tipTimers[scope]) clearInterval(tipTimers[scope]);
+        tipTimers[scope] = setInterval(function () {
+          // Bail if the host card was removed from the DOM (e.g. user ran a search
+          // and rendered results into the same container).
+          if (!text.isConnected) { stopTipRotator(scope); return; }
+          i = (i + 1) % TIPS.length;
+          text.classList.remove("fade-in");
+          void text.offsetWidth;
+          text.textContent = TIPS[i];
+          text.classList.add("fade-in");
+          var ds = dots.querySelectorAll(".dot");
+          ds.forEach(function (d, idx) { d.classList.toggle("on", idx === i); });
+        }, 5200);
+      }
+      function stopTipRotator(scope) {
+        if (tipTimers[scope]) { clearInterval(tipTimers[scope]); tipTimers[scope] = null; }
+        var card = document.getElementById(scope === "lib" ? "libTipCard" : "procTipCard");
+        if (card) card.classList.add("hidden");
       }
 
       function renderLibResults(results) {
@@ -1304,12 +1413,16 @@
             document.getElementById("libtitle").textContent = folderName;
             document.getElementById("libNow").innerHTML = "";
             document.getElementById("libplayer").removeAttribute("src");
+            document.getElementById("libplayer").classList.add("hidden");
+            document.getElementById("libPlayerSkeleton").classList.remove("hidden");
             document.getElementById("nowplaying").textContent = "Click a result or a video below to play it.";
             var count = document.getElementById("libcount");
             var prog = document.getElementById("libProgress");
             prog.classList.remove("hidden");
             document.getElementById("libProgressText").textContent = "📤 Uploading videos…";
             document.getElementById("libProgressFill").style.width = "0%";
+            startTipRotator("lib");
+            renderUploadQueue(files, 0);
             var i = 0;
             function next() {
               if (i >= files.length) {
@@ -1318,6 +1431,8 @@
                   err.classList.remove("hidden");
                 }
                 document.getElementById("libProgressText").textContent = "⚙️ Indexing…";
+                document.getElementById("libProgressSub").textContent =
+                  "Watching the frames and reading the audio for every clip.";
                 libPoll = setInterval(pollLibrary, 2000);
                 pollLibrary();
                 return;
@@ -1325,6 +1440,7 @@
               document.getElementById("libProgressCount").textContent = (i + 1) + " / " + files.length;
               document.getElementById("libProgressFill").style.width = Math.round((i / files.length) * 100) + "%";
               count.textContent = "uploading " + (i + 1) + "/" + files.length + "…";
+              renderUploadQueue(files, i);
               var fd = new FormData();
               fd.append("file", files[i]);
               fetch("/api/library/" + collectionId + "/upload", { method: "POST", body: fd })
