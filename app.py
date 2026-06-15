@@ -26,6 +26,7 @@ if config.IS_HTTPS and (
     )
 
 import indexing  # noqa: E402 — triggers CLIP load + DB migrations; intentionally after the guard
+from geo import request_country  # noqa: E402
 from models import record_event  # noqa: E402
 from ratelimit import limiter  # noqa: E402
 
@@ -180,7 +181,7 @@ def sitemap_xml():
 
 @app.get("/")
 def index(request: Request):
-    record_event("view", source=request_source(request))
+    record_event("view", source=request_source(request), country=request_country(request))
     return FileResponse(str(config.ROOT / "index.html"))
 
 

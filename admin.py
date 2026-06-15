@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from auth import current_user, is_admin
 from config import FRAME_INTERVAL, ROOT, STORAGE
+from countries import country_label
 from models import Collection, Event, User, Video, engine
 
 router = APIRouter()
@@ -93,6 +94,56 @@ def admin_stats(request: Request):
                 "external_total": sum(r["count"] for r in ext),
                 "internal_views": internal_n,
             }
+
+        # ---- Geography -----------------------------------------------------
+        # Views per country, windowed (24h / 7d / all-time). Rows with NULL
+        # country (events captured before a CDN was fronting the app) are
+        # grouped under "unknown" so the operator can see attribution gaps.
+        geo_views = {}
+        for label, since in windows.items():
+            q = select(Event.country, func.count()).where(Event.kind == "view")
+            if since is not None:
+                q = q.where(Event.at >= since)
+            rows = s.execute(q.group_by(Event.country)).all()
+            known, unknown_n = [], 0
+            for code, n in rows:
+                if code:
+                    known.append({**country_label(code), "count": n})
+                else:
+                    unknown_n += n
+            known.sort(key=lambda r: r["count"], reverse=True)
+            geo_views[label] = {
+                "top": known[:15],
+                "unknown": unknown_n,
+                "resolved_total": sum(r["count"] for r in known),
+            }
+
+        # Signups by country (all-time). NULL countries mean we didn't have a
+        # CDN header at signup; rendered as "unknown" so the gap is visible.
+        signup_rows = s.execute(
+            select(User.country, func.count()).group_by(User.country)
+        ).all()
+        signups_geo, signups_unknown = [], 0
+        for code, n in signup_rows:
+            if code:
+                signups_geo.append({**country_label(code), "count": n})
+            else:
+                signups_unknown += n
+        signups_geo.sort(key=lambda r: r["count"], reverse=True)
+
+        # Paying users by country (anything above free tier counts).
+        paying_rows = s.execute(
+            select(User.country, func.count())
+            .where(User.tier != "free")
+            .group_by(User.country)
+        ).all()
+        paying_geo, paying_unknown = [], 0
+        for code, n in paying_rows:
+            if code:
+                paying_geo.append({**country_label(code), "count": n})
+            else:
+                paying_unknown += n
+        paying_geo.sort(key=lambda r: r["count"], reverse=True)
     bytes_used = 0
     for dirpath, _dirs, files in os.walk(STORAGE):
         for f in files:
@@ -112,6 +163,11 @@ def admin_stats(request: Request):
         "activity": activity,
         "series_starts_at": series_starts_at,
         "traffic": traffic_by_window,
+        "geo": {
+            "views": geo_views,
+            "signups": {"top": signups_geo[:25], "unknown": signups_unknown},
+            "paying": {"top": paying_geo[:25], "unknown": paying_unknown},
+        },
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
         ],

@@ -18,6 +18,7 @@ from access import (
 from auth import current_user
 from billing import over_cap_detail, upload_limit_for
 from config import STORAGE, VIDEO_EXTS
+from geo import request_country
 from indexing import process_video
 from models import persist_collection, persist_video, record_event
 from ratelimit import limiter
@@ -154,7 +155,7 @@ async def library_upload(
     """Upload one video into a collection, then index it (hosted folder mode)."""
     user = current_user(request)
     require_indexing_within_cap(user)
-    record_event("upload", user_id=user.id if user else None)
+    record_event("upload", user_id=user.id if user else None, country=request_country(request))
     coll = require_collection(collection_id, request)
 
     cap = upload_limit_for(user)

@@ -66,16 +66,29 @@ async def auth_callback(request: Request):
     email = (info.get("email") or "").lower()
     if not sub:
         raise HTTPException(status_code=400, detail="no identity returned")
+    from geo import request_country
+    country = request_country(request)
     with Session(engine) as s:
         user = s.scalar(select(User).where(User.auth0_sub == sub))
         if user is None:
-            user = User(auth0_sub=sub, email=email, tier="free", created_at=time.time())
+            user = User(
+                auth0_sub=sub, email=email, tier="free",
+                created_at=time.time(), country=country,
+            )
             s.add(user)
             s.commit()
             s.refresh(user)
-        elif email and user.email != email:
-            user.email = email
-            s.commit()
+        else:
+            changed = False
+            if email and user.email != email:
+                user.email = email
+                changed = True
+            # Backfill country for users who signed up before the column existed.
+            if country and not user.country:
+                user.country = country
+                changed = True
+            if changed:
+                s.commit()
         request.session["user_id"] = user.id
     return RedirectResponse("/")
 

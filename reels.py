@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from access import can_access_reel, can_access_video, remember_anon_resource
 from auth import current_user
 from config import STORAGE
+from geo import request_country
 from models import record_event
 from ratelimit import limiter
 from state import REELS, VIDEOS
@@ -80,7 +81,7 @@ router = APIRouter()
 @limiter.limit("10/hour")
 def create_reel(body: ReelRequest, request: Request):
     user = current_user(request)
-    record_event("reel", user_id=user.id if user else None)
+    record_event("reel", user_id=user.id if user else None, country=request_country(request))
     moments = [{"video_id": m.video_id, "timestamp": m.timestamp} for m in body.moments][:12]
     if not moments:
         raise HTTPException(status_code=400, detail="no moments to build a reel from")

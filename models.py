@@ -24,6 +24,8 @@ class User(Base):
     stripe_customer_id: Mapped[str] = mapped_column(String(255), default="")
     stripe_subscription_id: Mapped[str] = mapped_column(String(255), default="")
     created_at: Mapped[float] = mapped_column(Float, default=time.time)
+    # ISO-3166-1 alpha-2 (e.g. "US", "GB"). Set at signup from a CDN header.
+    country: Mapped[Optional[str]] = mapped_column(String(2), nullable=True, default=None)
 
 
 class Video(Base):
@@ -68,6 +70,9 @@ class Event(Base):
     at: Mapped[float] = mapped_column(Float, default=time.time, index=True)
     source: Mapped[Optional[str]] = mapped_column(String(64), nullable=True, default=None)
     user_id: Mapped[Optional[int]] = mapped_column(nullable=True, default=None, index=True)
+    # ISO-3166-1 alpha-2. NULL until Cloudflare/Vercel/Fly is fronting the app
+    # and a CDN country header is forwarded; pre-migration rows are also NULL.
+    country: Mapped[Optional[str]] = mapped_column(String(2), nullable=True, default=None, index=True)
 
 
 _engine_args = {"pool_pre_ping": True}
@@ -91,7 +96,9 @@ def ensure_columns():
         "events": {
             "source": "VARCHAR(64) DEFAULT NULL",
             "user_id": "INTEGER DEFAULT NULL",
+            "country": "VARCHAR(2) DEFAULT NULL",
         },
+        "users": {"country": "VARCHAR(2) DEFAULT NULL"},
     }
     insp = inspect(engine)
     for table, cols in wanted.items():
@@ -175,14 +182,18 @@ def forget_video(video_id):
         print("[scrubless] forget_video %s: %s" % (video_id, exc))
 
 
-def record_event(kind, source=None, user_id=None):
+def record_event(kind, source=None, user_id=None, country=None):
     """Fire-and-forget activity log; never block a request on a tracking write.
     `source` is recorded on view events for traffic attribution.
     `user_id` is recorded on usage events (qa, search, upload, reel) for
-    per-user monthly cap enforcement; None for anonymous or view events."""
+    per-user monthly cap enforcement; None for anonymous or view events.
+    `country` is the ISO-3166-1 alpha-2 from a CDN header; None when unknown."""
     try:
         with Session(engine) as s:
-            s.add(Event(kind=kind, at=time.time(), source=source, user_id=user_id))
+            s.add(Event(
+                kind=kind, at=time.time(), source=source,
+                user_id=user_id, country=country,
+            ))
             s.commit()
     except Exception as exc:  # noqa: BLE001
         print("[scrubless] record_event %s failed: %s" % (kind, exc))

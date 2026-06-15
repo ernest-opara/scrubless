@@ -311,6 +311,35 @@
           <p class="muted" id="adminTrafficSummary" style="font-size:12px;margin:0 0 14px"></p>
           <div id="adminSources" class="muted">Loading…</div>
         </div>
+
+        <!-- Geography: views (windowed), signups, paying users, heat grid -->
+        <div class="panel" style="margin-top:18px;padding:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;flex-wrap:wrap">
+            <h3 style="margin:0">Geography</h3>
+            <span class="tabs" id="adminGeoWindow" style="margin:0">
+              <button class="tab" data-window="total">all time</button>
+              <button class="tab" data-window="d1">24h</button>
+              <button class="tab active" data-window="d7">7d</button>
+            </span>
+          </div>
+          <p class="muted" id="adminGeoSummary" style="font-size:12px;margin:0 0 14px"></p>
+          <div id="adminGeoHeat" class="geo-heat" style="margin-bottom:18px"></div>
+          <div id="adminGeoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px">
+            <div>
+              <div class="lbl" style="margin-bottom:8px">VIEWS BY COUNTRY</div>
+              <div id="adminGeoViews" class="muted">Loading…</div>
+            </div>
+            <div>
+              <div class="lbl" style="margin-bottom:8px">SIGNUPS BY COUNTRY</div>
+              <div id="adminGeoSignups" class="muted">Loading…</div>
+            </div>
+            <div>
+              <div class="lbl" style="margin-bottom:8px">PAYING USERS BY COUNTRY</div>
+              <div id="adminGeoPaying" class="muted">Loading…</div>
+            </div>
+          </div>
+        </div>
+
         <div class="panel" style="margin-top:18px;padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
             <h3 style="margin:0">Recent signups</h3>
@@ -611,6 +640,82 @@
           b.onclick = function () { renderTraffic(b.dataset.window); };
         });
         renderTraffic("d7");
+
+        // ---- Geography ----------------------------------------------------
+        // Three ranked panels (views/signups/paying) + a heat grid where each
+        // tile is a country flag tinted by its share of view traffic. Until
+        // a CDN is fronting the app, almost everything ends up in `unknown`
+        // — we surface that count so the gap is visible, not hidden.
+        var geo = s.geo || {};
+        var geoViews = geo.views || {};
+        var geoSummary = document.getElementById("adminGeoSummary");
+        function renderGeoList(host, rows, unknown, emptyMsg) {
+          var el = document.getElementById(host);
+          if (!el) return;
+          if (!rows || !rows.length) {
+            el.innerHTML = '<div style="font-size:13px;color:var(--fg-muted)">' + emptyMsg + '</div>' +
+              (unknown ? '<div class="muted" style="font-size:12px;margin-top:6px">' + unknown + ' unknown (no CDN header)</div>' : '');
+            return;
+          }
+          var max = rows[0].count || 1;
+          el.innerHTML = rows.slice(0, 12).map(function (r) {
+            var pct = Math.max(3, Math.round((r.count / max) * 100));
+            return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px">' +
+                     '<span style="flex:0 0 22px;font-size:16px">' + (r.flag || '🌐') + '</span>' +
+                     '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + r.name + '">' + r.name + '</span>' +
+                     '<span style="flex:0 0 80px;height:5px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><span style="display:block;height:100%;width:' + pct + '%;background:var(--accent);border-radius:999px"></span></span>' +
+                     '<span style="flex:0 0 44px;text-align:right;font-variant-numeric:tabular-nums">' + r.count + '</span>' +
+                   '</div>';
+          }).join("") +
+          (unknown ? '<div class="muted" style="font-size:11.5px;margin-top:8px">' + unknown + ' unknown (no CDN header)</div>' : '');
+        }
+        function renderHeat(win) {
+          var w = geoViews[win] || { top: [], unknown: 0, resolved_total: 0 };
+          var top = w.top || [];
+          var heat = document.getElementById("adminGeoHeat");
+          if (!heat) return;
+          if (!top.length) {
+            heat.innerHTML =
+              '<div class="muted" style="font-size:12.5px;padding:14px 4px">' +
+              'No country-tagged views in this window yet. Put Scrubless behind Cloudflare ' +
+              '(free) to start populating geography.' +
+              '</div>';
+            return;
+          }
+          var max = top[0].count || 1;
+          heat.innerHTML = top.slice(0, 30).map(function (r) {
+            // Background tinted by relative intensity (0.15 → 0.95 alpha on the
+            // brand accent), so the highest-traffic country glows most.
+            var intensity = 0.15 + 0.8 * (r.count / max);
+            return '<div class="geo-tile" title="' + r.name + ' · ' + r.count + ' views" ' +
+                   'style="--heat:' + intensity.toFixed(2) + '">' +
+                     '<span class="flag">' + (r.flag || '🌐') + '</span>' +
+                     '<span class="iso">' + r.iso + '</span>' +
+                     '<span class="count">' + r.count + '</span>' +
+                   '</div>';
+          }).join("");
+        }
+        function renderGeo(win) {
+          document.querySelectorAll("#adminGeoWindow .tab").forEach(function (b) {
+            b.classList.toggle("active", b.dataset.window === win);
+          });
+          var w = geoViews[win] || { top: [], unknown: 0, resolved_total: 0 };
+          if (geoSummary) {
+            geoSummary.textContent =
+              w.resolved_total + " geo-tagged views · " + w.unknown + " unknown (window: " +
+              (win === "total" ? "all time" : win === "d1" ? "last 24h" : "last 7 days") + ")";
+          }
+          renderHeat(win);
+          renderGeoList("adminGeoViews", w.top, w.unknown, "No views yet in this window.");
+        }
+        document.querySelectorAll("#adminGeoWindow .tab").forEach(function (b) {
+          b.onclick = function () { renderGeo(b.dataset.window); };
+        });
+        renderGeo("d7");
+        var signups = geo.signups || { top: [], unknown: 0 };
+        var paying = geo.paying || { top: [], unknown: 0 };
+        renderGeoList("adminGeoSignups", signups.top, signups.unknown, "No signups yet.");
+        renderGeoList("adminGeoPaying", paying.top, paying.unknown, "No paying users yet.");
 
         var recent = (s.recent_signups || []).map(function (u) {
           var when = new Date(u.created_at * 1000).toLocaleString();

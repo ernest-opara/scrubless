@@ -6,6 +6,7 @@ from access import require_collection, require_video
 from auth import current_user
 from config import ANTHROPIC_API_KEY, ENRICH_TOP_N, ROOT
 from embeddings import describe_frame, embed_text, segments
+from geo import request_country
 from indexing import transcript_context
 from models import record_event
 from ratelimit import limiter
@@ -28,7 +29,7 @@ router = APIRouter()
 @limiter.limit("60/minute")
 def search(video_id: str, req: SearchRequest, request: Request):
     u = current_user(request)
-    record_event("search", user_id=u.id if u else None)
+    record_event("search", user_id=u.id if u else None, country=request_country(request))
     video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
@@ -74,7 +75,7 @@ def video_qa(video_id: str, body: QARequest, request: Request):
     if not user:
         raise HTTPException(status_code=401, detail="Sign in to use Ask.")
     require_qa_within_cap(user)
-    record_event("qa", user_id=user.id)
+    record_event("qa", user_id=user.id, country=request_country(request))
     video = require_video(video_id, request)
     if video["status"] != "indexed":
         raise HTTPException(status_code=409, detail="video is not indexed yet")
@@ -127,7 +128,7 @@ def video_qa(video_id: str, body: QARequest, request: Request):
 def library_search(collection_id: str, req: SearchRequest, request: Request):
     """Search across every indexed video in a collection."""
     u = current_user(request)
-    record_event("search", user_id=u.id if u else None)
+    record_event("search", user_id=u.id if u else None, country=request_country(request))
     require_collection(collection_id, request)
     query = req.query.strip()
     if not query:
@@ -181,7 +182,7 @@ def library_qa(collection_id: str, body: QARequest, request: Request):
     if not user:
         raise HTTPException(status_code=401, detail="Sign in to use Ask.")
     require_qa_within_cap(user)
-    record_event("qa", user_id=user.id)
+    record_event("qa", user_id=user.id, country=request_country(request))
     require_collection(collection_id, request)
     question = body.question.strip()
     if not question:

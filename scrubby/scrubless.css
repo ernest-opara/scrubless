@@ -327,6 +327,32 @@
         50%      { transform: scale(1.15); opacity: 1; }
       }
 
+      /* Admin: geographic heat grid. Each tile is a country, sized like a
+         badge and tinted by its share of view traffic (--heat: 0..1). The
+         flag emoji sits on top of a brand-accent wash so the densest
+         countries glow brightest. */
+      .geo-heat {
+        display: flex; flex-wrap: wrap; gap: 8px;
+      }
+      .geo-tile {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 12px; border-radius: 12px;
+        background: color-mix(in srgb, var(--accent) calc(var(--heat, 0.2) * 100%), var(--bg-card));
+        border: 1px solid color-mix(in srgb, var(--accent) calc(var(--heat, 0.2) * 60%), var(--line));
+        font-size: 13px; min-width: 0; cursor: default;
+        transition: transform .12s;
+      }
+      .geo-tile:hover { transform: translateY(-1px); }
+      .geo-tile .flag { font-size: 16px; line-height: 1; }
+      .geo-tile .iso {
+        font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+        color: var(--fg);
+      }
+      .geo-tile .count {
+        font-variant-numeric: tabular-nums; font-size: 12.5px;
+        color: var(--fg); font-weight: 600;
+      }
+
       /* ===================== Workspace ===================== */
       #workspace, #libworkspace {
         display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);

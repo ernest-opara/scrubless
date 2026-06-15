@@ -11,6 +11,7 @@ from access import remember_anon_resource, require_video, safe_video_ext
 from auth import current_user
 from billing import over_cap_detail, upload_limit_for
 from config import STORAGE
+from geo import request_country
 from indexing import delete_video, process_video
 from models import persist_video, record_event
 from ratelimit import limiter
@@ -27,7 +28,7 @@ async def upload(
 ):
     user = current_user(request)
     require_indexing_within_cap(user)
-    record_event("upload", user_id=user.id if user else None)
+    record_event("upload", user_id=user.id if user else None, country=request_country(request))
     cap = upload_limit_for(user)
 
     # Fast reject via Content-Length before streaming the whole body.
