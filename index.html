@@ -323,7 +323,8 @@
             </span>
           </div>
           <p class="muted" id="adminGeoSummary" style="font-size:12px;margin:0 0 14px"></p>
-          <div id="adminGeoHeat" class="geo-heat" style="margin-bottom:18px"></div>
+          <div id="adminWorldMap" class="world-map" aria-label="World map of views by country"></div>
+          <div id="adminGeoHeat" class="geo-heat" style="margin:18px 0"></div>
           <div id="adminGeoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px">
             <div>
               <div class="lbl" style="margin-bottom:8px">VIEWS BY COUNTRY</div>
@@ -680,6 +681,7 @@
               'No country-tagged views in this window yet. Put Scrubless behind Cloudflare ' +
               '(free) to start populating geography.' +
               '</div>';
+            renderWorldMap(win);
             return;
           }
           var max = top[0].count || 1;
@@ -694,6 +696,77 @@
                      '<span class="count">' + r.count + '</span>' +
                    '</div>';
           }).join("");
+          renderWorldMap(win);
+        }
+
+        // World-map heatmap. We inline the SVG (one fetch on first render,
+        // then cached on a module-level promise) and tint each country's
+        // paths by relative view share for the current window. Paths not in
+        // the iso→ids map stay neutral — the ranked panel still shows them.
+        var _worldSvgPromise = null;
+        function loadWorldSvg() {
+          if (_worldSvgPromise) return _worldSvgPromise;
+          _worldSvgPromise = fetch("/scrubby/world.svg")
+            .then(function (r) { return r.ok ? r.text() : ""; })
+            .catch(function () { return ""; });
+          return _worldSvgPromise;
+        }
+        function renderWorldMap(win) {
+          var host = document.getElementById("adminWorldMap");
+          if (!host) return;
+          loadWorldSvg().then(function (svgText) {
+            if (!svgText) { host.style.display = "none"; return; }
+            if (!host.dataset.injected) {
+              host.innerHTML = svgText;
+              // Strip the SVG's hard width/height so it scales to the panel,
+              // and override its inline white fill so unmapped countries
+              // render as a neutral land-grey against the card background.
+              var svg = host.querySelector("svg");
+              if (svg) {
+                svg.removeAttribute("width");
+                svg.removeAttribute("height");
+                svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+                svg.style.width = "100%";
+                svg.style.height = "auto";
+                svg.style.display = "block";
+              }
+              host.querySelectorAll("path").forEach(function (p) {
+                // Inline-style fill is the only thing that wins against the
+                // SVG's own `style="fill:#ffffff"` per-path attribute.
+                p.style.fill = "var(--world-land)";
+                p.style.stroke = "var(--world-stroke)";
+                p.style.strokeWidth = "0.4";
+              });
+              host.dataset.injected = "1";
+            }
+            var idsByIso = (s.geo && s.geo.iso_to_svg_ids) || {};
+            var w = (geoViews[win] || { top: [] });
+            var top = w.top || [];
+            var max = (top[0] && top[0].count) || 1;
+            // Reset every previously-tinted path so switching windows doesn't
+            // leak intensity from the previous one — back to neutral land.
+            host.querySelectorAll("path.heat-on").forEach(function (p) {
+              p.classList.remove("heat-on");
+              p.style.fill = "var(--world-land)";
+              p.removeAttribute("data-tip");
+            });
+            top.forEach(function (r) {
+              var ids = idsByIso[r.iso] || [];
+              if (!ids.length) return;
+              var intensity = 0.18 + 0.78 * (r.count / max);
+              var tip = r.name + " · " + r.count + " views";
+              ids.forEach(function (pid) {
+                // CSS.escape isn't on every old browser; use attribute selector.
+                var path = host.querySelector('[id="' + pid.replace(/"/g, '\\"') + '"]');
+                if (!path) return;
+                path.classList.add("heat-on");
+                path.style.fill =
+                  "color-mix(in srgb, var(--accent) " +
+                  Math.round(intensity * 100) + "%, var(--bg-card))";
+                path.setAttribute("data-tip", tip);
+              });
+            });
+          });
         }
         function renderGeo(win) {
           document.querySelectorAll("#adminGeoWindow .tab").forEach(function (b) {

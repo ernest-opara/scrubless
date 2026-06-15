@@ -23,6 +23,10 @@
         --screen: #15161a;
         --radius: 14px;
         --radius-sm: 9px;
+        /* World-map heatmap palette */
+        --world-bg: #ebe7dd;
+        --world-land: #d8d4c8;
+        --world-stroke: rgba(20, 18, 14, 0.18);
       }
       :root[data-theme="dark"] {
         --bg: #14151a;
@@ -41,6 +45,9 @@
         --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
         --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 40px rgba(0, 0, 0, 0.4);
         --screen: #0a0a0c;
+        --world-bg: #0e0f13;
+        --world-land: #2b2c33;
+        --world-stroke: rgba(255, 255, 255, 0.12);
       }
 
       * { box-sizing: border-box; }
@@ -325,6 +332,24 @@
       @keyframes dot-pulse {
         0%, 100% { transform: scale(0.85); opacity: 0.55; }
         50%      { transform: scale(1.15); opacity: 1; }
+      }
+
+      /* Admin: world-map heatmap. The SVG ships paths labelled by lowercase
+         country name; JS replaces inline fills with neutral land, then tints
+         country paths by relative view share for the current window. */
+      .world-map {
+        background: var(--world-bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 6px;
+        line-height: 0;          /* kill the descender gap under inline SVG */
+        overflow: hidden;
+      }
+      .world-map svg { color: var(--accent); }
+      .world-map path { transition: fill 240ms ease; }
+      .world-map path.heat-on { cursor: pointer; }
+      .world-map path.heat-on:hover {
+        filter: brightness(1.15);
       }
 
       /* Admin: geographic heat grid. Each tile is a country, sized like a

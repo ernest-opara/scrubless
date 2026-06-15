@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from auth import current_user, is_admin
 from config import FRAME_INTERVAL, ROOT, STORAGE
-from countries import country_label
+from countries import country_label, iso_to_svg_ids
 from models import Collection, Event, User, Video, engine
 
 router = APIRouter()
@@ -167,6 +167,10 @@ def admin_stats(request: Request):
             "views": geo_views,
             "signups": {"top": signups_geo[:25], "unknown": signups_unknown},
             "paying": {"top": paying_geo[:25], "unknown": paying_unknown},
+            # Lookup the SPA uses to paint the world.svg heatmap. Lives here
+            # rather than in the JS so any change to the SVG only needs a
+            # Python redeploy.
+            "iso_to_svg_ids": iso_to_svg_ids(),
         },
         "recent_signups": [
             {"email": e, "tier": t, "created_at": c} for (e, t, c) in recent
