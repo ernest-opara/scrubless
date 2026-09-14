@@ -2,7 +2,7 @@
 title: "Scrubless: Natural-Language Moment Retrieval in Personal Video with Zero-Shot Vision–Language Embeddings"
 subtitle: "Project report"
 author: "Chukwuebuka Ernest-Opara"
-date: "September 2026"
+date: "April 2026"
 abstract: |
   Finding a specific moment inside a long video still means scrubbing a timeline
   by hand. This report describes Scrubless, a system I designed, built, and
