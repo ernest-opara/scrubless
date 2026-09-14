@@ -1,7 +1,7 @@
 ---
 title: "Scrubless, Architecture"
 subtitle: "Semantic video search · *Stop scrubbing. Start searching.*"
-author: "Ernest Opara"
+author: "Chukwuebuka Ernest-Opara"
 date: "2026-05-22"
 toc: true
 toc-depth: 2
