@@ -1,0 +1,1020 @@
+[
+ {
+  "id": "tos-v01",
+  "video": "tos",
+  "type": "visual",
+  "query": "two people talking on a bridge over a canal",
+  "gt": [
+   [
+    25,
+    40
+   ],
+   [
+    555,
+    600
+   ]
+  ]
+ },
+ {
+  "id": "tos-v02",
+  "video": "tos",
+  "type": "visual",
+  "query": "a brain on a plate with needles stuck in it",
+  "gt": [
+   [
+    55,
+    65
+   ]
+  ]
+ },
+ {
+  "id": "tos-v03",
+  "video": "tos",
+  "type": "visual",
+  "query": "a soldier aiming a sniper rifle",
+  "gt": [
+   [
+    80,
+    95
+   ],
+   [
+    115,
+    120
+   ],
+   [
+    140,
+    155
+   ]
+  ]
+ },
+ {
+  "id": "tos-v04",
+  "video": "tos",
+  "type": "visual",
+  "query": "a giant robot walking through a ruined city",
+  "gt": [
+   [
+    330,
+    340
+   ],
+   [
+    520,
+    530
+   ]
+  ]
+ },
+ {
+  "id": "tos-v05",
+  "video": "tos",
+  "type": "visual",
+  "query": "a man with a robotic eye implant",
+  "gt": [
+   [
+    195,
+    200
+   ],
+   [
+    225,
+    250
+   ],
+   [
+    290,
+    290
+   ],
+   [
+    340,
+    340
+   ],
+   [
+    365,
+    370
+   ],
+   [
+    400,
+    400
+   ],
+   [
+    505,
+    505
+   ],
+   [
+    555,
+    560
+   ]
+  ]
+ },
+ {
+  "id": "tos-v06",
+  "video": "tos",
+  "type": "visual",
+  "query": "the movie title card",
+  "gt": [
+   [
+    65,
+    65
+   ]
+  ]
+ },
+ {
+  "id": "tos-v07",
+  "video": "tos",
+  "type": "visual",
+  "query": "purple and green holographic computer screens",
+  "gt": [
+   [
+    45,
+    55
+   ],
+   [
+    205,
+    210
+   ],
+   [
+    295,
+    305
+   ],
+   [
+    350,
+    350
+   ],
+   [
+    375,
+    380
+   ],
+   [
+    420,
+    420
+   ],
+   [
+    540,
+    540
+   ]
+  ]
+ },
+ {
+  "id": "tos-v08",
+  "video": "tos",
+  "type": "visual",
+  "query": "an old man with grey hair and a beard",
+  "gt": [
+   [
+    120,
+    135
+   ],
+   [
+    160,
+    165
+   ],
+   [
+    195,
+    250
+   ],
+   [
+    530,
+    535
+   ]
+  ]
+ },
+ {
+  "id": "tos-v09",
+  "video": "tos",
+  "type": "visual",
+  "query": "a woman with red hair looking angry",
+  "gt": [
+   [
+    345,
+    345
+   ],
+   [
+    360,
+    360
+   ],
+   [
+    385,
+    410
+   ]
+  ]
+ },
+ {
+  "id": "tos-v10",
+  "video": "tos",
+  "type": "visual",
+  "query": "a spaceship flying over rooftops seen through a round window",
+  "gt": [
+   [
+    95,
+    110
+   ]
+  ]
+ },
+ {
+  "id": "tos-v11",
+  "video": "tos",
+  "type": "visual",
+  "query": "a church pipe organ",
+  "gt": [
+   [
+    155,
+    155
+   ],
+   [
+    490,
+    495
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v01",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a big white rabbit coming out of its burrow",
+  "gt": [
+   [
+    35,
+    55
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v02",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a butterfly landing on the rabbit",
+  "gt": [
+   [
+    75,
+    75
+   ],
+   [
+    105,
+    105
+   ],
+   [
+    120,
+    135
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v03",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a bird perched on a branch",
+  "gt": [
+   [
+    15,
+    20
+   ],
+   [
+    380,
+    385
+   ],
+   [
+    580,
+    590
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v04",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit smelling flowers",
+  "gt": [
+   [
+    60,
+    70
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v05",
+  "video": "bbb",
+  "type": "visual",
+  "query": "three rodents sitting on a rock",
+  "gt": [
+   [
+    150,
+    180
+   ],
+   [
+    200,
+    200
+   ],
+   [
+    210,
+    215
+   ],
+   [
+    315,
+    325
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v06",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a squirrel next to a butterfly",
+  "gt": [
+   [
+    185,
+    190
+   ],
+   [
+    200,
+    200
+   ],
+   [
+    215,
+    215
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v07",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit sharpening a stick",
+  "gt": [
+   [
+    250,
+    270
+   ],
+   [
+    295,
+    295
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v08",
+  "video": "bbb",
+  "type": "visual",
+  "query": "an acorn falling from the sky",
+  "gt": [
+   [
+    330,
+    335
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v09",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a flying squirrel gliding through the air",
+  "gt": [
+   [
+    430,
+    440
+   ],
+   [
+    450,
+    450
+   ],
+   [
+    480,
+    480
+   ],
+   [
+    495,
+    495
+   ],
+   [
+    580,
+    590
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v10",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a rock and a tree trunk wrapped in green vines",
+  "gt": [
+   [
+    345,
+    350
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v11",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit standing proudly with its chest out",
+  "gt": [
+   [
+    360,
+    375
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v12",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a bed of sharpened wooden spikes",
+  "gt": [
+   [
+    445,
+    445
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v13",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a chinchilla holding an acorn",
+  "gt": [
+   [
+    340,
+    355
+   ]
+  ]
+ },
+ {
+  "id": "bbb-v14",
+  "video": "bbb",
+  "type": "visual",
+  "query": "close-up of the rabbit's smiling face",
+  "gt": [
+   [
+    60,
+    60
+   ],
+   [
+    470,
+    470
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v01",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man in sunglasses next to a space capsule",
+  "gt": [
+   [
+    0,
+    10
+   ],
+   [
+    425,
+    430
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v02",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a framed portrait of an astronaut with an American flag",
+  "gt": [
+   [
+    35,
+    35
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v03",
+  "video": "nasa",
+  "type": "visual",
+  "query": "the view out of an airplane window",
+  "gt": [
+   [
+    50,
+    55
+   ],
+   [
+    85,
+    90
+   ],
+   [
+    115,
+    120
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v04",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a helicopter",
+  "gt": [
+   [
+    240,
+    240
+   ],
+   [
+    250,
+    250
+   ],
+   [
+    265,
+    265
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v05",
+  "video": "nasa",
+  "type": "visual",
+  "query": "aerial view of snow-covered mountains and glaciers",
+  "gt": [
+   [
+    85,
+    90
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v06",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man talking to the camera in a dark hotel room",
+  "gt": [
+   [
+    155,
+    180
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v07",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a large crowd gathered around a landed capsule in a field",
+  "gt": [
+   [
+    305,
+    390
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v08",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a private jet on the tarmac",
+  "gt": [
+   [
+    65,
+    80
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v09",
+  "video": "nasa",
+  "type": "visual",
+  "query": "an apartment block across a road",
+  "gt": [
+   [
+    150,
+    150
+   ],
+   [
+    195,
+    195
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v10",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man talking on a mobile phone",
+  "gt": [
+   [
+    395,
+    395
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v11",
+  "video": "nasa",
+  "type": "visual",
+  "query": "an astronaut being carried in a chair by the recovery crew",
+  "gt": [
+   [
+    380,
+    420
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v12",
+  "video": "nasa",
+  "type": "visual",
+  "query": "the International Space Station logo",
+  "gt": [
+   [
+    470,
+    470
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v13",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man in a blue NASA flight jacket sitting on a bed",
+  "gt": [
+   [
+    190,
+    190
+   ],
+   [
+    440,
+    460
+   ]
+  ]
+ },
+ {
+  "id": "nasa-v14",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a title card with the name of a city",
+  "gt": [
+   [
+    60,
+    60
+   ],
+   [
+    95,
+    95
+   ],
+   [
+    125,
+    125
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s01",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "the spaceship was in space twenty minutes ago",
+  "gt": [
+   [
+    6,
+    12
+   ],
+   [
+    423,
+    431
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s02",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "picking up Tim Kopra from Kazakhstan",
+  "gt": [
+   [
+    33,
+    39
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s03",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "flying over Greenland",
+  "gt": [
+   [
+    87,
+    92
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s04",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "he wishes he had brought warmer clothes",
+  "gt": [
+   [
+    64,
+    74
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s05",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "what time it is in Norway",
+  "gt": [
+   [
+    100,
+    111
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s06",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "how long the journey took and how many time zones",
+  "gt": [
+   [
+    130,
+    141
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s07",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "waking up far too early because of jet lag",
+  "gt": [
+   [
+    146,
+    175
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s08",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "water, earplugs and the satellite phone",
+  "gt": [
+   [
+    219,
+    234
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s09",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "why the landing site is flat and empty",
+  "gt": [
+   [
+    272,
+    288
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s10",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "stepping around horse poop",
+  "gt": [
+   [
+    290,
+    308
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s11",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "the crew members are pulled out of the capsule one by one",
+  "gt": [
+   [
+    337,
+    362
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s12",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "changing out of the Sokol suits at the medical tent",
+  "gt": [
+   [
+    390,
+    402
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s13",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "the blue NASA flight suit has lots of pockets",
+  "gt": [
+   [
+    439,
+    462
+   ]
+  ]
+ },
+ {
+  "id": "nasa-s14",
+  "video": "nasa",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "the astronaut says it smells great to be back",
+  "gt": [
+   [
+    411,
+    417
+   ]
+  ]
+ },
+ {
+  "id": "tos-s01",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "you're a jerk, Tom",
+  "gt": [
+   [
+    20,
+    24
+   ],
+   [
+    299,
+    302
+   ]
+  ]
+ },
+ {
+  "id": "tos-s02",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "freaked out by my robot hand",
+  "gt": [
+   [
+    30,
+    34
+   ],
+   [
+    347,
+    351
+   ]
+  ]
+ },
+ {
+  "id": "tos-s03",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "nightmares about being chased by a giant robotic claw",
+  "gt": [
+   [
+    39,
+    42
+   ]
+  ]
+ },
+ {
+  "id": "tos-s04",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "the robot's memory is synced and locked",
+  "gt": [
+   [
+    50,
+    54
+   ]
+  ]
+ },
+ {
+  "id": "tos-s05",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "how many minutes they have left",
+  "gt": [
+   [
+    184,
+    189
+   ]
+  ]
+ },
+ {
+  "id": "tos-s06",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "remind her what love is",
+  "gt": [
+   [
+    235,
+    249
+   ]
+  ]
+ },
+ {
+  "id": "tos-s07",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "there's no reason to destroy the world",
+  "gt": [
+   [
+    358,
+    364
+   ]
+  ]
+ },
+ {
+  "id": "tos-s08",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "you forgot me on Earth",
+  "gt": [
+   [
+    383,
+    390
+   ]
+  ]
+ },
+ {
+  "id": "tos-s09",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "memory override",
+  "gt": [
+   [
+    296,
+    299
+   ],
+   [
+    504,
+    506
+   ],
+   [
+    538,
+    541
+   ]
+  ]
+ },
+ {
+  "id": "tos-s10",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": false,
+  "query": "a lesson to be learned from this",
+  "gt": [
+   [
+    559,
+    569
+   ]
+  ]
+ },
+ {
+  "id": "tos-s11",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "the launch countdown",
+  "gt": [
+   [
+    0,
+    20
+   ]
+  ]
+ },
+ {
+  "id": "tos-s12",
+  "video": "tos",
+  "type": "spoken",
+  "paraphrase": true,
+  "query": "the captain is told to abort",
+  "gt": [
+   [
+    371,
+    373
+   ],
+   [
+    506,
+    509
+   ]
+  ]
+ }
+]

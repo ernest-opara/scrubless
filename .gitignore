@@ -29,3 +29,7 @@ docs/assets/competition.png
 
 # Office temp/lock files
 ~$*
+
+# Evaluation inputs/outputs (large; rebuilt by eval/run_eval.py)
+eval/data/
+eval/work/

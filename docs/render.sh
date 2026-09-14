@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Build the architecture doc and the pitch deck (PDF + PowerPoint). Run after
-# editing ARCHITECTURE.md, PITCH.md, or diagrams/.
+# Build the architecture doc, the project report, and the pitch deck (PDF +
+# PowerPoint). Run after editing ARCHITECTURE.md, REPORT.md, PITCH.md, or diagrams/.
 #   ./docs/render.sh
 # Deps: pandoc, xelatex (TeX Live), graphviz (dot), poppler (pdftoppm),
 #       and python-pptx in ../.venv (pip install python-pptx).
@@ -24,6 +24,13 @@ pandoc ARCHITECTURE.md -o ARCHITECTURE.pdf \
   -V monofont="Menlo" \
   -V mainfont="Helvetica Neue"
 echo "wrote $(pwd)/ARCHITECTURE.pdf"
+
+# 2b. Project report (evaluation write-up; figures come from eval/make_figures.py).
+pandoc REPORT.md -o REPORT.pdf \
+  --pdf-engine=xelatex \
+  -V monofont="Menlo" \
+  -V mainfont="Helvetica Neue"
+echo "wrote $(pwd)/REPORT.pdf"
 
 # 3. Pitch deck (16:9 beamer slides, metropolis theme).
 pandoc PITCH.md -t beamer -o PITCH.pdf \

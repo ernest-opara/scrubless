@@ -1,0 +1,8810 @@
+[
+ {
+  "id": "tos-v01",
+  "video": "tos",
+  "type": "visual",
+  "query": "two people talking on a bridge over a canal",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    25.0,
+    30.0,
+    210.0,
+    320.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    36.0,
+    38.0,
+    26.0,
+    32.0,
+    34.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 5,
+   "top": [
+    365.0,
+    535.0,
+    135.0,
+    240.0,
+    20.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 6,
+   "top": [
+    295.0,
+    300.0,
+    260.0,
+    250.0,
+    340.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 8,
+   "top": [
+    300.0,
+    260.0,
+    210.0,
+    190.0,
+    265.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 5,
+   "top": [
+    300.0,
+    264.0,
+    190.0,
+    360.0,
+    564.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    36.0,
+    26.0,
+    348.0,
+    368.0,
+    254.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 8,
+   "top": [
+    300.0,
+    260.0,
+    250.0,
+    130.0,
+    295.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    300.0,
+    22.0,
+    264.0,
+    564.0,
+    360.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    25.0,
+    30.0,
+    300.0,
+    210.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    36.0,
+    26.0,
+    348.0,
+    368.0,
+    254.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    35.0,
+    25.0,
+    30.0,
+    210.0,
+    320.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    35.0,
+    25.0,
+    30.0,
+    300.0,
+    210.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v02",
+  "video": "tos",
+  "type": "visual",
+  "query": "a brain on a plate with needles stuck in it",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    55.0,
+    60.0,
+    615.0,
+    205.0,
+    620.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    56.0,
+    58.0,
+    62.0,
+    616.0,
+    618.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    350.0,
+    565.0,
+    35.0,
+    425.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    295.0,
+    180.0,
+    565.0,
+    300.0,
+    260.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 7,
+   "top": [
+    340.0,
+    295.0,
+    210.0,
+    180.0,
+    190.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    192.0,
+    342.0,
+    56.0,
+    20.0,
+    58.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    56.0,
+    62.0,
+    616.0,
+    624.0,
+    610.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    295.0,
+    55.0,
+    180.0,
+    565.0,
+    190.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    298.0,
+    22.0,
+    192.0,
+    56.0,
+    264.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    55.0,
+    60.0,
+    615.0,
+    205.0,
+    620.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    56.0,
+    62.0,
+    616.0,
+    624.0,
+    610.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    55.0,
+    60.0,
+    615.0,
+    205.0,
+    620.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    55.0,
+    60.0,
+    615.0,
+    205.0,
+    620.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v03",
+  "video": "tos",
+  "type": "visual",
+  "query": "a soldier aiming a sniper rifle",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    395.0,
+    80.0,
+    115.0,
+    140.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    398.0,
+    92.0,
+    394.0,
+    396.0,
+    118.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    50.0,
+    325.0,
+    425.0,
+    360.0,
+    405.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    295.0,
+    300.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    295.0,
+    395.0,
+    300.0,
+    80.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    398.0,
+    20.0,
+    92.0,
+    22.0,
+    394.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    398.0,
+    92.0,
+    118.0,
+    338.0,
+    142.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 6,
+   "top": [
+    300.0,
+    295.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 5,
+   "top": [
+    20.0,
+    300.0,
+    398.0,
+    180.0,
+    92.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    395.0,
+    80.0,
+    115.0,
+    140.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    398.0,
+    92.0,
+    118.0,
+    338.0,
+    142.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    90.0,
+    395.0,
+    80.0,
+    115.0,
+    140.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    90.0,
+    395.0,
+    80.0,
+    115.0,
+    140.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v04",
+  "video": "tos",
+  "type": "visual",
+  "query": "a giant robot walking through a ruined city",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    330.0,
+    95.0,
+    485.0,
+    585.0,
+    220.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    208.0,
+    530.0,
+    114.0,
+    112.0,
+    584.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 6,
+   "top": [
+    35.0,
+    50.0,
+    40.0,
+    350.0,
+    30.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 10,
+   "top": [
+    300.0,
+    295.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 4,
+   "top": [
+    20.0,
+    300.0,
+    40.0,
+    330.0,
+    95.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 4,
+   "top": [
+    298.0,
+    208.0,
+    22.0,
+    530.0,
+    20.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    208.0,
+    530.0,
+    114.0,
+    584.0,
+    46.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 7,
+   "top": [
+    300.0,
+    20.0,
+    295.0,
+    40.0,
+    560.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 6,
+   "top": [
+    22.0,
+    300.0,
+    180.0,
+    40.0,
+    208.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    330.0,
+    95.0,
+    485.0,
+    585.0,
+    220.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 3,
+   "top": [
+    208.0,
+    298.0,
+    530.0,
+    114.0,
+    584.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    330.0,
+    95.0,
+    485.0,
+    585.0,
+    220.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    330.0,
+    95.0,
+    485.0,
+    585.0,
+    220.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v05",
+  "video": "tos",
+  "type": "visual",
+  "query": "a man with a robotic eye implant",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    340.0,
+    555.0,
+    395.0,
+    405.0,
+    560.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    342.0,
+    344.0,
+    388.0,
+    396.0,
+    556.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 5,
+   "top": [
+    50.0,
+    350.0,
+    320.0,
+    30.0,
+    345.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    295.0,
+    300.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    560.0,
+    295.0,
+    300.0,
+    340.0,
+    555.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    562.0,
+    342.0,
+    300.0,
+    344.0,
+    22.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    342.0,
+    388.0,
+    396.0,
+    556.0,
+    306.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    295.0,
+    560.0,
+    300.0,
+    340.0,
+    180.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    300.0,
+    562.0,
+    20.0,
+    342.0,
+    360.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    340.0,
+    555.0,
+    560.0,
+    295.0,
+    395.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    342.0,
+    388.0,
+    396.0,
+    556.0,
+    562.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    340.0,
+    555.0,
+    395.0,
+    405.0,
+    560.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    340.0,
+    555.0,
+    560.0,
+    295.0,
+    395.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v06",
+  "video": "tos",
+  "type": "visual",
+  "query": "the movie title card",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    5.0,
+    730.0,
+    10.0,
+    695.0,
+    220.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 8,
+   "top": [
+    6.0,
+    630.0,
+    0.0,
+    708.0,
+    730.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    95.0,
+    560.0,
+    405.0,
+    85.0,
+    395.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    520.0,
+    515.0,
+    360.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    5.0,
+    520.0,
+    730.0,
+    515.0,
+    10.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    6.0,
+    518.0,
+    630.0,
+    520.0,
+    0.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 6,
+   "top": [
+    6.0,
+    630.0,
+    0.0,
+    708.0,
+    730.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": null,
+   "top": [
+    520.0,
+    515.0,
+    5.0,
+    730.0,
+    10.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 8,
+   "top": [
+    520.0,
+    6.0,
+    362.0,
+    630.0,
+    0.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": null,
+   "top": [
+    5.0,
+    730.0,
+    10.0,
+    695.0,
+    220.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 6,
+   "top": [
+    6.0,
+    630.0,
+    0.0,
+    708.0,
+    730.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 10,
+   "top": [
+    5.0,
+    10.0,
+    695.0,
+    220.0,
+    0.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 10,
+   "top": [
+    5.0,
+    10.0,
+    695.0,
+    220.0,
+    0.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v07",
+  "video": "tos",
+  "type": "visual",
+  "query": "purple and green holographic computer screens",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    205.0,
+    350.0,
+    305.0,
+    420.0,
+    295.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    48.0,
+    538.0,
+    52.0,
+    50.0,
+    422.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    190.0,
+    55.0,
+    60.0,
+    220.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 2,
+   "top": [
+    265.0,
+    50.0,
+    325.0,
+    360.0,
+    25.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    25.0,
+    205.0,
+    265.0,
+    350.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    52.0,
+    50.0,
+    48.0,
+    266.0,
+    538.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    48.0,
+    538.0,
+    422.0,
+    306.0,
+    380.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    265.0,
+    205.0,
+    350.0,
+    325.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    52.0,
+    266.0,
+    538.0,
+    422.0,
+    306.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    205.0,
+    50.0,
+    350.0,
+    305.0,
+    420.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    52.0,
+    538.0,
+    422.0,
+    306.0,
+    380.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    205.0,
+    350.0,
+    305.0,
+    420.0,
+    295.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    205.0,
+    50.0,
+    350.0,
+    305.0,
+    420.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v08",
+  "video": "tos",
+  "type": "visual",
+  "query": "an old man with grey hair and a beard",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    130.0,
+    535.0,
+    530.0,
+    125.0,
+    160.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    174.0,
+    126.0,
+    162.0,
+    536.0,
+    144.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 3,
+   "top": [
+    405.0,
+    565.0,
+    130.0,
+    425.0,
+    360.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    265.0,
+    50.0,
+    360.0,
+    325.0,
+    295.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 3,
+   "top": [
+    295.0,
+    565.0,
+    130.0,
+    265.0,
+    535.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    174.0,
+    266.0,
+    126.0,
+    268.0,
+    162.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    174.0,
+    126.0,
+    162.0,
+    536.0,
+    144.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 5,
+   "top": [
+    50.0,
+    265.0,
+    295.0,
+    360.0,
+    130.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 3,
+   "top": [
+    266.0,
+    174.0,
+    126.0,
+    162.0,
+    52.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    130.0,
+    535.0,
+    530.0,
+    125.0,
+    160.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    174.0,
+    126.0,
+    162.0,
+    536.0,
+    144.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    130.0,
+    535.0,
+    530.0,
+    125.0,
+    160.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    130.0,
+    535.0,
+    530.0,
+    125.0,
+    160.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v09",
+  "video": "tos",
+  "type": "visual",
+  "query": "a woman with red hair looking angry",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    345.0,
+    390.0,
+    410.0,
+    365.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    362.0,
+    320.0,
+    414.0,
+    346.0,
+    384.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    425.0,
+    360.0,
+    365.0,
+    405.0,
+    50.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 8,
+   "top": [
+    180.0,
+    295.0,
+    300.0,
+    185.0,
+    560.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    560.0,
+    295.0,
+    565.0,
+    180.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    180.0,
+    562.0,
+    362.0,
+    184.0,
+    320.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    362.0,
+    320.0,
+    414.0,
+    346.0,
+    384.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    180.0,
+    360.0,
+    295.0,
+    560.0,
+    345.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    184.0,
+    362.0,
+    320.0,
+    562.0,
+    414.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    345.0,
+    390.0,
+    410.0,
+    365.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    362.0,
+    320.0,
+    414.0,
+    346.0,
+    384.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    360.0,
+    345.0,
+    390.0,
+    410.0,
+    365.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    360.0,
+    345.0,
+    390.0,
+    410.0,
+    365.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v10",
+  "video": "tos",
+  "type": "visual",
+  "query": "a spaceship flying over rooftops seen through a round window",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    95.0,
+    330.0,
+    105.0,
+    100.0,
+    110.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    102.0,
+    96.0,
+    104.0,
+    90.0,
+    114.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 5,
+   "top": [
+    325.0,
+    25.0,
+    50.0,
+    35.0,
+    115.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    295.0,
+    300.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    20.0,
+    95.0,
+    295.0,
+    330.0,
+    300.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    22.0,
+    102.0,
+    20.0,
+    96.0,
+    104.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    102.0,
+    96.0,
+    90.0,
+    114.0,
+    84.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 6,
+   "top": [
+    20.0,
+    300.0,
+    295.0,
+    180.0,
+    560.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    22.0,
+    300.0,
+    182.0,
+    102.0,
+    96.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    95.0,
+    330.0,
+    105.0,
+    100.0,
+    110.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    102.0,
+    96.0,
+    90.0,
+    114.0,
+    84.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    95.0,
+    330.0,
+    105.0,
+    100.0,
+    110.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    95.0,
+    330.0,
+    105.0,
+    100.0,
+    110.0
+   ]
+  }
+ },
+ {
+  "id": "tos-v11",
+  "video": "tos",
+  "type": "visual",
+  "query": "a church pipe organ",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    155.0,
+    10.0,
+    220.0,
+    330.0,
+    15.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    500.0,
+    152.0,
+    154.0,
+    10.0,
+    156.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    115.0,
+    560.0,
+    60.0,
+    55.0,
+    350.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    295.0,
+    300.0,
+    560.0,
+    180.0,
+    20.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    180.0,
+    155.0,
+    295.0,
+    10.0,
+    300.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    182.0,
+    500.0,
+    20.0,
+    152.0,
+    22.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    500.0,
+    152.0,
+    10.0,
+    16.0,
+    570.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 7,
+   "top": [
+    180.0,
+    300.0,
+    20.0,
+    560.0,
+    295.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    22.0,
+    300.0,
+    182.0,
+    500.0,
+    152.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    155.0,
+    10.0,
+    180.0,
+    220.0,
+    330.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    500.0,
+    152.0,
+    10.0,
+    182.0,
+    16.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    155.0,
+    10.0,
+    220.0,
+    330.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    155.0,
+    10.0,
+    180.0,
+    220.0,
+    330.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v01",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a big white rabbit coming out of its burrow",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 6,
+   "top": [
+    114.0,
+    298.0,
+    472.0,
+    128.0,
+    292.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    190.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 6,
+   "top": [
+    114.0,
+    298.0,
+    472.0,
+    128.0,
+    292.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 6,
+   "top": [
+    114.0,
+    298.0,
+    472.0,
+    128.0,
+    292.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 6,
+   "top": [
+    114.0,
+    298.0,
+    472.0,
+    128.0,
+    292.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 6,
+   "top": [
+    114.0,
+    298.0,
+    472.0,
+    128.0,
+    292.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": null,
+   "top": [
+    145.0,
+    240.0,
+    290.0,
+    205.0,
+    120.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v02",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a butterfly landing on the rabbit",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    120.0,
+    126.0,
+    136.0,
+    122.0,
+    112.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    120.0,
+    126.0,
+    136.0,
+    122.0,
+    112.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    120.0,
+    126.0,
+    136.0,
+    112.0,
+    78.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    120.0,
+    126.0,
+    136.0,
+    112.0,
+    78.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    120.0,
+    126.0,
+    136.0,
+    112.0,
+    78.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    135.0,
+    120.0,
+    125.0,
+    200.0,
+    75.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v03",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a bird perched on a branch",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    18.0,
+    16.0,
+    388.0,
+    250.0,
+    386.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    18.0,
+    16.0,
+    388.0,
+    250.0,
+    386.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    18.0,
+    388.0,
+    250.0,
+    242.0,
+    416.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    18.0,
+    388.0,
+    250.0,
+    242.0,
+    416.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    18.0,
+    388.0,
+    250.0,
+    242.0,
+    416.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    15.0,
+    385.0,
+    395.0,
+    400.0,
+    410.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v04",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit smelling flowers",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 6,
+   "top": [
+    76.0,
+    122.0,
+    114.0,
+    78.0,
+    80.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 6,
+   "top": [
+    76.0,
+    122.0,
+    114.0,
+    78.0,
+    80.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 4,
+   "top": [
+    76.0,
+    122.0,
+    114.0,
+    68.0,
+    298.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    76.0,
+    122.0,
+    114.0,
+    68.0,
+    298.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 4,
+   "top": [
+    76.0,
+    122.0,
+    114.0,
+    68.0,
+    298.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 5,
+   "top": [
+    240.0,
+    90.0,
+    120.0,
+    145.0,
+    75.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v05",
+  "video": "bbb",
+  "type": "visual",
+  "query": "three rodents sitting on a rock",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    348.0,
+    176.0,
+    312.0,
+    346.0,
+    180.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    348.0,
+    176.0,
+    312.0,
+    346.0,
+    180.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    348.0,
+    176.0,
+    312.0,
+    160.0,
+    168.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    348.0,
+    176.0,
+    312.0,
+    160.0,
+    168.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    348.0,
+    176.0,
+    312.0,
+    160.0,
+    168.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    175.0,
+    345.0,
+    315.0,
+    355.0,
+    305.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v06",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a squirrel next to a butterfly",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    186.0,
+    120.0,
+    126.0,
+    188.0,
+    202.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    186.0,
+    120.0,
+    126.0,
+    188.0,
+    202.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    186.0,
+    120.0,
+    126.0,
+    202.0,
+    138.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    186.0,
+    120.0,
+    126.0,
+    202.0,
+    138.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    186.0,
+    120.0,
+    126.0,
+    202.0,
+    138.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    190.0,
+    135.0,
+    200.0,
+    120.0,
+    180.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v07",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit sharpening a stick",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    298.0,
+    256.0,
+    294.0,
+    262.0,
+    276.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    298.0,
+    256.0,
+    294.0,
+    262.0,
+    276.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    298.0,
+    256.0,
+    262.0,
+    276.0,
+    76.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    298.0,
+    256.0,
+    262.0,
+    276.0,
+    76.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    298.0,
+    256.0,
+    262.0,
+    276.0,
+    76.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 2,
+   "top": [
+    125.0,
+    250.0,
+    295.0,
+    240.0,
+    170.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v08",
+  "video": "bbb",
+  "type": "visual",
+  "query": "an acorn falling from the sky",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    414.0,
+    440.0,
+    420.0,
+    412.0,
+    416.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    414.0,
+    440.0,
+    420.0,
+    412.0,
+    416.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 8,
+   "top": [
+    414.0,
+    440.0,
+    420.0,
+    390.0,
+    56.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 8,
+   "top": [
+    414.0,
+    440.0,
+    420.0,
+    390.0,
+    56.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 8,
+   "top": [
+    414.0,
+    440.0,
+    420.0,
+    390.0,
+    56.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    335.0,
+    435.0,
+    430.0,
+    410.0,
+    15.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v09",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a flying squirrel gliding through the air",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    424.0,
+    434.0,
+    400.0,
+    144.0,
+    402.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    424.0,
+    434.0,
+    400.0,
+    144.0,
+    402.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    424.0,
+    434.0,
+    400.0,
+    144.0,
+    440.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    424.0,
+    434.0,
+    400.0,
+    144.0,
+    440.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    424.0,
+    434.0,
+    400.0,
+    144.0,
+    440.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 2,
+   "top": [
+    400.0,
+    435.0,
+    480.0,
+    585.0,
+    210.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v10",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a rock and a tree trunk wrapped in green vines",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 3,
+   "top": [
+    24.0,
+    30.0,
+    352.0,
+    250.0,
+    284.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 4,
+   "top": [
+    0.0,
+    375.0,
+    365.0,
+    355.0,
+    345.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    24.0,
+    30.0,
+    352.0,
+    250.0,
+    284.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 3,
+   "top": [
+    24.0,
+    30.0,
+    352.0,
+    250.0,
+    284.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 3,
+   "top": [
+    24.0,
+    30.0,
+    352.0,
+    250.0,
+    284.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 3,
+   "top": [
+    24.0,
+    30.0,
+    352.0,
+    250.0,
+    284.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    350.0,
+    415.0,
+    285.0,
+    30.0,
+    340.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v11",
+  "video": "bbb",
+  "type": "visual",
+  "query": "the rabbit standing proudly with its chest out",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    292.0,
+    128.0,
+    298.0,
+    478.0,
+    486.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    190.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    292.0,
+    128.0,
+    298.0,
+    478.0,
+    486.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    292.0,
+    128.0,
+    298.0,
+    478.0,
+    486.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": null,
+   "top": [
+    292.0,
+    128.0,
+    298.0,
+    478.0,
+    486.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": null,
+   "top": [
+    292.0,
+    128.0,
+    298.0,
+    478.0,
+    486.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": null,
+   "top": [
+    290.0,
+    485.0,
+    475.0,
+    160.0,
+    90.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v12",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a bed of sharpened wooden spikes",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    444.0,
+    450.0,
+    442.0,
+    264.0,
+    446.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    444.0,
+    450.0,
+    442.0,
+    264.0,
+    446.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    444.0,
+    450.0,
+    264.0,
+    250.0,
+    296.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    444.0,
+    450.0,
+    264.0,
+    250.0,
+    296.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    444.0,
+    450.0,
+    264.0,
+    250.0,
+    296.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    440.0,
+    445.0,
+    415.0,
+    350.0,
+    425.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v13",
+  "video": "bbb",
+  "type": "visual",
+  "query": "a chinchilla holding an acorn",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    346.0,
+    256.0,
+    348.0,
+    362.0,
+    350.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    346.0,
+    256.0,
+    348.0,
+    362.0,
+    350.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    346.0,
+    256.0,
+    362.0,
+    198.0,
+    280.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    346.0,
+    256.0,
+    362.0,
+    198.0,
+    280.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    346.0,
+    256.0,
+    362.0,
+    198.0,
+    280.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 2,
+   "top": [
+    260.0,
+    345.0,
+    360.0,
+    355.0,
+    220.0
+   ]
+  }
+ },
+ {
+  "id": "bbb-v14",
+  "video": "bbb",
+  "type": "visual",
+  "query": "close-up of the rabbit's smiling face",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 5,
+   "top": [
+    488.0,
+    292.0,
+    46.0,
+    334.0,
+    472.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 7,
+   "top": [
+    590.0,
+    180.0,
+    390.0,
+    480.0,
+    200.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": []
+  },
+  "hybrid_rrf_5s": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 5,
+   "top": [
+    488.0,
+    292.0,
+    46.0,
+    334.0,
+    472.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 5,
+   "top": [
+    488.0,
+    292.0,
+    46.0,
+    334.0,
+    472.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 5,
+   "top": [
+    488.0,
+    292.0,
+    46.0,
+    334.0,
+    472.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 5,
+   "top": [
+    488.0,
+    292.0,
+    46.0,
+    334.0,
+    472.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 4,
+   "top": [
+    290.0,
+    45.0,
+    170.0,
+    470.0,
+    485.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v01",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man in sunglasses next to a space capsule",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    0.0,
+    10.0,
+    145.0,
+    425.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    426.0,
+    428.0,
+    264.0,
+    2.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    420.0,
+    425.0,
+    435.0,
+    430.0,
+    415.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    390.0,
+    430.0,
+    10.0,
+    175.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    425.0,
+    10.0,
+    5.0,
+    355.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    426.0,
+    10.0,
+    430.0,
+    428.0,
+    8.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    430.0,
+    264.0,
+    2.0,
+    424.0,
+    10.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    430.0,
+    10.0,
+    5.0,
+    395.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    426.0,
+    10.0,
+    394.0,
+    178.0,
+    68.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    425.0,
+    10.0,
+    0.0,
+    5.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    426.0,
+    10.0,
+    2.0,
+    394.0,
+    216.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    430.0,
+    0.0,
+    10.0,
+    145.0,
+    425.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    430.0,
+    425.0,
+    10.0,
+    0.0,
+    5.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v02",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a framed portrait of an astronaut with an American flag",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    235.0,
+    220.0,
+    460.0,
+    440.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    36.0,
+    34.0,
+    38.0,
+    428.0,
+    220.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 8,
+   "top": [
+    435.0,
+    440.0,
+    425.0,
+    420.0,
+    430.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    40.0,
+    440.0,
+    45.0,
+    35.0,
+    445.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    440.0,
+    220.0,
+    395.0,
+    235.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    38.0,
+    220.0,
+    442.0,
+    444.0,
+    222.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    36.0,
+    428.0,
+    220.0,
+    238.0,
+    226.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    440.0,
+    40.0,
+    445.0,
+    45.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    444.0,
+    38.0,
+    220.0,
+    44.0,
+    398.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    440.0,
+    220.0,
+    235.0,
+    230.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    38.0,
+    444.0,
+    220.0,
+    238.0,
+    428.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    35.0,
+    235.0,
+    220.0,
+    460.0,
+    440.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    35.0,
+    440.0,
+    220.0,
+    235.0,
+    230.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v03",
+  "video": "nasa",
+  "type": "visual",
+  "query": "the view out of an airplane window",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    260.0,
+    90.0,
+    50.0,
+    115.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    122.0,
+    54.0,
+    118.0,
+    58.0,
+    84.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 5,
+   "top": [
+    145.0,
+    175.0,
+    180.0,
+    280.0,
+    90.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 4,
+   "top": [
+    355.0,
+    40.0,
+    350.0,
+    45.0,
+    35.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    40.0,
+    45.0,
+    355.0,
+    5.0,
+    210.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 6,
+   "top": [
+    42.0,
+    44.0,
+    40.0,
+    8.0,
+    10.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    122.0,
+    54.0,
+    84.0,
+    94.0,
+    256.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 2,
+   "top": [
+    40.0,
+    45.0,
+    355.0,
+    350.0,
+    210.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 5,
+   "top": [
+    42.0,
+    356.0,
+    212.0,
+    180.0,
+    122.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    260.0,
+    90.0,
+    50.0,
+    115.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    122.0,
+    54.0,
+    84.0,
+    42.0,
+    94.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    85.0,
+    260.0,
+    90.0,
+    50.0,
+    115.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    85.0,
+    260.0,
+    90.0,
+    50.0,
+    115.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v04",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a helicopter",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    240.0,
+    250.0,
+    310.0,
+    50.0,
+    15.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    242.0,
+    240.0,
+    252.0,
+    270.0,
+    268.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 4,
+   "top": [
+    185.0,
+    180.0,
+    445.0,
+    265.0,
+    245.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    390.0,
+    420.0,
+    315.0,
+    175.0,
+    305.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    310.0,
+    305.0,
+    5.0,
+    0.0,
+    15.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    424.0,
+    422.0,
+    306.0,
+    308.0,
+    314.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    242.0,
+    252.0,
+    270.0,
+    312.0,
+    422.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": null,
+   "top": [
+    310.0,
+    305.0,
+    5.0,
+    0.0,
+    420.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": null,
+   "top": [
+    424.0,
+    306.0,
+    314.0,
+    10.0,
+    72.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    240.0,
+    310.0,
+    0.0,
+    305.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    242.0,
+    422.0,
+    306.0,
+    252.0,
+    10.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    240.0,
+    250.0,
+    310.0,
+    50.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    240.0,
+    310.0,
+    0.0,
+    305.0,
+    15.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v05",
+  "video": "nasa",
+  "type": "visual",
+  "query": "aerial view of snow-covered mountains and glaciers",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    120.0,
+    435.0,
+    465.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    92.0,
+    94.0,
+    88.0,
+    86.0,
+    124.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    430.0,
+    175.0,
+    435.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    355.0,
+    230.0,
+    215.0,
+    0.0,
+    175.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    465.0,
+    90.0,
+    85.0,
+    230.0,
+    470.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 5,
+   "top": [
+    470.0,
+    468.0,
+    472.0,
+    234.0,
+    92.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    92.0,
+    86.0,
+    124.0,
+    18.0,
+    438.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    355.0,
+    465.0,
+    230.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    92.0,
+    86.0,
+    218.0,
+    230.0,
+    180.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    120.0,
+    465.0,
+    435.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    92.0,
+    86.0,
+    124.0,
+    20.0,
+    438.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    120.0,
+    15.0,
+    115.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    120.0,
+    15.0,
+    115.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v06",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man talking to the camera in a dark hotel room",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    160.0,
+    180.0,
+    165.0,
+    175.0,
+    170.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    184.0,
+    162.0,
+    170.0,
+    168.0,
+    164.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    425.0,
+    165.0,
+    160.0,
+    170.0,
+    430.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 3,
+   "top": [
+    390.0,
+    405.0,
+    175.0,
+    180.0,
+    65.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    180.0,
+    175.0,
+    40.0,
+    445.0,
+    45.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    180.0,
+    182.0,
+    174.0,
+    176.0,
+    178.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    184.0,
+    162.0,
+    170.0,
+    176.0,
+    156.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    175.0,
+    180.0,
+    450.0,
+    165.0,
+    445.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    180.0,
+    174.0,
+    450.0,
+    166.0,
+    394.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    180.0,
+    175.0,
+    165.0,
+    160.0,
+    450.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    180.0,
+    174.0,
+    166.0,
+    450.0,
+    160.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    160.0,
+    180.0,
+    165.0,
+    175.0,
+    170.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    180.0,
+    175.0,
+    165.0,
+    160.0,
+    450.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v07",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a large crowd gathered around a landed capsule in a field",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    320.0,
+    340.0,
+    400.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    364.0,
+    320.0,
+    338.0,
+    296.0,
+    390.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    430.0,
+    350.0,
+    425.0,
+    420.0,
+    435.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 4,
+   "top": [
+    15.0,
+    20.0,
+    25.0,
+    390.0,
+    65.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    390.0,
+    300.0,
+    355.0,
+    315.0,
+    310.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    390.0,
+    306.0,
+    356.0,
+    392.0,
+    294.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    364.0,
+    320.0,
+    338.0,
+    296.0,
+    390.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    390.0,
+    315.0,
+    300.0,
+    310.0,
+    355.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    390.0,
+    306.0,
+    318.0,
+    356.0,
+    20.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    390.0,
+    295.0,
+    355.0,
+    310.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    390.0,
+    296.0,
+    306.0,
+    356.0,
+    364.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    320.0,
+    340.0,
+    400.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    300.0,
+    390.0,
+    295.0,
+    355.0,
+    310.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v08",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a private jet on the tarmac",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    70.0,
+    65.0,
+    25.0,
+    30.0,
+    45.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    70.0,
+    50.0,
+    68.0,
+    126.0,
+    32.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    145.0,
+    175.0,
+    180.0,
+    150.0,
+    425.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 10,
+   "top": [
+    185.0,
+    470.0,
+    180.0,
+    465.0,
+    240.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 3,
+   "top": [
+    45.0,
+    40.0,
+    70.0,
+    65.0,
+    465.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    42.0,
+    70.0,
+    44.0,
+    40.0,
+    240.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    70.0,
+    50.0,
+    126.0,
+    32.0,
+    76.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 4,
+   "top": [
+    40.0,
+    465.0,
+    45.0,
+    70.0,
+    65.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    240.0,
+    70.0,
+    42.0,
+    78.0,
+    146.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    70.0,
+    65.0,
+    45.0,
+    40.0,
+    25.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    70.0,
+    42.0,
+    50.0,
+    78.0,
+    32.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    70.0,
+    65.0,
+    25.0,
+    30.0,
+    45.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    70.0,
+    65.0,
+    45.0,
+    40.0,
+    25.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v09",
+  "video": "nasa",
+  "type": "visual",
+  "query": "an apartment block across a road",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    150.0,
+    195.0,
+    110.0,
+    100.0,
+    435.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    152.0,
+    196.0,
+    200.0,
+    198.0,
+    154.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    280.0,
+    175.0,
+    165.0,
+    180.0,
+    160.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    440.0,
+    40.0,
+    445.0,
+    45.0,
+    390.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    445.0,
+    45.0,
+    435.0,
+    40.0,
+    300.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 8,
+   "top": [
+    446.0,
+    44.0,
+    276.0,
+    274.0,
+    294.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    152.0,
+    196.0,
+    104.0,
+    110.0,
+    20.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 6,
+   "top": [
+    40.0,
+    445.0,
+    440.0,
+    45.0,
+    435.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 3,
+   "top": [
+    444.0,
+    20.0,
+    152.0,
+    42.0,
+    438.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    150.0,
+    195.0,
+    110.0,
+    435.0,
+    100.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    152.0,
+    196.0,
+    104.0,
+    20.0,
+    438.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    150.0,
+    195.0,
+    110.0,
+    100.0,
+    105.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    150.0,
+    195.0,
+    110.0,
+    100.0,
+    105.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v10",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man talking on a mobile phone",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 3,
+   "top": [
+    465.0,
+    435.0,
+    395.0,
+    205.0,
+    135.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    16.0,
+    400.0,
+    136.0,
+    438.0,
+    20.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    235.0,
+    230.0,
+    265.0,
+    260.0,
+    255.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 6,
+   "top": [
+    225.0,
+    180.0,
+    75.0,
+    240.0,
+    405.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    180.0,
+    395.0,
+    215.0,
+    225.0,
+    175.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    398.0,
+    178.0,
+    182.0,
+    174.0,
+    176.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    16.0,
+    400.0,
+    136.0,
+    438.0,
+    146.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 3,
+   "top": [
+    225.0,
+    180.0,
+    395.0,
+    215.0,
+    175.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    228.0,
+    182.0,
+    176.0,
+    398.0,
+    188.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    395.0,
+    435.0,
+    180.0,
+    215.0,
+    175.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    16.0,
+    398.0,
+    438.0,
+    64.0,
+    178.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    395.0,
+    205.0,
+    135.0,
+    215.0,
+    140.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    395.0,
+    180.0,
+    215.0,
+    175.0,
+    65.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v11",
+  "video": "nasa",
+  "type": "visual",
+  "query": "an astronaut being carried in a chair by the recovery crew",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    415.0,
+    420.0,
+    410.0,
+    380.0,
+    355.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    420.0,
+    416.0,
+    418.0,
+    382.0,
+    412.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 4,
+   "top": [
+    430.0,
+    435.0,
+    340.0,
+    415.0,
+    420.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    345.0,
+    40.0,
+    445.0,
+    340.0,
+    45.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    345.0,
+    390.0,
+    420.0,
+    340.0,
+    415.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    346.0,
+    344.0,
+    420.0,
+    392.0,
+    418.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    420.0,
+    382.0,
+    412.0,
+    356.0,
+    364.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 3,
+   "top": [
+    345.0,
+    340.0,
+    420.0,
+    415.0,
+    445.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 3,
+   "top": [
+    346.0,
+    446.0,
+    420.0,
+    42.0,
+    392.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    420.0,
+    415.0,
+    410.0,
+    380.0,
+    355.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    420.0,
+    382.0,
+    412.0,
+    346.0,
+    356.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    415.0,
+    420.0,
+    410.0,
+    380.0,
+    355.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    420.0,
+    415.0,
+    410.0,
+    380.0,
+    355.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v12",
+  "video": "nasa",
+  "type": "visual",
+  "query": "the International Space Station logo",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    470.0,
+    455.0,
+    35.0,
+    435.0,
+    465.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    470.0,
+    472.0,
+    468.0,
+    458.0,
+    460.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    430.0,
+    425.0,
+    435.0,
+    10.0,
+    445.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    425.0,
+    430.0,
+    35.0,
+    5.0,
+    10.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    35.0,
+    430.0,
+    230.0,
+    445.0,
+    425.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    38.0,
+    36.0,
+    34.0,
+    12.0,
+    430.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    470.0,
+    458.0,
+    36.0,
+    18.0,
+    438.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 6,
+   "top": [
+    35.0,
+    430.0,
+    425.0,
+    5.0,
+    10.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 4,
+   "top": [
+    428.0,
+    38.0,
+    12.0,
+    470.0,
+    230.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    470.0,
+    35.0,
+    455.0,
+    435.0,
+    465.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    470.0,
+    36.0,
+    458.0,
+    12.0,
+    428.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    470.0,
+    455.0,
+    35.0,
+    235.0,
+    460.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    470.0,
+    35.0,
+    455.0,
+    430.0,
+    460.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v13",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a man in a blue NASA flight jacket sitting on a bed",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    190.0,
+    460.0,
+    455.0,
+    440.0,
+    450.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    462.0,
+    444.0,
+    456.0,
+    194.0,
+    192.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    435.0,
+    420.0,
+    415.0,
+    0.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    435.0,
+    440.0,
+    390.0,
+    180.0,
+    65.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    425.0,
+    65.0,
+    190.0,
+    180.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    442.0,
+    394.0,
+    396.0,
+    426.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    462.0,
+    444.0,
+    456.0,
+    194.0,
+    450.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    435.0,
+    190.0,
+    425.0,
+    65.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    440.0,
+    394.0,
+    426.0,
+    218.0,
+    64.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    190.0,
+    460.0,
+    455.0,
+    450.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    440.0,
+    462.0,
+    456.0,
+    194.0,
+    394.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    190.0,
+    460.0,
+    455.0,
+    440.0,
+    450.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    440.0,
+    190.0,
+    460.0,
+    455.0,
+    450.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-v14",
+  "video": "nasa",
+  "type": "visual",
+  "query": "a title card with the name of a city",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    125.0,
+    435.0,
+    465.0,
+    95.0,
+    60.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    98.0,
+    128.0,
+    100.0,
+    126.0,
+    60.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 7,
+   "top": [
+    320.0,
+    245.0,
+    250.0,
+    255.0,
+    265.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    70.0,
+    75.0,
+    175.0,
+    0.0,
+    180.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 3,
+   "top": [
+    435.0,
+    175.0,
+    60.0,
+    180.0,
+    75.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    42.0,
+    98.0,
+    76.0,
+    128.0,
+    74.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    98.0,
+    128.0,
+    60.0,
+    18.0,
+    438.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 3,
+   "top": [
+    70.0,
+    435.0,
+    60.0,
+    175.0,
+    465.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 7,
+   "top": [
+    76.0,
+    438.0,
+    20.0,
+    178.0,
+    26.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    435.0,
+    125.0,
+    465.0,
+    60.0,
+    95.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    438.0,
+    98.0,
+    20.0,
+    128.0,
+    60.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    125.0,
+    95.0,
+    60.0,
+    115.0,
+    20.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    125.0,
+    60.0,
+    95.0,
+    20.0,
+    115.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s01",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "the spaceship was in space twenty minutes ago",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 2,
+   "top": [
+    440.0,
+    430.0,
+    450.0,
+    460.0,
+    15.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    454.0,
+    430.0,
+    456.0,
+    460.0,
+    260.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    10.0,
+    430.0,
+    315.0,
+    185.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    10.0,
+    5.0,
+    430.0,
+    60.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    460.0,
+    10.0,
+    425.0,
+    450.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    430.0,
+    426.0,
+    428.0,
+    460.0,
+    456.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    454.0,
+    430.0,
+    460.0,
+    260.0,
+    216.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    430.0,
+    10.0,
+    5.0,
+    460.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    426.0,
+    10.0,
+    460.0,
+    450.0,
+    216.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    425.0,
+    430.0,
+    10.0,
+    5.0,
+    460.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    430.0,
+    10.0,
+    456.0,
+    462.0,
+    216.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 2,
+   "top": [
+    440.0,
+    430.0,
+    450.0,
+    460.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    425.0,
+    430.0,
+    10.0,
+    5.0,
+    460.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s02",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "picking up Tim Kopra from Kazakhstan",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    415.0,
+    10.0,
+    445.0,
+    355.0,
+    45.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    448.0,
+    10.0,
+    446.0,
+    410.0,
+    418.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 3,
+   "top": [
+    410.0,
+    405.0,
+    35.0,
+    110.0,
+    275.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    30.0,
+    35.0,
+    410.0,
+    405.0,
+    340.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    410.0,
+    35.0,
+    30.0,
+    350.0,
+    340.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 4,
+   "top": [
+    410.0,
+    408.0,
+    412.0,
+    32.0,
+    36.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 8,
+   "top": [
+    448.0,
+    10.0,
+    410.0,
+    418.0,
+    358.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    30.0,
+    35.0,
+    410.0,
+    340.0,
+    350.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    36.0,
+    410.0,
+    342.0,
+    460.0,
+    448.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    30.0,
+    35.0,
+    410.0,
+    415.0,
+    10.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    36.0,
+    410.0,
+    342.0,
+    448.0,
+    460.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    415.0,
+    10.0,
+    445.0,
+    355.0,
+    45.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    30.0,
+    35.0,
+    410.0,
+    415.0,
+    10.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s03",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "flying over Greenland",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    86.0,
+    88.0,
+    94.0,
+    92.0,
+    122.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0,
+    105.0,
+    100.0,
+    80.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    90.0,
+    85.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    86.0,
+    88.0,
+    92.0,
+    90.0,
+    94.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    86.0,
+    94.0,
+    122.0,
+    116.0,
+    256.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    86.0,
+    92.0,
+    122.0,
+    116.0,
+    256.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    86.0,
+    92.0,
+    122.0,
+    116.0,
+    256.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    85.0,
+    90.0,
+    120.0,
+    115.0,
+    15.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s04",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "he wishes he had brought warmer clothes",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    190.0,
+    455.0,
+    185.0,
+    380.0,
+    135.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    188.0,
+    190.0,
+    456.0,
+    192.0,
+    194.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    190.0,
+    450.0,
+    395.0,
+    460.0,
+    330.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    30.0,
+    35.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    30.0,
+    190.0,
+    455.0,
+    35.0,
+    185.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": null,
+   "top": [
+    188.0,
+    36.0,
+    190.0,
+    34.0,
+    456.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    188.0,
+    456.0,
+    194.0,
+    450.0,
+    440.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": null,
+   "top": [
+    30.0,
+    35.0,
+    190.0,
+    455.0,
+    185.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": null,
+   "top": [
+    36.0,
+    188.0,
+    456.0,
+    194.0,
+    450.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": null,
+   "top": [
+    190.0,
+    455.0,
+    185.0,
+    380.0,
+    135.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": null,
+   "top": [
+    188.0,
+    456.0,
+    194.0,
+    450.0,
+    440.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    190.0,
+    455.0,
+    185.0,
+    380.0,
+    135.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": null,
+   "top": [
+    190.0,
+    455.0,
+    185.0,
+    380.0,
+    135.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s05",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "what time it is in Norway",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    115.0,
+    95.0,
+    20.0,
+    105.0,
+    435.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    114.0,
+    98.0,
+    116.0,
+    100.0,
+    96.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    100.0,
+    105.0,
+    80.0,
+    75.0,
+    130.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    100.0,
+    290.0,
+    105.0,
+    295.0,
+    460.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    105.0,
+    100.0,
+    460.0,
+    455.0,
+    90.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    100.0,
+    104.0,
+    102.0,
+    106.0,
+    138.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    114.0,
+    98.0,
+    138.0,
+    108.0,
+    24.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    100.0,
+    105.0,
+    460.0,
+    455.0,
+    90.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    100.0,
+    106.0,
+    460.0,
+    138.0,
+    92.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    100.0,
+    105.0,
+    460.0,
+    115.0,
+    95.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    100.0,
+    106.0,
+    138.0,
+    460.0,
+    114.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    115.0,
+    95.0,
+    20.0,
+    105.0,
+    450.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    100.0,
+    105.0,
+    460.0,
+    115.0,
+    95.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s06",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "how long the journey took and how many time zones",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 7,
+   "top": [
+    450.0,
+    445.0,
+    20.0,
+    465.0,
+    435.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    138.0,
+    448.0,
+    26.0,
+    446.0,
+    454.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    130.0,
+    175.0,
+    145.0,
+    140.0,
+    265.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    140.0,
+    135.0,
+    435.0,
+    430.0,
+    410.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": null,
+   "top": [
+    435.0,
+    460.0,
+    455.0,
+    450.0,
+    445.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    138.0,
+    460.0,
+    458.0,
+    438.0,
+    448.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    138.0,
+    448.0,
+    26.0,
+    454.0,
+    460.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    135.0,
+    140.0,
+    435.0,
+    450.0,
+    445.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    138.0,
+    460.0,
+    448.0,
+    26.0,
+    438.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 5,
+   "top": [
+    450.0,
+    445.0,
+    435.0,
+    20.0,
+    135.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    138.0,
+    448.0,
+    26.0,
+    460.0,
+    454.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 5,
+   "top": [
+    450.0,
+    445.0,
+    20.0,
+    95.0,
+    125.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 4,
+   "top": [
+    450.0,
+    445.0,
+    20.0,
+    135.0,
+    140.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s07",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "waking up far too early because of jet lag",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 9,
+   "top": [
+    20.0,
+    450.0,
+    115.0,
+    25.0,
+    30.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 7,
+   "top": [
+    26.0,
+    22.0,
+    24.0,
+    118.0,
+    116.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    150.0,
+    165.0,
+    145.0,
+    170.0,
+    160.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    170.0,
+    145.0,
+    160.0,
+    165.0,
+    150.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    145.0,
+    40.0,
+    45.0,
+    465.0,
+    170.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    146.0,
+    148.0,
+    42.0,
+    40.0,
+    454.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 4,
+   "top": [
+    26.0,
+    118.0,
+    450.0,
+    146.0,
+    90.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    145.0,
+    170.0,
+    160.0,
+    165.0,
+    465.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    146.0,
+    172.0,
+    160.0,
+    166.0,
+    42.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    145.0,
+    20.0,
+    170.0,
+    450.0,
+    160.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    146.0,
+    26.0,
+    172.0,
+    42.0,
+    118.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 9,
+   "top": [
+    20.0,
+    450.0,
+    115.0,
+    25.0,
+    30.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    145.0,
+    20.0,
+    170.0,
+    450.0,
+    160.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s08",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "water, earplugs and the satellite phone",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    395.0,
+    10.0,
+    145.0,
+    260.0,
+    255.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    400.0,
+    324.0,
+    398.0,
+    10.0,
+    460.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    225.0,
+    230.0,
+    220.0,
+    235.0,
+    250.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    225.0,
+    230.0,
+    220.0,
+    180.0,
+    185.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 5,
+   "top": [
+    355.0,
+    145.0,
+    0.0,
+    395.0,
+    215.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    214.0,
+    4.0,
+    324.0,
+    2.0,
+    212.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    400.0,
+    324.0,
+    10.0,
+    460.0,
+    146.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    225.0,
+    395.0,
+    145.0,
+    355.0,
+    10.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    226.0,
+    400.0,
+    324.0,
+    146.0,
+    460.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    225.0,
+    395.0,
+    145.0,
+    355.0,
+    5.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    226.0,
+    400.0,
+    324.0,
+    146.0,
+    460.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    395.0,
+    10.0,
+    145.0,
+    260.0,
+    255.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    225.0,
+    395.0,
+    145.0,
+    355.0,
+    5.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s09",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "why the landing site is flat and empty",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 6,
+   "top": [
+    255.0,
+    260.0,
+    300.0,
+    245.0,
+    55.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 8,
+   "top": [
+    256.0,
+    258.0,
+    260.0,
+    246.0,
+    334.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    280.0,
+    150.0,
+    285.0,
+    185.0,
+    425.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    275.0,
+    280.0,
+    420.0,
+    150.0,
+    415.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    280.0,
+    275.0,
+    0.0,
+    290.0,
+    285.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    282.0,
+    276.0,
+    2.0,
+    280.0,
+    278.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 6,
+   "top": [
+    256.0,
+    246.0,
+    334.0,
+    294.0,
+    324.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    275.0,
+    280.0,
+    0.0,
+    270.0,
+    415.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    280.0,
+    418.0,
+    2.0,
+    334.0,
+    274.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    275.0,
+    280.0,
+    255.0,
+    0.0,
+    290.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    280.0,
+    256.0,
+    334.0,
+    294.0,
+    2.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 6,
+   "top": [
+    255.0,
+    260.0,
+    300.0,
+    245.0,
+    55.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    275.0,
+    280.0,
+    255.0,
+    0.0,
+    290.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s10",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "stepping around horse poop",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 2,
+   "top": [
+    280.0,
+    285.0,
+    275.0,
+    375.0,
+    290.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    288.0,
+    432.0,
+    274.0,
+    278.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0,
+    265.0,
+    260.0,
+    255.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0,
+    280.0,
+    285.0,
+    275.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    292.0,
+    294.0,
+    296.0,
+    298.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 1,
+   "top": [
+    290.0,
+    432.0,
+    274.0,
+    280.0,
+    324.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0,
+    280.0,
+    285.0,
+    275.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    290.0,
+    296.0,
+    432.0,
+    274.0,
+    280.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0,
+    280.0,
+    285.0,
+    275.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    290.0,
+    296.0,
+    432.0,
+    274.0,
+    280.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 2,
+   "top": [
+    280.0,
+    285.0,
+    275.0,
+    375.0,
+    290.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    290.0,
+    295.0,
+    280.0,
+    285.0,
+    275.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s11",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "the crew members are pulled out of the capsule one by one",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 4,
+   "top": [
+    410.0,
+    420.0,
+    415.0,
+    355.0,
+    380.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 3,
+   "top": [
+    416.0,
+    412.0,
+    358.0,
+    420.0,
+    356.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 2,
+   "top": [
+    430.0,
+    350.0,
+    340.0,
+    210.0,
+    345.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    345.0,
+    340.0,
+    355.0,
+    350.0,
+    220.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    355.0,
+    345.0,
+    350.0,
+    340.0,
+    410.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    356.0,
+    346.0,
+    352.0,
+    348.0,
+    344.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    416.0,
+    358.0,
+    364.0,
+    312.0,
+    382.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    345.0,
+    340.0,
+    355.0,
+    350.0,
+    410.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    346.0,
+    356.0,
+    412.0,
+    420.0,
+    320.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    345.0,
+    355.0,
+    340.0,
+    350.0,
+    410.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    346.0,
+    356.0,
+    412.0,
+    420.0,
+    364.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 4,
+   "top": [
+    410.0,
+    420.0,
+    415.0,
+    355.0,
+    380.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    345.0,
+    355.0,
+    340.0,
+    350.0,
+    410.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s12",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "changing out of the Sokol suits at the medical tent",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 8,
+   "top": [
+    415.0,
+    420.0,
+    410.0,
+    380.0,
+    360.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 4,
+   "top": [
+    364.0,
+    382.0,
+    412.0,
+    388.0,
+    416.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    400.0,
+    395.0,
+    390.0,
+    435.0,
+    430.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    395.0,
+    400.0,
+    390.0,
+    355.0,
+    350.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    355.0,
+    390.0,
+    395.0,
+    420.0,
+    415.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    392.0,
+    356.0,
+    400.0,
+    344.0,
+    420.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 4,
+   "top": [
+    364.0,
+    382.0,
+    412.0,
+    388.0,
+    344.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    390.0,
+    395.0,
+    355.0,
+    400.0,
+    350.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    400.0,
+    392.0,
+    356.0,
+    344.0,
+    420.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    355.0,
+    390.0,
+    415.0,
+    420.0,
+    395.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    392.0,
+    400.0,
+    356.0,
+    344.0,
+    420.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 8,
+   "top": [
+    415.0,
+    420.0,
+    410.0,
+    380.0,
+    360.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 2,
+   "top": [
+    355.0,
+    390.0,
+    415.0,
+    420.0,
+    395.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s13",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "the blue NASA flight suit has lots of pockets",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 10,
+   "top": [
+    190.0,
+    415.0,
+    210.0,
+    410.0,
+    430.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    430.0,
+    254.0,
+    264.0,
+    426.0,
+    214.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    435.0,
+    395.0,
+    430.0,
+    445.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    435.0,
+    440.0,
+    450.0,
+    470.0,
+    205.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    210.0,
+    440.0,
+    455.0,
+    355.0,
+    0.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    210.0,
+    212.0,
+    440.0,
+    454.0,
+    456.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    430.0,
+    254.0,
+    264.0,
+    214.0,
+    394.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    435.0,
+    210.0,
+    455.0,
+    415.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    440.0,
+    210.0,
+    454.0,
+    400.0,
+    430.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    440.0,
+    210.0,
+    190.0,
+    455.0,
+    415.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    440.0,
+    210.0,
+    430.0,
+    254.0,
+    264.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 10,
+   "top": [
+    190.0,
+    415.0,
+    210.0,
+    410.0,
+    430.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    440.0,
+    210.0,
+    190.0,
+    455.0,
+    415.0
+   ]
+  }
+ },
+ {
+  "id": "nasa-s14",
+  "video": "nasa",
+  "type": "spoken",
+  "query": "the astronaut says it smells great to be back",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    235.0,
+    460.0,
+    190.0,
+    230.0,
+    440.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    254.0,
+    226.0,
+    464.0,
+    462.0,
+    238.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 4,
+   "top": [
+    430.0,
+    425.0,
+    40.0,
+    415.0,
+    340.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    415.0,
+    410.0,
+    35.0,
+    40.0,
+    45.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    440.0,
+    415.0,
+    410.0,
+    445.0,
+    35.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    444.0,
+    216.0,
+    416.0,
+    442.0,
+    218.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    254.0,
+    226.0,
+    464.0,
+    238.0,
+    218.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    415.0,
+    410.0,
+    440.0,
+    35.0,
+    460.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    416.0,
+    444.0,
+    218.0,
+    462.0,
+    430.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    415.0,
+    410.0,
+    440.0,
+    460.0,
+    235.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    416.0,
+    444.0,
+    462.0,
+    218.0,
+    226.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    235.0,
+    460.0,
+    190.0,
+    230.0,
+    440.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    415.0,
+    410.0,
+    440.0,
+    460.0,
+    235.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s01",
+  "video": "tos",
+  "type": "spoken",
+  "query": "you're a jerk, Tom",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    595.0,
+    375.0,
+    270.0,
+    355.0,
+    325.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 7,
+   "top": [
+    386.0,
+    270.0,
+    594.0,
+    268.0,
+    318.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    230.0,
+    20.0,
+    295.0,
+    225.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    20.0,
+    180.0,
+    230.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 4,
+   "top": [
+    230.0,
+    340.0,
+    560.0,
+    300.0,
+    225.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    360.0,
+    32.0,
+    386.0,
+    270.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 6,
+   "top": [
+    386.0,
+    270.0,
+    594.0,
+    318.0,
+    356.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    230.0,
+    225.0,
+    20.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    300.0,
+    22.0,
+    230.0,
+    386.0,
+    180.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    230.0,
+    595.0,
+    225.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    300.0,
+    22.0,
+    386.0,
+    230.0,
+    270.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    595.0,
+    375.0,
+    270.0,
+    355.0,
+    325.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    300.0,
+    295.0,
+    230.0,
+    595.0,
+    225.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s02",
+  "video": "tos",
+  "type": "spoken",
+  "query": "freaked out by my robot hand",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 7,
+   "top": [
+    555.0,
+    405.0,
+    410.0,
+    60.0,
+    395.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    388.0,
+    352.0,
+    610.0,
+    556.0,
+    390.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    350.0,
+    30.0,
+    345.0,
+    35.0,
+    40.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    30.0,
+    350.0,
+    345.0,
+    35.0,
+    430.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    415.0,
+    380.0,
+    420.0,
+    555.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    34.0,
+    418.0,
+    388.0,
+    32.0,
+    352.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    388.0,
+    352.0,
+    610.0,
+    556.0,
+    412.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    30.0,
+    350.0,
+    35.0,
+    345.0,
+    415.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    348.0,
+    32.0,
+    418.0,
+    430.0,
+    388.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 2,
+   "top": [
+    555.0,
+    35.0,
+    30.0,
+    405.0,
+    410.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    388.0,
+    352.0,
+    610.0,
+    34.0,
+    556.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 7,
+   "top": [
+    555.0,
+    405.0,
+    410.0,
+    60.0,
+    395.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 2,
+   "top": [
+    555.0,
+    35.0,
+    30.0,
+    405.0,
+    410.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s03",
+  "video": "tos",
+  "type": "spoken",
+  "query": "nightmares about being chased by a giant robotic claw",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 7,
+   "top": [
+    470.0,
+    220.0,
+    580.0,
+    75.0,
+    555.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    572.0,
+    610.0,
+    222.0,
+    582.0,
+    496.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    40.0,
+    35.0,
+    350.0,
+    345.0,
+    30.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    40.0,
+    35.0,
+    225.0,
+    30.0,
+    295.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    560.0,
+    300.0,
+    470.0,
+    40.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 2,
+   "top": [
+    224.0,
+    40.0,
+    572.0,
+    610.0,
+    38.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    572.0,
+    610.0,
+    222.0,
+    582.0,
+    496.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    40.0,
+    470.0,
+    220.0,
+    580.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    40.0,
+    224.0,
+    572.0,
+    610.0,
+    582.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    35.0,
+    470.0,
+    220.0,
+    580.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    572.0,
+    40.0,
+    610.0,
+    224.0,
+    582.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 7,
+   "top": [
+    470.0,
+    220.0,
+    580.0,
+    75.0,
+    555.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    35.0,
+    470.0,
+    220.0,
+    580.0,
+    75.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s04",
+  "video": "tos",
+  "type": "spoken",
+  "query": "the robot's memory is synced and locked",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": 10,
+   "top": [
+    220.0,
+    340.0,
+    60.0,
+    75.0,
+    410.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 10,
+   "top": [
+    610.0,
+    620.0,
+    222.0,
+    370.0,
+    352.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    350.0,
+    320.0,
+    345.0,
+    30.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    520.0,
+    515.0,
+    55.0,
+    60.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    60.0,
+    55.0,
+    520.0,
+    540.0,
+    50.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    56.0,
+    58.0,
+    60.0,
+    298.0,
+    610.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 9,
+   "top": [
+    610.0,
+    620.0,
+    222.0,
+    370.0,
+    352.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    60.0,
+    55.0,
+    220.0,
+    340.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    50.0,
+    56.0,
+    610.0,
+    620.0,
+    222.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    50.0,
+    60.0,
+    220.0,
+    55.0,
+    340.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    50.0,
+    610.0,
+    56.0,
+    620.0,
+    222.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 10,
+   "top": [
+    220.0,
+    340.0,
+    60.0,
+    75.0,
+    410.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    50.0,
+    60.0,
+    220.0,
+    55.0,
+    340.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s05",
+  "video": "tos",
+  "type": "spoken",
+  "query": "how many minutes they have left",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 5,
+   "top": [
+    40.0,
+    405.0,
+    625.0,
+    75.0,
+    190.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 7,
+   "top": [
+    42.0,
+    44.0,
+    78.0,
+    470.0,
+    714.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": null,
+   "top": [
+    340.0,
+    335.0,
+    420.0,
+    130.0,
+    430.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 3,
+   "top": [
+    335.0,
+    340.0,
+    185.0,
+    320.0,
+    315.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 8,
+   "top": [
+    335.0,
+    10.0,
+    315.0,
+    340.0,
+    40.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 8,
+   "top": [
+    0.0,
+    4.0,
+    42.0,
+    340.0,
+    44.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 6,
+   "top": [
+    42.0,
+    78.0,
+    470.0,
+    714.0,
+    570.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 3,
+   "top": [
+    335.0,
+    340.0,
+    185.0,
+    10.0,
+    315.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 2,
+   "top": [
+    340.0,
+    186.0,
+    568.0,
+    0.0,
+    318.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 7,
+   "top": [
+    335.0,
+    40.0,
+    405.0,
+    625.0,
+    75.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 7,
+   "top": [
+    42.0,
+    78.0,
+    470.0,
+    714.0,
+    0.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 5,
+   "top": [
+    40.0,
+    405.0,
+    625.0,
+    75.0,
+    190.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 7,
+   "top": [
+    335.0,
+    40.0,
+    405.0,
+    625.0,
+    75.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s06",
+  "video": "tos",
+  "type": "spoken",
+  "query": "remind her what love is",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    405.0,
+    730.0,
+    550.0,
+    385.0,
+    365.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    406.0,
+    408.0,
+    0.0,
+    708.0,
+    730.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    245.0,
+    240.0,
+    235.0,
+    335.0,
+    360.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    245.0,
+    235.0,
+    230.0,
+    55.0,
+    60.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    235.0,
+    210.0,
+    405.0,
+    245.0,
+    730.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    234.0,
+    406.0,
+    246.0,
+    408.0,
+    248.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 10,
+   "top": [
+    406.0,
+    0.0,
+    708.0,
+    730.0,
+    384.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    245.0,
+    235.0,
+    405.0,
+    730.0,
+    550.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    246.0,
+    234.0,
+    406.0,
+    0.0,
+    708.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    245.0,
+    405.0,
+    235.0,
+    730.0,
+    550.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    234.0,
+    406.0,
+    246.0,
+    0.0,
+    708.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    405.0,
+    550.0,
+    385.0,
+    365.0,
+    355.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    245.0,
+    405.0,
+    235.0,
+    550.0,
+    385.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s07",
+  "video": "tos",
+  "type": "spoken",
+  "query": "there's no reason to destroy the world",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    715.0,
+    710.0,
+    15.0,
+    720.0,
+    585.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    714.0,
+    718.0,
+    438.0,
+    722.0,
+    716.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    565.0,
+    325.0,
+    305.0,
+    560.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    520.0,
+    515.0,
+    560.0,
+    690.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 10,
+   "top": [
+    720.0,
+    660.0,
+    520.0,
+    470.0,
+    440.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 10,
+   "top": [
+    722.0,
+    434.0,
+    392.0,
+    690.0,
+    530.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    714.0,
+    438.0,
+    722.0,
+    70.0,
+    220.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    720.0,
+    660.0,
+    470.0,
+    520.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    362.0,
+    722.0,
+    392.0,
+    434.0,
+    530.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    360.0,
+    720.0,
+    715.0,
+    710.0,
+    15.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    362.0,
+    722.0,
+    714.0,
+    392.0,
+    438.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    715.0,
+    710.0,
+    15.0,
+    720.0,
+    585.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    360.0,
+    720.0,
+    715.0,
+    710.0,
+    15.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s08",
+  "video": "tos",
+  "type": "spoken",
+  "query": "you forgot me on Earth",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    730.0,
+    540.0,
+    405.0,
+    315.0,
+    410.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    0.0,
+    708.0,
+    730.0,
+    732.0,
+    4.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    385.0,
+    305.0,
+    415.0,
+    195.0,
+    405.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    385.0,
+    200.0,
+    250.0,
+    260.0,
+    195.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 4,
+   "top": [
+    560.0,
+    555.0,
+    425.0,
+    380.0,
+    130.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    386.0,
+    388.0,
+    322.0,
+    560.0,
+    190.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 8,
+   "top": [
+    0.0,
+    708.0,
+    730.0,
+    220.0,
+    322.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    385.0,
+    250.0,
+    555.0,
+    195.0,
+    260.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    386.0,
+    264.0,
+    250.0,
+    560.0,
+    322.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    385.0,
+    730.0,
+    555.0,
+    250.0,
+    560.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    386.0,
+    322.0,
+    560.0,
+    264.0,
+    0.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    540.0,
+    405.0,
+    315.0,
+    410.0,
+    325.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    385.0,
+    555.0,
+    250.0,
+    560.0,
+    540.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s09",
+  "video": "tos",
+  "type": "spoken",
+  "query": "memory override",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    615.0,
+    380.0,
+    710.0,
+    730.0,
+    310.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    618.0,
+    378.0,
+    312.0,
+    528.0,
+    380.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    540.0,
+    535.0,
+    500.0,
+    295.0,
+    505.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    540.0,
+    535.0,
+    295.0,
+    500.0,
+    50.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    540.0,
+    50.0,
+    295.0,
+    615.0,
+    380.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    538.0,
+    52.0,
+    296.0,
+    618.0,
+    378.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    618.0,
+    378.0,
+    312.0,
+    528.0,
+    392.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    540.0,
+    535.0,
+    295.0,
+    50.0,
+    500.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    538.0,
+    296.0,
+    504.0,
+    52.0,
+    618.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    540.0,
+    535.0,
+    295.0,
+    50.0,
+    500.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    538.0,
+    296.0,
+    504.0,
+    52.0,
+    618.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    615.0,
+    380.0,
+    710.0,
+    310.0,
+    55.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    540.0,
+    535.0,
+    295.0,
+    50.0,
+    500.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s10",
+  "video": "tos",
+  "type": "spoken",
+  "query": "a lesson to be learned from this",
+  "paraphrase": false,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    615.0,
+    625.0,
+    610.0,
+    675.0,
+    60.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    700.0,
+    614.0,
+    618.0,
+    696.0,
+    702.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    560.0,
+    565.0,
+    85.0,
+    90.0,
+    95.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    560.0,
+    565.0,
+    240.0,
+    325.0,
+    360.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 3,
+   "top": [
+    60.0,
+    55.0,
+    565.0,
+    235.0,
+    180.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 5,
+   "top": [
+    60.0,
+    56.0,
+    58.0,
+    700.0,
+    564.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    700.0,
+    614.0,
+    674.0,
+    62.0,
+    692.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    565.0,
+    560.0,
+    60.0,
+    55.0,
+    615.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    564.0,
+    700.0,
+    60.0,
+    614.0,
+    674.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    565.0,
+    560.0,
+    615.0,
+    60.0,
+    625.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    700.0,
+    564.0,
+    614.0,
+    60.0,
+    674.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    615.0,
+    625.0,
+    610.0,
+    675.0,
+    60.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    565.0,
+    560.0,
+    615.0,
+    60.0,
+    625.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s11",
+  "video": "tos",
+  "type": "spoken",
+  "query": "the launch countdown",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": 1,
+   "top": [
+    20.0,
+    10.0,
+    40.0,
+    620.0,
+    630.0
+   ]
+  },
+  "visual_2s": {
+   "rank": 2,
+   "top": [
+    42.0,
+    22.0,
+    24.0,
+    328.0,
+    438.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 9,
+   "top": [
+    335.0,
+    430.0,
+    340.0,
+    265.0,
+    250.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": null,
+   "top": [
+    520.0,
+    515.0,
+    360.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 2,
+   "top": [
+    520.0,
+    20.0,
+    10.0,
+    515.0,
+    40.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 3,
+   "top": [
+    42.0,
+    518.0,
+    22.0,
+    520.0,
+    24.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": 2,
+   "top": [
+    42.0,
+    22.0,
+    328.0,
+    438.0,
+    634.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 3,
+   "top": [
+    520.0,
+    515.0,
+    20.0,
+    10.0,
+    40.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 3,
+   "top": [
+    520.0,
+    42.0,
+    22.0,
+    328.0,
+    438.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    20.0,
+    10.0,
+    40.0,
+    620.0,
+    630.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 2,
+   "top": [
+    42.0,
+    22.0,
+    328.0,
+    438.0,
+    634.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": 1,
+   "top": [
+    20.0,
+    10.0,
+    40.0,
+    620.0,
+    630.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    20.0,
+    10.0,
+    40.0,
+    620.0,
+    630.0
+   ]
+  }
+ },
+ {
+  "id": "tos-s12",
+  "video": "tos",
+  "type": "spoken",
+  "query": "the captain is told to abort",
+  "paraphrase": true,
+  "visual_5s": {
+   "rank": null,
+   "top": [
+    235.0,
+    135.0,
+    145.0,
+    75.0,
+    575.0
+   ]
+  },
+  "visual_2s": {
+   "rank": null,
+   "top": [
+    162.0,
+    576.0,
+    136.0,
+    400.0,
+    488.0
+   ]
+  },
+  "transcript_clip_5s": {
+   "rank": 1,
+   "top": [
+    370.0,
+    505.0,
+    270.0,
+    405.0,
+    225.0
+   ]
+  },
+  "transcript_bm25_5s": {
+   "rank": 1,
+   "top": [
+    505.0,
+    370.0,
+    515.0,
+    520.0,
+    55.0
+   ]
+  },
+  "hybrid_rrf_5s": {
+   "rank": 1,
+   "top": [
+    505.0,
+    235.0,
+    225.0,
+    230.0,
+    515.0
+   ]
+  },
+  "hybrid_rrf_2s": {
+   "rank": 1,
+   "top": [
+    508.0,
+    232.0,
+    226.0,
+    162.0,
+    576.0
+   ]
+  },
+  "visual_2s_nms5": {
+   "rank": null,
+   "top": [
+    162.0,
+    576.0,
+    136.0,
+    400.0,
+    488.0
+   ]
+  },
+  "hybrid_combsum_5s": {
+   "rank": 1,
+   "top": [
+    505.0,
+    370.0,
+    230.0,
+    515.0,
+    520.0
+   ]
+  },
+  "hybrid_combsum_2s_nms5": {
+   "rank": 1,
+   "top": [
+    508.0,
+    370.0,
+    232.0,
+    360.0,
+    246.0
+   ]
+  },
+  "hybrid_coverage_5s": {
+   "rank": 1,
+   "top": [
+    505.0,
+    235.0,
+    370.0,
+    135.0,
+    230.0
+   ]
+  },
+  "hybrid_coverage_2s_nms5": {
+   "rank": 1,
+   "top": [
+    508.0,
+    162.0,
+    576.0,
+    136.0,
+    400.0
+   ]
+  },
+  "visual_5s_noblank": {
+   "rank": null,
+   "top": [
+    235.0,
+    135.0,
+    145.0,
+    75.0,
+    575.0
+   ]
+  },
+  "hybrid_coverage_5s_noblank": {
+   "rank": 1,
+   "top": [
+    505.0,
+    235.0,
+    370.0,
+    135.0,
+    230.0
+   ]
+  }
+ }
+]
